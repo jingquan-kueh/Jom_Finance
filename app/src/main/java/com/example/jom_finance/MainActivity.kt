@@ -10,4 +10,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     //testing github
+
+    //this should be in JQ branch only
 }
