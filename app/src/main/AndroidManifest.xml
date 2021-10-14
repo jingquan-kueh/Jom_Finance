@@ -10,6 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".intro.IntroActivity3"
+            android:exported="false" />
+        <activity
+            android:name=".intro.IntroActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".intro.IntroActivity1"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
