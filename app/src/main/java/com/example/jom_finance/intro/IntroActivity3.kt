@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import com.example.jom_finance.LoginActivity
+import com.example.jom_finance.R
+import com.example.jom_finance.SignUpActivity
 
 class IntroActivity3 : AppCompatActivity(){
     private var x1 = 0f
@@ -12,7 +15,7 @@ class IntroActivity3 : AppCompatActivity(){
     val MIN_DISTANCE = 150
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.intro3)
+        setContentView(R.layout.activity_intro3)
     }
     fun openLogin(view: View?) {
         val intent = Intent(this, LoginActivity::class.java)

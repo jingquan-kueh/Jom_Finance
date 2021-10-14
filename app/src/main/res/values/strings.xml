@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Jom_Finance</string>
+    <string name="intro2Text">Know where your money goes</string>
+    <string name="intro2Text2">Track all transaction goes prevent them sneaking away from you.</string>
+    <string name="signupBtnText">Sign Up</string>
+    <string name="loginBtnText">Login</string>
+    <string name="intro3Text">Planning ahead</string>
+    <string name="intro3text2">Plan how you gonna spent your money.</string>
+    <string name="intro1Text">Gain total control of your money</string>
+    <string name="intro1Text2">You are the one who control your own money.</string>
 </resources>
