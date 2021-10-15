@@ -7,19 +7,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class SignUpActivity : AppCompatActivity(){
     lateinit var name : TextInputEditText
     lateinit var email : TextInputEditText
     lateinit var password : TextInputEditText
-    lateinit var signBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         setup()
         /*https://android--code.blogspot.com/2020/02/android-kotlin-ktx-clickablespan-example.html for the T&C spanable*/
-        signBtn.setOnClickListener {
+        btn_sign_up.setOnClickListener {
             if(validate()){
                 Toast.makeText(this,"Sign In !!!!", Toast.LENGTH_SHORT).show()
             }
@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity(){
         name = findViewById<TextInputEditText>(R.id.SignUpNameField)
         email = findViewById<TextInputEditText>(R.id.SignUpNameField)
         password = findViewById<TextInputEditText>(R.id.SignUpNameField)
-        signBtn = findViewById<Button>(R.id.btn_sign_up)
+
     }
     private fun validate() : Boolean{
         var result : Boolean = false

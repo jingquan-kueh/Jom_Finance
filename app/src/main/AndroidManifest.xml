@@ -10,6 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".ResetPassword"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordEmailSend"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPassword"
+            android:exported="false" />
+        <activity
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
