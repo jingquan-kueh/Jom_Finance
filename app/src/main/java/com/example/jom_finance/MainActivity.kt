@@ -13,7 +13,7 @@ class MainActivity :AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splashscreen)
+        setContentView(R.layout.activity_add_new_income)
     }
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {

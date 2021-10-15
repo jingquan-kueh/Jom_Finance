@@ -49,9 +49,9 @@ class incomeFragment : Fragment() {
         ArrayAdapter.createFromResource(
             activity as Context,
             R.array.Category,
-            android.R.layout.simple_spinner_item).also { adapter ->
+            R.layout.spinner_list).also { adapter ->
             // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter.setDropDownViewResource(R.layout.spinner_list)
             // Apply the adapter to the spinner
             spinnerCategory.adapter = adapter
         }
