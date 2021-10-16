@@ -89,15 +89,16 @@
         app:layout_constraintTop_toBottomOf="@+id/howMuchtxt" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:background="@drawable/rounded_corner"
         android:id="@+id/fragmentContainerView"
         android:name="com.example.jom_finance.income.incomeFragment"
         android:layout_width="match_parent"
-        android:layout_height="439dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amountField" />
+        app:layout_constraintTop_toBottomOf="@+id/amountField"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

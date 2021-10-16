@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".PopupActivity"
+            android:exported="false" />
+        <activity
             android:name=".income.AddNewIncome"
             android:exported="false" />
         <activity

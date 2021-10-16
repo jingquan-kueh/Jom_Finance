@@ -1,16 +1,18 @@
 package com.example.jom_finance.income
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.jom_finance.R
-import kotlinx.android.synthetic.main.fragment_income.*
 import android.widget.ArrayAdapter
-
-
+import com.example.jom_finance.PopupActivity
+import kotlinx.android.synthetic.main.fragment_income.*
+import kotlinx.android.synthetic.main.fragment_income.view.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,24 +26,24 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class incomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+        override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.fragment_income, container, false)
+        view.AddnewBtn.setOnClickListener{
+            val resetView = LayoutInflater.from(this.activity).inflate(R.layout.activity_popup, null)
+            val resetViewBuilder = AlertDialog.Builder(this.activity,R.style.CustomAlertDialog).setView(resetView)
+            //show dialog
+            val displayDialog = resetViewBuilder.show()
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_income, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
