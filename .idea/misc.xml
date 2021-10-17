@@ -7,6 +7,8 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/back_arrow_white.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/custom_input.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/google_sign_up.xml" value="0.2875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/home_card_left.xml" value="0.290625" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/home_card_right.xml" value="0.18055555555555555" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_google_icon.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/indicator1.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/intro1.xml" value="0.2875" />
@@ -20,6 +22,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_add_new_income.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_forgot_password.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_forgot_password_email_send.xml" value="0.264" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_home.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro1.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro2.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro3.xml" value="0.1" />

@@ -8,5 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="incomeTheme">#00A86B</color>
+    <color name="expensesTheme">#FD3C4A</color>
 
 </resources>

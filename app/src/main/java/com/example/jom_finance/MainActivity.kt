@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.widget.ArrayAdapter
 import com.example.jom_finance.intro.IntroActivity1
 import kotlinx.android.synthetic.main.activity_add_new_income.*
+import kotlinx.android.synthetic.main.activity_home.*
 
 
 class MainActivity :AppCompatActivity(){
@@ -18,24 +19,17 @@ class MainActivity :AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_new_income)
+        setContentView(R.layout.activity_home)
         ArrayAdapter.createFromResource(
             this,
-            R.array.Category,
+            R.array.Month,
             R.layout.spinner_list
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(R.layout.spinner_list)
             // Apply the adapter to the spinner
-            spinnerCategory.adapter = adapter
+            spinnerMonth.adapter = adapter
         }
-        AddnewBtn.setOnClickListener{
-            val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-            val resetViewBuilder = AlertDialog.Builder(this,R.style.CustomAlertDialog).setView(resetView)
-            //show dialog
-            val displayDialog = resetViewBuilder.show()
-        }
-
     }
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
