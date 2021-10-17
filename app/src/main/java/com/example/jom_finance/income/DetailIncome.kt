@@ -1,14 +1,12 @@
-package com.example.jom_finance
+package com.example.jom_finance.income
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.DisplayMetrics
+import com.example.jom_finance.R
 
-class PopupActivity : Activity() {
+class DetailIncome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_popup)
-
+        setContentView(R.layout.activity_detail_income)
     }
 }

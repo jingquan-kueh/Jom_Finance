@@ -27,8 +27,7 @@
             android:textStyle="bold"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -88,17 +87,154 @@
         app:layout_constraintStart_toEndOf="@+id/Sign"
         app:layout_constraintTop_toBottomOf="@+id/howMuchtxt" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="com.example.jom_finance.income.incomeFragment"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corner"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/amountField"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:layout_editor_absoluteX="137dp">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="453dp"
+            app:behavior_hideable="true"
+            app:behavior_peekHeight='auto'
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background='@drawable/scroll_rounded_corner'
+                android:backgroundTint="@color/white"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CategoryCard"
+                    android:layout_width="343dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/white"
+                    app:cardCornerRadius="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinnerCategory"
+                        android:layout_width="343dp"
+                        android:layout_height="58dp"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/DescriptionLayout"
+                    android:layout_width="343dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:hint="Description"
+                    android:textColorHint="#91919F"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/CategoryCard">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/DescriptionField"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/custom_input"
+                        android:ems="15"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/wallet"
+                    android:layout_width="343dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/white"
+                    app:cardCornerRadius="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/DescriptionLayout">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinnerWallet"
+                        android:layout_width="match_parent"
+                        android:layout_height="58dp"
+                        android:spinnerMode="dropdown"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/AttachmentLayout"
+                    android:layout_width="343dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:hint="Add Attachment"
+                    android:textColorHint="#91919F"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/wallet">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/attachment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/custom_input"
+                        android:ems="15"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/RepeatToggle"
+                    android:layout_width="338dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="32dp"
+                    android:hint="Repeat"
+                    android:textColorHint="#292B2D"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/AttachmentLayout">
+
+                </com.google.android.material.switchmaterial.SwitchMaterial>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/AddnewBtn"
+                    android:layout_width="330dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/rounded_corner"
+                    android:backgroundTint="#5D5FEF"
+                    android:text="Add"
+                    android:textColor="@color/white"
+                    android:textSize="17dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.493"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/RepeatToggle"
+                    android:layout_marginBottom="30dp"/>
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
