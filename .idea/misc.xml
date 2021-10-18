@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/add.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/back_arrow.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/back_arrow_white.xml" value="0.290625" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/change_gradient_drawable.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/custom_input.xml" value="0.2875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/expense_icon.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/google_sign_up.xml" value="0.2875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/gradient_drawable.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/home_card_left.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/home_card_right.xml" value="0.18055555555555555" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_google_icon.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/indicator1.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/intro1.xml" value="0.2875" />
@@ -33,9 +38,10 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_sign_up.xml" value="0.176" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_income.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_popup.xml" value="0.264" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/list_item.xml" value="0.536" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/list_item.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/spinner_list.xml" value="0.25815217391304346" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/splashscreen.xml" value="0.24682971014492755" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/menu/navigation.xml" value="0.27447916666666666" />
       </map>
     </option>
   </component>

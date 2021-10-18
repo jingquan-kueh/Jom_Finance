@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="incomeTheme">#00A86B</color>
     <color name="expensesTheme">#FD3C4A</color>
-
+    <color name="iris">#5D5FEF</color>
+    <color name="grey">#C6C6C6</color>
 </resources>
