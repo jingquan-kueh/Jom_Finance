@@ -23,6 +23,7 @@ class AddNewIncome : AppCompatActivity() {
             // Apply the adapter to the spinner
             spinnerCategory.adapter = adapter
         }
+
         AddnewBtn.setOnClickListener{
             val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
             val resetViewBuilder = AlertDialog.Builder(this,R.style.CustomAlertDialog).setView(resetView)
