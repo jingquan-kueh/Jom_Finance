@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Dialog.Alert">
+      <item name="android:windowBackground">@drawable/popup_background</item>
+    </style>
+
+    <style name="Floating_income" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/incomeTheme</item>
+        <item name="tint">@color/white</item>
+        <item name="maxImageSize">36dp</item>
+    </style>
+    <style name="Floating_expenses" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/expensesTheme</item>
+        <item name="tint">@color/white</item>
+    </style>
+</resources>
