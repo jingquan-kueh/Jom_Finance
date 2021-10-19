@@ -13,20 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
-            android:name=".AccountsListActivity"
-            android:exported="false" />
-        <activity
             android:name=".CreateBudgetActivity"
-            android:exported="false" />
+            android:exported="true" />
+        <activity
+            android:name=".AccountsListActivity"
+            android:exported="true" />
         <activity
             android:name=".BudgetDetailActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AddNewAccountActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AccountDetailsActivity"
-            android:exported="false" />
+            android:exported="true"  />
         <activity
             android:name=".VoiceActivity"
             android:exported="false" />
@@ -44,7 +44,7 @@
             android:exported="false" />
         <activity
             android:name=".ResetPassword"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ForgotPasswordEmailSend"
             android:exported="false" />

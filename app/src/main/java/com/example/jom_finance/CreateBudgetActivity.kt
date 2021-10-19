@@ -16,10 +16,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_create_budget.*
 
 class CreateBudgetActivity : AppCompatActivity() {
+
     private lateinit var thumbView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_budget)
 
@@ -66,6 +66,5 @@ class CreateBudgetActivity : AppCompatActivity() {
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
-
 
 }

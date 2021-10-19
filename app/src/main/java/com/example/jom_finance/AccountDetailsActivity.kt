@@ -9,14 +9,14 @@ class AccountDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_details)
 
-        favourite.setOnClickListener{
+        setFavourite_btn.setOnClickListener{
             setFavourite()
         }
 
-        //check if favourite
+        //check if setFavourite_btn
 
     }
     private fun setFavourite(){
-        favourite.setImageResource(R.drawable.ic_baseline_star_24)
+        setFavourite_btn.setImageResource(R.drawable.ic_baseline_star_24)
     }
 }
