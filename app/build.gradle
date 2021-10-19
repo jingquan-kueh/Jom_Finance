@@ -44,7 +44,12 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
     apply plugin: 'com.android.application'
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
+
+    //icon picker
+    implementation "com.maltaisn:icondialog:3.1.0"
+    implementation "com.maltaisn:iconpack-default:1.0.0"
 }
