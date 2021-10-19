@@ -13,4 +13,13 @@
         <item name="backgroundTint">@color/expensesTheme</item>
         <item name="tint">@color/white</item>
     </style>
+    <style name="long_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
 </resources>

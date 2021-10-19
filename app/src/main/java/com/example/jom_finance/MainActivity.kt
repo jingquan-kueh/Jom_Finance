@@ -6,7 +6,6 @@ import android.os.Bundle
 
 import android.view.MotionEvent
 import com.example.jom_finance.intro.IntroActivity1
-import kotlinx.android.synthetic.main.activity_home.*
 
 
 class MainActivity :AppCompatActivity(){
