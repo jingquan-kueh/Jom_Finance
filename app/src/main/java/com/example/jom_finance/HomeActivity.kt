@@ -10,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.graphics.drawable.toDrawable
+import com.example.jom_finance.income.AddNewIncome
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity() {
@@ -38,6 +39,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         fab_income.setOnClickListener{
+            val intent = Intent(this, AddNewIncome::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
         }
         fab_expenses.setOnClickListener{
