@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -27,10 +28,10 @@ class SignUpActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         FirebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance()
-        //googleSetup()
 
         btn_Sign_Google.setOnClickListener{
-            //signIn()
+            googleSetup()
+            googleSignIn()
         }
 
         /*https://android--code.blogspot.com/2020/02/android-kotlin-ktx-clickablespan-example.html for the T&C spanable*/
@@ -39,6 +40,9 @@ class SignUpActivity : AppCompatActivity(){
                 FirebaseAuth.createUserWithEmailAndPassword(SignUpEmailField.text.toString().trim(),SignUpPasswordField.text.toString())
                     .addOnSuccessListener {
                         Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     }
                     .addOnFailureListener{
                         Toast.makeText(this," "+it.message, Toast.LENGTH_SHORT).show()
@@ -64,11 +68,31 @@ class SignUpActivity : AppCompatActivity(){
 
     private fun validate() : Boolean{
         var result : Boolean = false
-        if(SignUpNameField.text.isNullOrEmpty() && SignUpEmailField.text.isNullOrEmpty() && SignUpPasswordField.text.isNullOrEmpty()){
+        var snack  : Snackbar
+        if(SignUpNameField.text.isNullOrEmpty()){
+            SignUpNameField.requestFocus()
+            snack = Snackbar.make(SignUpLayout,"Please Enter Username",Snackbar.LENGTH_LONG)
+            snack.show()
+            return false
+        }
+        if(SignUpEmailField.text.isNullOrEmpty()){
+            SignUpEmailField.requestFocus()
+            snack = Snackbar.make(SignUpLayout,"Please Enter Email",Snackbar.LENGTH_LONG)
+            snack.show()
+            return false
+        }
+        if(SignUpPasswordField.text.isNullOrEmpty()){
+            SignUpPasswordField.requestFocus()
+            snack = Snackbar.make(SignUpLayout,"Please Enter Password",Snackbar.LENGTH_LONG)
+            snack.show()
+            return false
+        }
+        result = true
+       /* if(SignUpNameField.text.isNullOrEmpty() && SignUpEmailField.text.isNullOrEmpty() && SignUpPasswordField.text.isNullOrEmpty()){
             Toast.makeText(this,"Please fill in all detail", Toast.LENGTH_SHORT).show()
         }else{
             result = true
-        }
+        }*/
         return result
     }
 
@@ -86,7 +110,7 @@ class SignUpActivity : AppCompatActivity(){
     private fun googleSetup() {
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            //.requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
@@ -95,7 +119,7 @@ class SignUpActivity : AppCompatActivity(){
         auth = Firebase.auth
     }
 
-    private fun signIn() {
+    private fun googleSignIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
@@ -139,6 +163,11 @@ class SignUpActivity : AppCompatActivity(){
     private fun updateUI(user: Any?) {
         if(user!=null){
             Toast.makeText(this,"Login Successful", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            finish()
+
         }else{
             Toast.makeText(this,"Something Wrong", Toast.LENGTH_SHORT).show()
         }
