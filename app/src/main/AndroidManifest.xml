@@ -13,6 +13,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".TransferActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ExpenseDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewExpenseActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".CreateBudgetActivity"
             android:exported="true" />
         <activity
@@ -26,7 +41,7 @@
             android:exported="true" />
         <activity
             android:name=".AccountDetailsActivity"
-            android:exported="true"  />
+            android:exported="true" />
         <activity
             android:name=".VoiceActivity"
             android:exported="false" />
@@ -68,13 +83,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -26,7 +26,7 @@ class CreateBudgetActivity : AppCompatActivity() {
         //drop down list
         val items = listOf("Shopping", "Groceries", "Transport", "Restaurant")
         val adapter = ArrayAdapter(this, R.layout.item_dropdown, items)
-        autoCompleteTextView_categories.setAdapter(adapter)
+        budgetCategories_autoCompleteTextView.setAdapter(adapter)
 
         //drop down list onClickListener
         //editTextNumberDecimal.setOnClickListener{
