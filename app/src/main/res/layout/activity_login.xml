@@ -47,7 +47,7 @@
         android:layout_width="343dp"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
-        android:id="@+id/LoginEmailField"
+        android:id="@+id/LoginEmailLayout"
         app:boxStrokeWidth="0dp"
         android:hint="Email"
         android:textColorHint="#91919F"
@@ -57,6 +57,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/LoginEmailField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textEmailAddress"
@@ -69,7 +70,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/LoginPasswordField"
+        android:id="@+id/LoginPasswordLayout"
         android:layout_width="343dp"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
@@ -80,9 +81,10 @@
         app:passwordToggleTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LoginEmailField">
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/LoginPasswordField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPassword"
@@ -106,7 +108,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LoginPasswordField" />
+        app:layout_constraintTop_toBottomOf="@+id/LoginPasswordLayout" />
 
     <TextView
         android:id="@+id/txtForgotPassword"

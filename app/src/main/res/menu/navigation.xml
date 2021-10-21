@@ -19,9 +19,9 @@
         android:icon="@drawable/home_icon"
         android:title="Budget" />
     <item
-        android:id="@+id/navigation_Report"
+        android:id="@+id/navigation_Profile"
         android:icon="@drawable/home_icon"
-        android:title="Report" />
+        android:title="Profile" />
 
 
 </menu>

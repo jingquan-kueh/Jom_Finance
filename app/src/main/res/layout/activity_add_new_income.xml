@@ -97,7 +97,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="453dp"
-            app:behavior_hideable="true"
+            app:behavior_hideable="false"
             app:behavior_peekHeight='auto'
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
