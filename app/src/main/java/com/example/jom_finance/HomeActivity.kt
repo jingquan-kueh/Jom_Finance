@@ -3,16 +3,17 @@ package com.example.jom_finance
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.speech.tts.Voice
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.graphics.drawable.toDrawable
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.activity_home.*
 
+
 class HomeActivity : AppCompatActivity() {
+
     private var statusAddOn : Boolean = false
     private val rotateOpen : Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.rotate_clockwise)}
     private val rotateClose : Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.rotate_anticlockwise)}
@@ -22,16 +23,14 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.Month,
-            R.layout.spinner_list
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(R.layout.spinner_list)
-            // Apply the adapter to the spinner
-            spinnerMonth.adapter = adapter
-        }
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentHomeView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        val bottomNav = bottomNav
+        bottomNav.setupWithNavController(navController)
+
         fab_add.setOnClickListener{
             onAddButtonClicked()
             statusAddOn = !statusAddOn
@@ -53,7 +52,6 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "snap clicked", Toast.LENGTH_SHORT).show()
         }
     }
-
     private fun onAddButtonClicked() {
         setVisibility(statusAddOn)
         setAnimation(statusAddOn)
@@ -62,14 +60,14 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setAnimation(statusAddOn : Boolean) {
         if(!statusAddOn){
-            home_FL.foreground = R.drawable.change_gradient_drawable.toDrawable()
+            //home_FL.foreground = R.drawable.change_gradient_drawable.toDrawable()
             fab_add.startAnimation(rotateOpen)
             fab_income.visibility = View.VISIBLE
             fab_expenses.visibility = View.VISIBLE
             fab_voice.visibility = View.VISIBLE
             fab_snap.visibility = View.VISIBLE
         }else{
-            home_FL.foreground = null
+            //home_FL.foreground = null
             fab_add.startAnimation(rotateClose)
             fab_income.visibility = View.INVISIBLE
             fab_expenses.visibility = View.INVISIBLE

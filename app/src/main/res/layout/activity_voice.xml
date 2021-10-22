@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VoiceActivity"
-    android:background="@color/white">
+    android:background="@drawable/speech_gradient_drawable">
 
     <TextView
         android:id="@+id/speechTxt"
@@ -16,14 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="NULL ..."
-        android:textColor="@color/black"/>
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/statusTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Status : "
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

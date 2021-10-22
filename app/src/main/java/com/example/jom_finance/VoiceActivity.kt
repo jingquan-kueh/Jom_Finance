@@ -25,7 +25,7 @@ class VoiceActivity : AppCompatActivity() {
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var speechRecognizerIntent: Intent
     private lateinit var result : String
-    private var voiceOn = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,18 +34,18 @@ class VoiceActivity : AppCompatActivity() {
 
         speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"zh-TW")  /*ja-JP,zh-TW */
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault())  /*ja-JP,zh-TW */
         speechRecognizer.setRecognitionListener(object : RecognitionListener{
             override fun onReadyForSpeech(p0: Bundle?) {
-
+                statusTxt.text = "Status : Ready For listen"
             }
 
             override fun onBeginningOfSpeech() {
-
+                statusTxt.text = "Status : Start Listening..."
             }
 
             override fun onRmsChanged(p0: Float) {
-
+                //statusTxt.text = p0.toString()
             }
 
             override fun onBufferReceived(p0: ByteArray?) {
@@ -53,7 +53,8 @@ class VoiceActivity : AppCompatActivity() {
             }
 
             override fun onEndOfSpeech() {
-
+                speechRecognizer.stopListening()
+                statusTxt.text = "Status : Processing..."
             }
 
             override fun onError(p0: Int) {
@@ -79,20 +80,11 @@ class VoiceActivity : AppCompatActivity() {
 
         })
         speakBtn.setOnClickListener {
-            if(!voiceOn){
-                checkVoiceCommandPermission()
-                speechRecognizer.startListening(speechRecognizerIntent)
-                statusTxt.text = "Status : Start Listening..."
-                result = ""
-            }else{
-                speechRecognizer.stopListening()
-                statusTxt.text = "Status : Processing..."
+            checkVoiceCommandPermission()
+            speechRecognizer.startListening(speechRecognizerIntent)
+            result = ""
             }
-
-
         }
-
-    }
 
     private fun checkVoiceCommandPermission(){
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M){
