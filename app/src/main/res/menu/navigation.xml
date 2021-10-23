@@ -7,8 +7,8 @@
         android:title="home" />
 
     <item
-        android:id="@+id/navigation_Transaction"
-        android:icon="@drawable/home_icon"
+        android:id="@+id/transaction_fragment"
+        android:icon="@drawable/transaction_icon"
         android:title="Transaction" />
     <item
         android:id="@+id/navigation_middle"

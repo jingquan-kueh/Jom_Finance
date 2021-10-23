@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.Transaction_fragment"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/toFinancialReportBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="See your financial report"
+            android:textAlignment="textStart"
+            android:drawableRight="@drawable/arrow_right_2"
+            android:background="@drawable/rounded_corner"
+            android:backgroundTint="#EEE5FF"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textColor="@color/iris"
+            android:layout_margin="10dp">
+
+        </androidx.appcompat.widget.AppCompatButton>
+    </LinearLayout>
+
+</FrameLayout>

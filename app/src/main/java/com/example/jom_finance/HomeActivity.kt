@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.jom_finance.income.AddNewIncome
 import kotlinx.android.synthetic.main.activity_home.*
 
 
@@ -30,13 +31,14 @@ class HomeActivity : AppCompatActivity() {
 
         val bottomNav = bottomNav
         bottomNav.setupWithNavController(navController)
-
         fab_add.setOnClickListener{
             onAddButtonClicked()
             statusAddOn = !statusAddOn
         }
-
         fab_income.setOnClickListener{
+            val intent = Intent(this, AddNewIncome::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
         }
         fab_expenses.setOnClickListener{

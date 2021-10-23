@@ -15,4 +15,9 @@
         android:name="com.example.jom_finance.fragment.Profile_fragment"
         android:label="fragment_profile_fragment"
         tools:layout="@layout/fragment_profile_fragment" />
+    <fragment
+        android:id="@+id/transaction_fragment"
+        android:name="com.example.jom_finance.fragment.Transaction_fragment"
+        android:label="fragment_transaction_fragment"
+        tools:layout="@layout/fragment_transaction_fragment" />
 </navigation>

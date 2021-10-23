@@ -34,7 +34,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_financial_report.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_forgot_password.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_forgot_password_email_send.xml" value="0.264" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_home.xml" value="0.2" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_home.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro1.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro2.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_intro3.xml" value="0.1" />
@@ -44,18 +44,19 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_reset_password.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_sign_up.xml" value="0.176" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_voice.xml" value="0.264" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/budget_report.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/expenses_report.xml" value="0.176" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/budget_report.xml" value="0.264" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/expenses_report.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_home_fragment.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_income.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_popup.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_profile_fragment.xml" value="0.2" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/income_report.xml" value="0.176" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_transaction_fragment.xml" value="0.4" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/income_report.xml" value="0.6" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/item_account.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/item_budget.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/item_dropdown.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/list_item.xml" value="0.264" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/quote_report.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/quote_report.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/spinner_list.xml" value="0.176" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/splashscreen.xml" value="0.24682971014492755" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/menu/navigation.xml" value="0.27447916666666666" />

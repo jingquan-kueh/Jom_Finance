@@ -14,7 +14,8 @@
         android:theme="@style/Theme.Jom_Finance">
         <activity
             android:name=".report.FinancialReportActivity"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
         <activity
             android:name=".AccountsListActivity"
             android:exported="false" />
@@ -35,7 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
