@@ -13,6 +13,8 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -23,6 +25,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import android.widget.Toast
 import androidx.core.view.isInvisible
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -34,7 +37,8 @@ class VoiceActivity : AppCompatActivity() {
     private lateinit var speechRecognizerIntent: Intent
     private lateinit var result: String
     private var voiceActive = false
-
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.from_bottom_anim_voice)}
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.to_bottom_anim_voice)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_voice)
@@ -57,7 +61,8 @@ class VoiceActivity : AppCompatActivity() {
                     runOnUiThread{
                         showResults(results)
                         recognition_view.stop()
-                        recognition_view.isInvisible = true
+                        voiceActive = false
+                        onVoiceClick()
                         recognition_view.play()
 
                     }
@@ -73,6 +78,7 @@ class VoiceActivity : AppCompatActivity() {
         recognition_view.setSpacingInDp(10)
         recognition_view.setIdleStateAmplitudeInDp(10)
         recognition_view.setRotationRadiusInDp(50)
+        recognition_view.isInvisible = true
         recognition_view.play()
 
     /*    speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -132,16 +138,14 @@ class VoiceActivity : AppCompatActivity() {
         })*/
         speakBtn.setOnClickListener {
             checkVoiceCommandPermission()
-            recognition_view.isInvisible = false
-            startRecognition()
-            recognition_view.postDelayed({ startRecognition() },50)
-            result = ""
-            /*if (!voiceActive) {
-                speechRecognizer.startListening(speechRecognizerIntent)
-
+            // Add transition / animation when button click, from bottom.
+            if(!voiceActive){
                 voiceActive = true
+                onVoiceClick()
+                startRecognition()
+                recognition_view.postDelayed({ startRecognition() },50)
                 result = ""
-            }*/
+            }
         }
     }
 
@@ -182,6 +186,28 @@ class VoiceActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
+        }
+    }
+    private fun onVoiceClick() {
+        setVisibility(voiceActive)
+        setAnimation(voiceActive)
+    }
+    private fun setVisibility(voiceActive : Boolean) {
+        if(!voiceActive){
+            speechTxt.visibility = View.VISIBLE
+            recognition_view.visibility = View.INVISIBLE
+        }else{
+            speechTxt.visibility = View.INVISIBLE
+            recognition_view.visibility = View.VISIBLE
+        }
+    }
+    private fun setAnimation(voiceActive : Boolean) {
+        if(!voiceActive){
+            speechTxt.startAnimation(fromBottom)
+            recognition_view.startAnimation(toBottom)
+        }else{
+            speechTxt.startAnimation(toBottom)
+            recognition_view.startAnimation(fromBottom)
         }
     }
 }
