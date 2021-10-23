@@ -1,8 +1,11 @@
 package com.example.jom_finance
 
+import android.graphics.Color.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.color.colorChooser
 import com.maltaisn.icondialog.IconDialog
 import com.maltaisn.icondialog.IconDialogSettings
 import com.maltaisn.icondialog.data.Icon
@@ -34,10 +37,22 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
         accountIcon_img.setImageDrawable(drawable)
 
-
         accountIcon_img.setOnClickListener {
             // Open icon dialog
             iconDialog.show(supportFragmentManager, ICON_DIALOG_TAG)
+        }
+
+        accountColour_img.setOnClickListener {
+            val colors = intArrayOf(RED, GREEN, BLUE)
+
+            MaterialDialog(this).show {
+                title(R.string.colors)
+                colorChooser(colors) { dialog, color ->
+                    // Use color integer
+                }
+                positiveButton(R.string.select)
+            }
+
         }
 
     }
