@@ -7,10 +7,12 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.jom_finance.income.AddNewIncome
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_home_fragment.*
 
 
 class HomeActivity : AppCompatActivity() {
@@ -31,8 +33,15 @@ class HomeActivity : AppCompatActivity() {
 
         val bottomNav = bottomNav
         bottomNav.setupWithNavController(navController)
+
         fab_add.setOnClickListener{
             onAddButtonClicked()
+            /*if(!statusAddOn){
+                gradientView.foreground = R.drawable.change_gradient_drawable.toDrawable()
+            }else{
+                gradientView.foreground = null
+            }*/
+
             statusAddOn = !statusAddOn
         }
         fab_income.setOnClickListener{

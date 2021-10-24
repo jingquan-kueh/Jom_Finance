@@ -1,5 +1,6 @@
 package com.example.jom_finance.report
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import com.example.jom_finance.R
+import com.example.jom_finance.income.AddNewIncome
 import kotlinx.android.synthetic.main.activity_financial_report.*
 
 class FinancialReportActivity : AppCompatActivity() {
@@ -49,5 +51,11 @@ class FinancialReportActivity : AppCompatActivity() {
             val view: View = `object` as View
             container.removeView(view)
         }
+    }
+
+    fun toReportDetail(view: android.view.View) {
+        val intent = Intent(this, ReportActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 }

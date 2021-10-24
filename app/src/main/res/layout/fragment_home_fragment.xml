@@ -7,6 +7,13 @@
     tools:context=".fragment.Home_fragment"
     android:background="@drawable/gradient_drawable">
 
+    <FrameLayout
+        android:id="@+id/gradientView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationZ="10dp">
+    </FrameLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

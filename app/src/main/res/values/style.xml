@@ -36,4 +36,9 @@
         <item name="android:layout_height">3dp</item>
         <item name="android:background">#F6F6F6</item>
     </style>
+
+    <style name="IconOnlyButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+    </style>
 </resources>

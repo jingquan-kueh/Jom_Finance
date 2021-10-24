@@ -47,6 +47,7 @@
         app:layout_constraintTop_toBottomOf="@+id/budgetTxt"></TextView>
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/fullReportDetailBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,5 +60,6 @@
         android:text="See the Full detail"
         android:background="@drawable/rounded_corner"
         android:backgroundTint="@color/white"
-        android:textColor="@color/iris"/>
+        android:textColor="@color/iris"
+        android:onClick="toReportDetail"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

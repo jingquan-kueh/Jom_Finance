@@ -13,9 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".report.ReportActivity"
+            android:exported="false" />
+        <activity
             android:name=".report.FinancialReportActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".AccountsListActivity"
             android:exported="false" />
@@ -63,7 +65,7 @@
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -78,7 +80,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>
