@@ -1,10 +1,13 @@
 package com.example.jom_finance.report
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import com.example.jom_finance.HomeActivity
+import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.fragment.Line_fragment
 import com.example.jom_finance.fragment.Pie_fragment
@@ -17,6 +20,13 @@ class ReportActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
+
+        backBtn.setOnClickListener{
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            finishAffinity()
+        }
 
         val checkedId =
             toggleChartGroup.checkedButtonId // Will return View.NO_ID if singleSelection = false
