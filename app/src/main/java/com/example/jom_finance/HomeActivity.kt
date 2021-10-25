@@ -11,6 +11,9 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.jom_finance.income.AddNewIncome
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 
@@ -23,10 +26,15 @@ class HomeActivity : AppCompatActivity() {
     private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.from_bottom_anim)}
     private val toBottom : Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.to_bottom_anim)}
 
+    private lateinit var fAuth : FirebaseAuth
+    private lateinit var fStore : FirebaseFirestore
+    private lateinit var userID : String
+    private lateinit var currentUser : FirebaseUser
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
+        setupDataBase()
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentHomeView) as NavHostFragment
         val navController = navHostFragment.navController
@@ -36,12 +44,6 @@ class HomeActivity : AppCompatActivity() {
 
         fab_add.setOnClickListener{
             onAddButtonClicked()
-            /*if(!statusAddOn){
-                gradientView.foreground = R.drawable.change_gradient_drawable.toDrawable()
-            }else{
-                gradientView.foreground = null
-            }*/
-
             statusAddOn = !statusAddOn
         }
         fab_income.setOnClickListener{
@@ -104,4 +106,11 @@ class HomeActivity : AppCompatActivity() {
         fab_income.isClickable = !statusAddOn
     }
 
+    private fun setupDataBase(){
+        fAuth = FirebaseAuth.getInstance()
+        fStore = FirebaseFirestore.getInstance()
+        currentUser = fAuth.currentUser!!
+        userID = currentUser.uid
+
+    }
 }

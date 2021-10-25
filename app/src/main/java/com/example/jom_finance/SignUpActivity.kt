@@ -3,32 +3,34 @@ package com.example.jom_finance
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.lang.Exception
+import java.util.*
+import kotlin.collections.HashMap
 
 class SignUpActivity : AppCompatActivity(){
 
-    private lateinit var FirebaseAuth : FirebaseAuth
+    private lateinit var fAuth : FirebaseAuth
+    private lateinit var fStore : FirebaseFirestore
+    private lateinit var userID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
-        FirebaseAuth = com.google.firebase.auth.FirebaseAuth.getInstance()
-
+        setupDataBase()
         btn_Sign_Google.setOnClickListener{
             googleSetup()
             googleSignIn()
@@ -37,12 +39,29 @@ class SignUpActivity : AppCompatActivity(){
         /*https://android--code.blogspot.com/2020/02/android-kotlin-ktx-clickablespan-example.html for the T&C spanable*/
         btn_sign_up.setOnClickListener {
             if(validate()){
-                FirebaseAuth.createUserWithEmailAndPassword(SignUpEmailField.text.toString().trim(),SignUpPasswordField.text.toString())
+                val email = SignUpEmailField.text.toString().trim()
+                val password = SignUpPasswordField.text.toString().trim()
+                val name = SignUpNameField.text.toString()
+                fAuth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
-                        Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        try {
+                            val currentUser = fAuth.currentUser
+                            if (currentUser != null) {
+                                userID = currentUser.uid
+                            }
+                            val documentReference = fStore.collection("users").document(userID)
+                            var user = HashMap<String,String>()
+                            user.put("username",name)
+                            user.put("email",email)
+                            documentReference.set(user).addOnSuccessListener {
+                                val intent = Intent(this, LoginActivity::class.java)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                                Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()
+                            }
+                        }catch (e : Exception){
+                            Toast.makeText(this," "+e.message, Toast.LENGTH_SHORT).show()
+                        }
                     }
                     .addOnFailureListener{
                         Toast.makeText(this," "+it.message, Toast.LENGTH_SHORT).show()
@@ -50,6 +69,11 @@ class SignUpActivity : AppCompatActivity(){
             }
         }
 
+    }
+
+    fun setupDataBase(){
+        fAuth = FirebaseAuth.getInstance()
+        fStore = FirebaseFirestore.getInstance()
     }
 
     fun openLogin(view: View?) {
@@ -88,11 +112,7 @@ class SignUpActivity : AppCompatActivity(){
             return false
         }
         result = true
-       /* if(SignUpNameField.text.isNullOrEmpty() && SignUpEmailField.text.isNullOrEmpty() && SignUpPasswordField.text.isNullOrEmpty()){
-            Toast.makeText(this,"Please fill in all detail", Toast.LENGTH_SHORT).show()
-        }else{
-            result = true
-        }*/
+
         return result
     }
 
