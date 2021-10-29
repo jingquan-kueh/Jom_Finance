@@ -28,14 +28,6 @@ class Profile_fragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDataBase()
-
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view :View = inflater.inflate(R.layout.fragment_profile_fragment, container, false)
         val documentReference = fStore.collection("users").document(userID)
         documentReference.get()
             .addOnSuccessListener { document ->
@@ -43,6 +35,14 @@ class Profile_fragment : Fragment() {
                     usernamePlaceHolder.text = document.getString("username")
                 }
             }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view :View = inflater.inflate(R.layout.fragment_profile_fragment, container, false)
+
         view.logoutBtn.setOnClickListener{
             fAuth.signOut()
             requireActivity().run {
