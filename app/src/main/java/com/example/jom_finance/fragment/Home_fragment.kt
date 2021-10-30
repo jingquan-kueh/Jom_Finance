@@ -8,16 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jom_finance.Income
+import com.example.jom_finance.models.Income
 import com.example.jom_finance.ListAdapter
 
 import com.example.jom_finance.R
-import com.google.api.Distribution
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
-import org.w3c.dom.Document
 
 
 class Home_fragment : Fragment(){
@@ -62,7 +59,7 @@ class Home_fragment : Fragment(){
         }*/
 
         // Inflate the layout for this fragment
-        return  view
+        return view
     }
 
     private fun EventChangeListener() {

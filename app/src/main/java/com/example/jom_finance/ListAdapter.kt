@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.jom_finance.models.Income
 
 class ListAdapter(private val transactionList : ArrayList<Income>) : RecyclerView.Adapter<ListAdapter.ListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListAdapter.ListViewHolder {
@@ -15,8 +16,8 @@ class ListAdapter(private val transactionList : ArrayList<Income>) : RecyclerVie
     override fun onBindViewHolder(holder: ListAdapter.ListViewHolder, position: Int) {
 
         val income : Income = transactionList[position]
-        holder.title.text = income.Income_name.toString()
-        holder.amount.text = income.Income_amount.toString()
+        holder.title.text = income.incomeName.toString()
+        holder.amount.text = income.incomeAmount.toString()
     }
 
     override fun getItemCount(): Int {

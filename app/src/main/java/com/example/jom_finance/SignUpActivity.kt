@@ -71,7 +71,7 @@ class SignUpActivity : AppCompatActivity(){
 
     }
 
-    fun setupDataBase(){
+    private fun setupDataBase(){
         fAuth = FirebaseAuth.getInstance()
         fStore = FirebaseFirestore.getInstance()
     }

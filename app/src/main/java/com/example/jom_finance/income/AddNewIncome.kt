@@ -13,8 +13,12 @@ import android.widget.Toast
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
+import com.example.jom_finance.models.Income
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.activity_add_new_income.*
 import kotlinx.android.synthetic.main.fragment_profile_fragment.*
 import java.lang.Exception
@@ -25,21 +29,24 @@ import kotlin.properties.Delegates
 
 class AddNewIncome : AppCompatActivity() {
 
-    private lateinit var fAuth : FirebaseAuth
-    private lateinit var fStore : FirebaseFirestore
-    private lateinit var userID : String
+    private lateinit var fAuth: FirebaseAuth
+    private lateinit var fStore: FirebaseFirestore
+    private lateinit var userID: String
 
-    private lateinit var incomeCategory : String
-    private lateinit var incomeDescription : String
-    private lateinit var walletType : String
-    private lateinit var attachment : String
-
-    private var lastIncome = 0
+    private lateinit var incomeCategory: String
+    private lateinit var incomeDescription: String
+    private lateinit var walletType: String
+    private lateinit var attachment: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_income)
         setupDataBase()
+
+        val exp = listOf("Shopping", "Groceries", "Transport", "Restaurant")
+        val expAdapter = ArrayAdapter(this, R.layout.item_dropdown, exp)
+        expenseCategory_autoCompleteTextView.setAdapter(expAdapter)
+
         ArrayAdapter.createFromResource(
             this,
             R.array.Category,
@@ -51,62 +58,60 @@ class AddNewIncome : AppCompatActivity() {
             spinnerCategory.adapter = adapter
         }
 
-
-        AddnewBtn.setOnClickListener{
+        AddnewBtn.setOnClickListener {
+            var lastIncome by Delegates.notNull<Int>()
             try {
+                fStore.collection("incomes/$userID/Income_detail")
+                    .get()
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            lastIncome = it.result.size()
+                            Toast.makeText(this, "Last Income : $lastIncome", Toast.LENGTH_SHORT).show()
 
-                var newIncome = lastIncome.inc()
-                Toast.makeText(this,"New Income : $newIncome", Toast.LENGTH_SHORT).show()
-                var documentReference = fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
-                var income = HashMap<String,String>()
-                income["Income_Name"] = "$newIncome"
-                income["Income_Amount"] = "100.000f"
-                documentReference.set(income).addOnSuccessListener {
-                    val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                    val resetViewBuilder = AlertDialog.Builder(this,R.style.CustomAlertDialog).setView(resetView)
-                    //show dialog
-                    val displayDialog = resetViewBuilder.show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                }
-                updateIncomeCounter(newIncome)
-            }catch (e : Exception){
-                Toast.makeText(this," "+e.message, Toast.LENGTH_SHORT).show()
+                            var newIncome = lastIncome.inc()
+                            Toast.makeText(this, "New Income : $newIncome", Toast.LENGTH_SHORT).show()
+                            var documentReference =
+                                fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
+                            var incomeDetail = Income(newIncome.toString(), 100.00)
+                            documentReference.set(incomeDetail).addOnSuccessListener {
+                                val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                                val resetViewBuilder =
+                                    AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                                //show dialog
+                                val displayDialog = resetViewBuilder.show()
+
+                                //back to homepage
+                                /*val intent = Intent(this, HomeActivity::class.java)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)*/
+                            }
+                        }
+                    }
+                //updateIncomeCounter(newIncome)
+            } catch (e: Exception) {
+                Toast.makeText(this, " " + e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun updateIncomeCounter(lastIncome : Int){
+    private fun updateIncomeCounter(lastIncome: Int) {
         val documentReference = fStore.collection("incomes").document(userID)
         documentReference
-            .update("income",lastIncome)
+            .update("income", lastIncome)
             .addOnSuccessListener { document ->
-                Toast.makeText(this,"Counter Updated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Counter Updated", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener{
-                Toast.makeText(this," "+it.message, Toast.LENGTH_SHORT).show()
+            .addOnFailureListener {
+                Toast.makeText(this, " " + it.message, Toast.LENGTH_SHORT).show()
             }
     }
-    private fun setupDataBase(){
+
+    private fun setupDataBase() {
         fAuth = FirebaseAuth.getInstance()
         fStore = FirebaseFirestore.getInstance()
         val currentUser = fAuth.currentUser
         if (currentUser != null) {
             userID = currentUser.uid
         }
-        // Get Last Income Index
-        var documentReference = fStore.collection("incomes").document(userID)
-        documentReference.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    val data = document.data
-                    if (data != null) {
-                        lastIncome = data.get("income").toString().toInt()
-                    }
-                }
-            }
-
     }
-
 }
