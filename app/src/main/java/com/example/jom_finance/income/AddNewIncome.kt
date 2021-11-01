@@ -1,30 +1,23 @@
 package com.example.jom_finance.income
 
 import android.app.AlertDialog
-import android.content.ClipDescription
-import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.jom_finance.HomeActivity
-import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.models.Income
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_add_new_income.*
-import kotlinx.android.synthetic.main.fragment_profile_fragment.*
 import java.lang.Exception
-import java.util.*
-import java.util.jar.Manifest
-import kotlin.collections.HashMap
 import kotlin.properties.Delegates
 
 class AddNewIncome : AppCompatActivity() {
@@ -65,25 +58,34 @@ class AddNewIncome : AppCompatActivity() {
                     .get()
                     .addOnCompleteListener {
                         if (it.isSuccessful) {
-                            lastIncome = it.result.size()
-                            Toast.makeText(this, "Last Income : $lastIncome", Toast.LENGTH_SHORT).show()
 
-                            var newIncome = lastIncome.inc()
-                            Toast.makeText(this, "New Income : $newIncome", Toast.LENGTH_SHORT).show()
+                            lastIncome = it.result.size()  // Get lastIncome Index
+                            var newIncome = lastIncome.inc() // LastIncome Increment
+
+                            //Set Transaction Pathway
                             var documentReference =
                                 fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
+                            //Get Income Detail
                             var incomeDetail = Income(newIncome.toString(), 100.00)
-                            documentReference.set(incomeDetail).addOnSuccessListener {
-                                val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                                val resetViewBuilder =
-                                    AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
-                                //show dialog
-                                val displayDialog = resetViewBuilder.show()
 
-                                //back to homepage
-                                /*val intent = Intent(this, HomeActivity::class.java)
-                                startActivity(intent)
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)*/
+                            //Insert Income to FireStore
+                            documentReference.set(incomeDetail).addOnSuccessListener {
+                                var transaction = Transaction(incomeDetail.incomeName,incomeDetail.incomeAmount,"income")
+                                documentReference =
+                                    fStore.collection("transaction/$userID/Transaction_detail").document("income$newIncome")
+                                documentReference.set(transaction).addOnSuccessListener {
+                                   val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                                   val resetViewBuilder =
+                                       AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                                   val displayDialog = resetViewBuilder.show()
+                                    displayDialog.setOnDismissListener{
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        startActivity(intent)
+                                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                                        finish()
+                                    }
+                               }
+
                             }
                         }
                     }

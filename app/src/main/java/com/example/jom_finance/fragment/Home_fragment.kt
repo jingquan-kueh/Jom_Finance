@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.models.Income
-import com.example.jom_finance.ListAdapter
+import com.example.jom_finance.databinding.IncomeListAdapter
 
 import com.example.jom_finance.R
 import com.google.firebase.auth.FirebaseAuth
@@ -23,7 +23,7 @@ class Home_fragment : Fragment(){
     private lateinit var userID : String
     private lateinit var recyclerView: RecyclerView
     private lateinit var transactionArrayList : ArrayList<Income>
-    private lateinit var listAdapter: ListAdapter
+    private lateinit var incomeListAdapter: IncomeListAdapter
     private lateinit var db : FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,9 +42,9 @@ class Home_fragment : Fragment(){
         recyclerView.setHasFixedSize(true)
         transactionArrayList = arrayListOf()
 
-        listAdapter = ListAdapter(transactionArrayList)
+        incomeListAdapter = IncomeListAdapter(transactionArrayList)
 
-        recyclerView.adapter = listAdapter
+        recyclerView.adapter = incomeListAdapter
         EventChangeListener()
 
        /* ArrayAdapter.createFromResource(
@@ -74,10 +74,9 @@ class Home_fragment : Fragment(){
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
                                 transactionArrayList.add(dc.document.toObject(Income::class.java))
-
                         }
                     }
-                    listAdapter.notifyDataSetChanged()
+                    incomeListAdapter.notifyDataSetChanged()
                 }
             })
     }

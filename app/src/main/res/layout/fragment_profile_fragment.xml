@@ -77,17 +77,19 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:drawableLeft="@drawable/profile_account"
-                    android:text="Account"></TextView>
+                    android:text="Account"/>
 
                 <View style="@style/profile_divider" />
 
                 <TextView
+                   android:id="@+id/settingBtn"
                     style="@style/Profile_text"
+                    android:clickable="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:drawableLeft="@drawable/profile_setting"
-                    android:text="Setting"></TextView>
+                    android:text="Setting"/>
 
                 <View style="@style/profile_divider" />
 
@@ -97,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:drawableLeft="@drawable/profile_export"
-                    android:text="Export Data"></TextView>
+                    android:text="Export Data"/>
 
                 <View style="@style/profile_divider" />
 

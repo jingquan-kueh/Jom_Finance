@@ -37,6 +37,7 @@ class LoginActivity :AppCompatActivity(){
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    finishAffinity()
                 }
                 .addOnFailureListener{
                     Toast.makeText(this," "+it.message, Toast.LENGTH_SHORT).show()

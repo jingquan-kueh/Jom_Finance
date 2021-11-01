@@ -6,14 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.finishAffinity
-import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
+import com.example.jom_finance.setting.SettingActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_profile_fragment.*
 import kotlinx.android.synthetic.main.fragment_profile_fragment.view.*
@@ -50,6 +48,13 @@ class Profile_fragment : Fragment() {
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 finishAffinity(this)
+            }
+        }
+        view.settingBtn.setOnClickListener{
+            requireActivity().run {
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         }
         // Inflate the layout for this fragment

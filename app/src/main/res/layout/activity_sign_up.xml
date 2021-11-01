@@ -46,8 +46,9 @@
         app:srcCompat="@drawable/back_arrow" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="40dp"
         android:id="@+id/SignUpNameLayout"
         app:boxStrokeWidth="0dp"
@@ -70,9 +71,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="16dp"
         android:id="@+id/SignUpEmailLayout"
         app:boxStrokeWidth="0dp"
         android:hint="Email"
@@ -97,9 +99,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/SignUpPasswordLayout"
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="16dp"
         android:hint="Password"
         app:passwordToggleEnabled="true"
         android:textColorHint="#91919F"
@@ -124,7 +127,8 @@
 
     <CheckBox
         android:id="@+id/tc_checkbox"
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_height="47dp"
         android:layout_marginTop="16dp"
         android:text="By signing up, you agree to the Terms of Service and Privacy Policy"
@@ -135,7 +139,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_sign_up"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_height="56dp"
         android:layout_marginTop="28dp"
         android:background="@drawable/sign_up_pattern"
@@ -163,7 +168,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_Sign_Google"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="30dp"
         android:layout_height="56dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/google_sign_up"

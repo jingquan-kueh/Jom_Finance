@@ -104,6 +104,9 @@ class HomeActivity : AppCompatActivity() {
     }
     private fun setClickable(statusAddOn: Boolean){
         fab_income.isClickable = !statusAddOn
+        fab_expenses.isClickable = !statusAddOn
+        fab_voice.isClickable = !statusAddOn
+        fab_snap.isClickable = !statusAddOn
     }
 
     private fun setupDataBase(){

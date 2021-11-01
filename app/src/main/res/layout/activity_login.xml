@@ -44,8 +44,9 @@
         app:srcCompat="@drawable/back_arrow" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="40dp"
         android:id="@+id/LoginEmailLayout"
         app:boxStrokeWidth="0dp"
@@ -71,7 +72,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/LoginPasswordLayout"
-        android:layout_width="343dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:hint="Password"
@@ -97,7 +99,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/rounded_corner"

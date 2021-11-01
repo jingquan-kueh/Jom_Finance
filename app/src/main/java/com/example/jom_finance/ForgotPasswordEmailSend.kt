@@ -18,8 +18,8 @@ class ForgotPasswordEmailSend : AppCompatActivity() {
         }
         btn_BackToLogin.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            finishAffinity()
         }
     }
 }
