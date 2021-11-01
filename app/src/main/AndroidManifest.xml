@@ -23,7 +23,11 @@
         <activity
             android:name=".AddNewExpenseActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".CreateBudgetActivity"
@@ -37,11 +41,8 @@
         <activity
             android:name=".AddNewAccountActivity"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".AccountDetailsActivity"

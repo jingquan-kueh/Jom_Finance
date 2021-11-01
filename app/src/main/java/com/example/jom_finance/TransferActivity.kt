@@ -3,11 +3,10 @@ package com.example.jom_finance
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.activity_transfer.*
-import kotlinx.android.synthetic.main.bottomsheet_attachment_fragment.*
 
 class TransferActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +21,7 @@ class TransferActivity : AppCompatActivity() {
 
     private fun openBottomSheetDialog(){
         val bottomSheet = BottomSheetDialog(this)
-        bottomSheet.setContentView(R.layout.bottomsheet_attachment_fragment)
+        bottomSheet.setContentView(R.layout.bottomsheet_attachment)
 
         val camera = bottomSheet.findViewById<Button>(R.id.attachementCamera_btn) as Button
         val image = bottomSheet.findViewById<Button>(R.id.attachementImage_btn) as Button

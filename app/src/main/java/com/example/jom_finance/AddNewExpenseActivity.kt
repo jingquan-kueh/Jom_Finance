@@ -6,9 +6,9 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
-import kotlinx.android.synthetic.main.activity_create_budget.*
+import kotlinx.android.synthetic.main.bottomsheet_attachment.*
+import kotlinx.android.synthetic.main.bottomsheet_repeat.*
 
 class AddNewExpenseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,20 +24,25 @@ class AddNewExpenseActivity : AppCompatActivity() {
         val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
         expenseAccount_autoCompleteTextView.setAdapter(accAdapter)
 
+
+
         expenseAddAttachment_btn.setOnClickListener {
-            openBottomSheetDialog()
+            openAttachmentBottomSheetDialog()
+        }
+
+        expenseRepeatEdit_btn.setOnClickListener {
+            openRepeatBottomSheetDialog()
         }
 
     }
 
-    private fun openBottomSheetDialog(){
+    private fun openAttachmentBottomSheetDialog(){
         val bottomSheet = BottomSheetDialog(this)
-        bottomSheet.setContentView(R.layout.bottomsheet_attachment_fragment)
+        bottomSheet.setContentView(R.layout.bottomsheet_attachment)
 
         val camera = bottomSheet.findViewById<Button>(R.id.attachementCamera_btn) as Button
         val image = bottomSheet.findViewById<Button>(R.id.attachementImage_btn) as Button
         val document = bottomSheet.findViewById<Button>(R.id.attachementDocument_btn) as Button
-
 
         camera.setOnClickListener {
             Toast.makeText(this, "Camera", Toast.LENGTH_SHORT).show()
@@ -51,6 +56,17 @@ class AddNewExpenseActivity : AppCompatActivity() {
         document.setOnClickListener {
             Toast.makeText(this, "Document", Toast.LENGTH_SHORT).show()
         }
+
+        bottomSheet.show()
+    }
+
+    private fun openRepeatBottomSheetDialog(){
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_repeat)
+
+        val freq = listOf("Daily", "Weekly", "Monthly", "Yearly")
+        val freqAdapter = ArrayAdapter(this, R.layout.item_dropdown, freq)
+        //repeatFrequency_autoCompleteTextView.setAdapter(freqAdapter)
 
         bottomSheet.show()
     }

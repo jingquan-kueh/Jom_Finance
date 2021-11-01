@@ -107,15 +107,16 @@
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/accountColour_img"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/circle_category_color" />
+        <Button
+            android:id="@+id/accountColour_btn"
+            android:layout_width="60dp"
+            android:layout_height="70dp"
+            app:cornerRadius="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <Button
+        <Button
         android:id="@+id/addNewAccount_btn"
         style="@style/long_button"
         android:layout_width="match_parent"
