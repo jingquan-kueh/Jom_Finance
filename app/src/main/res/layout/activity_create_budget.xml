@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#5D5FEF"
-        tools:context=".CreateBudget">
+        tools:context=".CreateBudgetActivity">
 
         <TextView
             android:id="@+id/howMuch_text"
@@ -53,7 +53,7 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/scroll_rounded_corner"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,8 +89,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="20dp"
                 android:text="Receive Alert"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp" />
 
 
             <TextView
@@ -106,7 +105,7 @@
                 android:id="@+id/seekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="30dp"
                 android:paddingStart="25dp"
                 android:paddingEnd="25dp"
                 android:progressDrawable="@drawable/seekbar_progress" />

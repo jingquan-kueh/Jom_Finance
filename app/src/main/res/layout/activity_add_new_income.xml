@@ -240,19 +240,18 @@
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/AddnewBtn"
-                    android:layout_width="330dp"
-                    android:layout_height="56dp"
+                    style="@style/long_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="40dp"
+                    android:layout_marginBottom="30dp"
                     android:background="@drawable/rounded_corner"
                     android:backgroundTint="#5D5FEF"
                     android:text="Add"
                     android:textColor="@color/white"
-                    android:textSize="17dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.493"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/RepeatToggle"
-                    android:layout_marginBottom="30dp"/>
+                    app:layout_constraintTop_toBottomOf="@+id/RepeatToggle" />
 
 
             </LinearLayout>

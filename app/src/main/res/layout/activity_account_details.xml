@@ -17,13 +17,13 @@
         tools:context=".MainActivity">
 
         <ImageView
-            android:id="@+id/favourite"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:id="@+id/setFavourite_btn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginTop="5dp"
             app:layout_constraintBottom_toTopOf="@id/accountIcon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.99"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_star_border_24" />
@@ -33,37 +33,37 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/accountName_text"
+            app:layout_constraintBottom_toTopOf="@+id/totalBalancelabel_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favourite"
+            app:layout_constraintTop_toBottomOf="@id/setFavourite_btn"
             app:srcCompat="@drawable/ic_baseline_account_balance_wallet_24" />
 
         <TextView
-            android:id="@+id/accountName_text"
+            android:id="@+id/totalBalancelabel_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cash"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/accountBalanceAmount_text"
+            app:layout_constraintBottom_toTopOf="@+id/totalBalanceAmount_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/accountIcon" />
 
         <TextView
-            android:id="@+id/accountBalanceAmount_text"
+            android:id="@+id/totalBalanceAmount_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="RM 400.00"
-            android:textColor="@android:color/white"
+            android:textColor="@color/white"
             android:textSize="40sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accountName_text" />
+            app:layout_constraintTop_toBottomOf="@+id/totalBalancelabel_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -111,7 +111,7 @@
         android:id="@+id/deleteAccount_btn"
         style="@style/long_button"
         android:text="Delete"
-        app:backgroundTint="#FD3C4A"
+        app:backgroundTint="@color/red_soft"
         app:cornerRadius="10dp" />
 
 
