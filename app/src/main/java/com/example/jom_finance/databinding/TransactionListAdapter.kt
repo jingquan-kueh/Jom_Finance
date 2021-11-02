@@ -1,5 +1,6 @@
 package com.example.jom_finance.databinding
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,9 @@ class TransactionListAdapter(private val transactionList : ArrayList<Transaction
         val transaction : Transaction = transactionList[position]
         holder.title.text = transaction.transactionName.toString()
         holder.amount.text = transaction.transactionAmount.toString()
+
+        // Set Amount Text Color
+        holder.amount.setTextColor(Color.parseColor("#00A86B"))
     }
 
     override fun getItemCount(): Int {

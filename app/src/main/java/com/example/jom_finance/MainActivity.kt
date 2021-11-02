@@ -1,12 +1,14 @@
 package com.example.jom_finance
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.example.jom_finance.intro.IntroActivity1
 import com.google.firebase.auth.ActionCodeResult
 import com.google.firebase.auth.FirebaseAuth
@@ -23,12 +25,30 @@ class MainActivity :AppCompatActivity(){
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var fStore : FirebaseFirestore
-
+    private lateinit var userID : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splashscreen)
         setupDataBase()
+
+        /*// Initialize sharedPreferences File
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        // Initialize sharedPreferences to edit
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putBoolean("isLogin",true)
+
+        if(fAuth.currentUser != null){
+            userID = fAuth.currentUser!!.uid
+        }
+
+        if(userID != null){
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            finish()
+        }*/
+
         handleDynamicLink()
     }
 
