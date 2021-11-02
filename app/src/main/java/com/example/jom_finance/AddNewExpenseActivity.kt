@@ -2,6 +2,7 @@ package com.example.jom_finance
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
@@ -24,6 +25,8 @@ class AddNewExpenseActivity : AppCompatActivity() {
         val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
         expenseAccount_autoCompleteTextView.setAdapter(accAdapter)
 
+        //hide repeat
+        repeat_constraintLayout.visibility = View.GONE
 
 
         expenseAddAttachment_btn.setOnClickListener {
@@ -32,6 +35,14 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
         expenseRepeatEdit_btn.setOnClickListener {
             openRepeatBottomSheetDialog()
+        }
+
+        expenseRepeat_switch.setOnCheckedChangeListener{ _, isChecked ->
+            if (isChecked)
+                repeat_constraintLayout.visibility = View.VISIBLE
+            else
+                repeat_constraintLayout.visibility = View.GONE
+
         }
 
     }

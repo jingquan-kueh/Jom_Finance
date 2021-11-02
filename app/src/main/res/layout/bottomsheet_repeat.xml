@@ -48,7 +48,6 @@
 
     <DatePicker
         android:id="@+id/repeatEnd_datePicker"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -57,5 +56,15 @@
         android:layout_marginBottom="20dp"
         android:scaleY="1.2"
         android:scaleX="1.2"/>
+
+    <Button
+        android:id="@+id/repeatConfirm_btn"
+        style="@style/long_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="Continue"
+        app:backgroundTint="@color/iris"
+        app:cornerRadius="10dp" />
 </LinearLayout>
 </layout>
