@@ -44,10 +44,11 @@
         app:srcCompat="@drawable/back_arrow" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="343dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="40dp"
-        android:id="@+id/LoginEmailField"
+        android:id="@+id/LoginEmailLayout"
         app:boxStrokeWidth="0dp"
         android:hint="Email"
         android:textColorHint="#91919F"
@@ -57,6 +58,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/LoginEmailField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textEmailAddress"
@@ -69,8 +71,9 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/LoginPasswordField"
-        android:layout_width="343dp"
+        android:id="@+id/LoginPasswordLayout"
+        android:layout_marginHorizontal="16dp"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:hint="Password"
@@ -80,9 +83,10 @@
         app:passwordToggleTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LoginEmailField">
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLayout">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/LoginPasswordField"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textPassword"
@@ -95,7 +99,8 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_height="56dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/rounded_corner"
@@ -106,7 +111,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LoginPasswordField" />
+        app:layout_constraintTop_toBottomOf="@+id/LoginPasswordLayout" />
 
     <TextView
         android:id="@+id/txtForgotPassword"

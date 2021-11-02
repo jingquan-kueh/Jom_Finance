@@ -4,6 +4,100 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".income.DetailIncome">
+    tools:context=".income.DetailIncome"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:background="@color/incomeTheme"
+        android:paddingBottom="70dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/incomeTheme"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="16dp">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/incomeTheme"
+                app:srcCompat="@drawable/back_arrow_white"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+            <TextView
+                android:id="@+id/IncomeHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Detail Income"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/deleteIncomeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/incomeTheme"
+                app:srcCompat="@drawable/trash"
+                android:layout_gravity="right"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/amountIncome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="RM5000"
+            android:textStyle="bold"
+            android:textColor="#FCFCFC"
+            android:textSize="48sp"
+            android:textAlignment="center">
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/dateIncome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saturday 4 July 2021"
+                android:textAlignment="center"
+                android:textColor="#FCFCFC"
+                android:textSize="13sp"
+                android:layout_marginRight="5dp"/>
+
+            <TextView
+                android:id="@+id/timeIncome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/dateIncome"
+                android:text="16:20"
+                android:textAlignment="center"
+                android:textColor="#FCFCFC"
+                android:textSize="13sp"
+                android:layout_marginLeft="5dp"/>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

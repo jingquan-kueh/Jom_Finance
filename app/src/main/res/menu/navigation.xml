@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/home_fragment"
         android:icon="@drawable/home_icon"
         android:title="home" />
 
     <item
-        android:id="@+id/navigation_Transaction"
-        android:icon="@drawable/home_icon"
+        android:id="@+id/transaction_fragment"
+        android:icon="@drawable/transaction_icon"
         android:title="Transaction" />
     <item
         android:id="@+id/navigation_middle"
@@ -19,9 +19,9 @@
         android:icon="@drawable/home_icon"
         android:title="Budget" />
     <item
-        android:id="@+id/navigation_Report"
-        android:icon="@drawable/home_icon"
-        android:title="Report" />
+        android:id="@+id/profile_fragment"
+        android:icon="@drawable/profile_icon"
+        android:title="Profile" />
 
 
 </menu>

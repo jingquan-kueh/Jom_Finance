@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "646176621070",
+    "project_id": "jom-finance",
+    "storage_bucket": "jom-finance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646176621070:android:743e642c1f9d2d05b6f25f",
+        "android_client_info": {
+          "package_name": "com.example.jom_finance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646176621070-jt17uro1246b9tpp2qin55fd2cksf883.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjJviu7h58SAT05Yoi0jWU8S_ZvY0Do0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646176621070-jt17uro1246b9tpp2qin55fd2cksf883.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
