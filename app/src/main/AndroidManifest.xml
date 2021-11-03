@@ -13,6 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
         <activity
+            android:name=".TransferActivity"
+            android:exported="true" >
+
+        </activity>
+        <activity
+            android:name=".ExpenseDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewExpenseActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".CreateBudgetActivity"
+            android:exported="true" />
 
             android:name=".setting.CurrencyActivity"
             android:exported="false" />
@@ -37,10 +51,12 @@
             android:exported="true" />
         <activity
             android:name=".AddNewAccountActivity"
-            android:exported="true" />
+            android:exported="true" >
+
+        </activity>
         <activity
             android:name=".AccountDetailsActivity"
-            android:exported="true"  />
+            android:exported="true" />
         <activity
             android:name=".VoiceActivity"
             android:exported="false" />
