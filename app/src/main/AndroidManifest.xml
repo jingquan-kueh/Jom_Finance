@@ -43,10 +43,6 @@
             android:name=".AccountsListActivity"
             android:exported="false" />
         <activity
-
-            android:name=".CreateBudgetActivity"
-            android:exported="true" />
-        <activity
             android:name=".BudgetDetailActivity"
             android:exported="true" />
         <activity

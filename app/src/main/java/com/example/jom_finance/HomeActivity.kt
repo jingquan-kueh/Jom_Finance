@@ -53,6 +53,9 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
         }
         fab_expenses.setOnClickListener{
+            val intent = Intent(this, AddNewExpenseActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             Toast.makeText(this, "expenses clicked", Toast.LENGTH_SHORT).show()
         }
         fab_voice.setOnClickListener{

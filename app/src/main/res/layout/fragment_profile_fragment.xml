@@ -72,24 +72,26 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/accountBtn"
                     style="@style/Profile_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    android:clickable="true"
                     android:drawableLeft="@drawable/profile_account"
-                    android:text="Account"/>
+                    android:text="Accounts" />
 
                 <View style="@style/profile_divider" />
 
                 <TextView
-                   android:id="@+id/settingBtn"
+                    android:id="@+id/settingBtn"
                     style="@style/Profile_text"
-                    android:clickable="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    android:clickable="true"
                     android:drawableLeft="@drawable/profile_setting"
-                    android:text="Setting"/>
+                    android:text="Settings" />
 
                 <View style="@style/profile_divider" />
 

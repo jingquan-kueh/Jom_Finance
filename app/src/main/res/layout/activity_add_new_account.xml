@@ -7,6 +7,37 @@
     android:layout_height="match_parent"
     android:background="@color/iris">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_addNewAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/backBtn_addNewAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/iris"
+            app:srcCompat="@drawable/back_arrow_white"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/heading_addNewAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Add new account"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:id="@+id/balanceLabel_text"
@@ -117,7 +148,7 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
         <Button
-        android:id="@+id/addNewAccount_btn"
+        android:id="@+id/addNewAccountConfirm_btn"
         style="@style/long_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
