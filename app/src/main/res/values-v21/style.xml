@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Setting_RadioButton">
+        <item name="android:layoutDirection">rtl</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/darkColor</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:buttonTint">@color/iris_deep</item>
+    </style>
+</resources>

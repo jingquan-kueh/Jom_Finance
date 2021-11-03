@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/iris">
+
+    <ImageView
+        android:id="@+id/reportSlideBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="30dp"
+        app:srcCompat="@drawable/report_icon_4" />
+
+    <TextView
+        android:id="@+id/budgetTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="“Financial freedom is freedom from fear.”"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_marginTop="140dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginRight="20dp"
+        android:text="-Robert Kiyosaki"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/budgetTxt"></TextView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/fullReportDetailBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="30dp"
+        android:padding="20dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="See the Full detail"
+        android:background="@drawable/rounded_corner"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/iris"
+        android:onClick="toReportDetail"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

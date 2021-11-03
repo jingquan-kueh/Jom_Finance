@@ -37,7 +37,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_account)
 
-
+//test
         //ICON PICKER
         // If dialog is already added to fragment manager, get it. If not, create a new instance.
         val iconDialog = supportFragmentManager.findFragmentByTag(ICON_DIALOG_TAG) as IconDialog?
