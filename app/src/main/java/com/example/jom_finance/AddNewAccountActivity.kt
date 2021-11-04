@@ -30,7 +30,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
     private lateinit var userID: String
 
     private lateinit var accountName: String
-    private var accountAmount: Double = 0.0;
+    private var accountAmount: Double = 0.0
     private var accountIcon: Int = 278
     private var accountColor: Int = -123456
 
@@ -262,7 +262,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                             //Account Details
                             val accountDetail = Account(accountName, accountAmount, accountIcon, accountColor)
 
-                            //Insert ot database
+                            //Insert to database
                             documentReference.set(accountDetail).addOnCompleteListener {
                                 Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                             }

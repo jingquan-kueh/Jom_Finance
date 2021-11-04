@@ -182,6 +182,20 @@
                 app:backgroundTint="@android:color/transparent"
                 app:cornerRadius="15dp" />
 
+            <TextView
+                android:id="@+id/attachmentDocument_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="TextView" />
+
+            <ImageView
+                android:id="@+id/attachment_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="15dp"
+                app:srcCompat="@drawable/empty_drawable" />
+
             <Switch
                 android:id="@+id/expenseRepeat_switch"
                 android:layout_width="match_parent"
