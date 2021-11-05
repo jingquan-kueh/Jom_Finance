@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat.finishAffinity
 import com.example.jom_finance.AccountsListActivity
+import com.example.jom_finance.CategoryListActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.setting.SettingActivity
@@ -45,6 +46,14 @@ class Profile_fragment : Fragment() {
         view.accountBtn.setOnClickListener{
             requireActivity().run {
                 val intent = Intent(this, AccountsListActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        }
+
+        view.categoryBtn.setOnClickListener {
+            requireActivity().run {
+                val intent = Intent(this, CategoryListActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }

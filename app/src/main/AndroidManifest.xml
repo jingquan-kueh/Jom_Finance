@@ -13,34 +13,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CategoryListActivity"
+            android:exported="false" />
 
         <provider
-            android:authorities="com.example.jom_finance.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.jom_finance.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider" />
         </provider>
+
         <activity
             android:name=".TransferActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".ExpenseDetailActivity"
             android:exported="false" />
         <activity
             android:name=".AddNewExpenseActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".CreateBudgetActivity"
             android:exported="true" />
-
-            android:name=".setting.CurrencyActivity"
-            android:exported="false" />
         <activity
             android:name=".setting.SettingActivity"
             android:exported="false" />
@@ -58,9 +59,7 @@
             android:exported="true" />
         <activity
             android:name=".AddNewAccountActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".AccountDetailsActivity"
             android:exported="true" />
@@ -69,7 +68,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".income.DetailIncome"
             android:exported="false" />
@@ -108,25 +107,37 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="example.com" android:scheme="http"/>
-                <data android:host="example.com" android:scheme="https"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="example.com"
+                    android:scheme="http" />
+                <data
+                    android:host="example.com"
+                    android:scheme="https" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:host="jomfinance.page.link" android:scheme="http"
-                    android:pathPrefix="/resetPass"/>
-                <data android:host="jomfinance.page.link" android:scheme="https"
-                    android:pathPrefix="/resetPass"/>
-            </intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="jomfinance.page.link"
+                    android:pathPrefix="/resetPass"
+                    android:scheme="http" />
+                <data
+                    android:host="jomfinance.page.link"
+                    android:pathPrefix="/resetPass"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
     </application>
 

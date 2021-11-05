@@ -73,7 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Transfer"
-        app:backgroundTint="#8F8E94"
+        app:backgroundTint="@color/blue"
         app:cornerRadius="10dp" />
 
     <LinearLayout

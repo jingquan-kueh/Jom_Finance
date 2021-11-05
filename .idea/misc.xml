@@ -17,8 +17,14 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_image_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_insert_drive_file_24.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_insert_drive_file_red_24.xml" value="0.3" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_swap_vert_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/icon_with_wrapper.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/popup_background.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_account.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_export.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_icon.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_logout.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/rounded_corner.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/scroll_rounded_corner.xml" value="0.23148148148148148" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/seebar_progress.xml" value="0.38333333333333336" />
@@ -28,8 +34,11 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_accounts_list.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_add_new_account.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_add_new_expense.xml" value="0.3083832335329341" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_add_new_expense_scroll.xml" value="0.2838541666666667" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_add_new_income.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_budget_detail.xml" value="0.3671875" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_category.xml" value="0.30932971014492755" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_category_list.xml" value="0.30932971014492755" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_create_budget.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_detail_income.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/activity_forgot_password.xml" value="0.3671875" />
@@ -51,6 +60,7 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/item_budget.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/item_dropdown.xml" value="0.2921195652173913" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/list_item.xml" value="0.2921195652173913" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/temp.xml" value="0.2838541666666667" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/xml/fileprovider.xml" value="0.2884963768115942" />
       </map>
     </option>

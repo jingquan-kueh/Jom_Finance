@@ -84,6 +84,18 @@
                 <View style="@style/profile_divider" />
 
                 <TextView
+                    android:id="@+id/categoryBtn"
+                    style="@style/Profile_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/profile_account"
+                    android:text="Categories" />
+
+                <View style="@style/profile_divider" />
+
+                <TextView
                     android:id="@+id/settingBtn"
                     style="@style/Profile_text"
                     android:layout_width="match_parent"

@@ -16,9 +16,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.FileProvider
 import com.example.jom_finance.models.Transaction
@@ -79,10 +77,10 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
         //hide attachment image
         attachment_img.visibility = View.GONE
-
+        attachmentDocument_txt.visibility = View.GONE
 
         expenseAddAttachment_btn.setOnClickListener {
-            if(attachment_img.visibility == View.GONE){
+            if(attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE){
                 openAttachmentBottomSheetDialog()
             }
             else{
@@ -112,9 +110,12 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
             addIncomeToDatabase()
 
-
-
         }
+
+        attachmentDocument_txt.setOnClickListener {
+            // TODO: 6/11/2021 display pdf when clicked 
+        }
+
 
     }
 
@@ -189,14 +190,13 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode:Int, resultCode: Int, data:Intent?){
 
-        attachmentDocument_txt.visibility = View.VISIBLE
-        attachment_img.visibility = View.VISIBLE
         expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
         expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
         expenseAddAttachment_btn.text = "Remove Attachment"
 
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            attachment_img.visibility = View.VISIBLE
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             imageBitmap = takenImage
 
@@ -209,6 +209,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
         }
         else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            attachment_img.visibility = View.VISIBLE
             imageUri = data?.data!!
             attachment_img.setImageURI(imageUri)
 
@@ -216,6 +217,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
             attachmentType = "image"
         }
         else if(requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            attachmentDocument_txt.visibility = View.VISIBLE
             documentUri = data?.data!!
             attachmentDocument_txt.text = getFileName(documentUri)
 
@@ -308,9 +310,23 @@ class AddNewExpenseActivity : AppCompatActivity() {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_repeat)
 
-        val freq = listOf("Daily", "Weekly", "Monthly", "Yearly")
-        val freqAdapter = ArrayAdapter(this, R.layout.item_dropdown, freq)
-        //repeatFrequency_autoCompleteTextView.setAdapter(freqAdapter)
+        val confirmBtn = bottomSheet.findViewById<Button>(R.id.repeatConfirm_btn) as Button
+        val freqRadioGroup = bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
+        val datePicker = bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
+
+
+        confirmBtn.setOnClickListener {
+
+            val selectedBtnID = freqRadioGroup.checkedRadioButtonId
+            val selectedFreq = bottomSheet.findViewById<RadioButton>(selectedBtnID)?.text
+            val date: String = "${datePicker.dayOfMonth} / ${datePicker.month} / ${datePicker.year}"
+
+            expenseFrequency_txt.text = selectedFreq
+            expenseRepeatEnd_txt.text = date
+
+            bottomSheet.dismiss()
+
+        }
 
         bottomSheet.show()
     }
