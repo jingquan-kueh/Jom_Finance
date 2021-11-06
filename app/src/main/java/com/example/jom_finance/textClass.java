@@ -17,6 +17,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO : Voice name need to check
+
 public class textClass {
     private static final String TAG = "TEXTCLASS";
 
