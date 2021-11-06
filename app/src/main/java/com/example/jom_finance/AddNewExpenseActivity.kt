@@ -188,6 +188,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
         }
     }
 
+    //After get attachment
     override fun onActivityResult(requestCode:Int, resultCode: Int, data:Intent?){
 
         expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
