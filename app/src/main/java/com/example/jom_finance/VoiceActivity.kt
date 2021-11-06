@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.provider.Settings
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_voice.*
 import java.util.*
 import kotlin.collections.ArrayList
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.GlobalScope
@@ -39,6 +41,7 @@ class VoiceActivity : AppCompatActivity() {
     private var voiceActive = false
     private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.from_bottom_anim_voice)}
     private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this,R.anim.to_bottom_anim_voice)}
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_voice)
@@ -51,10 +54,19 @@ class VoiceActivity : AppCompatActivity() {
         )
         var heights = intArrayOf(60, 76, 58, 80, 55)
 
+        yesBtn.setOnClickListener{
+            if(result!=null){
+                val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+                StrictMode.setThreadPolicy(policy)
+                val text = textClass().textClass(result)
+                Toast.makeText(this, text.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         recognition_view.setSpeechRecognizer(speechRecognizer)
         recognition_view.setRecognitionListener(object : RecognitionListenerAdapter() {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onResults(results: Bundle) {
                 GlobalScope.launch {
                     delay(3000)
@@ -81,61 +93,6 @@ class VoiceActivity : AppCompatActivity() {
         recognition_view.isInvisible = true
         recognition_view.play()
 
-    /*    speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        speechRecognizerIntent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        speechRecognizerIntent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE,
-            Locale.getDefault()
-        )  *//*ja-JP,zh-TW *//*
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
-            override fun onReadyForSpeech(p0: Bundle?) {
-                statusTxt.text = "Status : Ready For listen"
-            }
-
-            override fun onBeginningOfSpeech() {
-                statusTxt.text = "Status : Start Listening..."
-            }
-
-            override fun onRmsChanged(p0: Float) {
-                //statusTxt.text = p0.toString()
-            }
-
-            override fun onBufferReceived(p0: ByteArray?) {
-
-            }
-
-            override fun onEndOfSpeech() {
-                speechRecognizer.stopListening()
-                statusTxt.text = "Status : Processing..."
-                voiceActive = false
-            }
-
-            override fun onError(p0: Int) {
-
-            }
-
-            override fun onResults(p0: Bundle?) {
-                val matchesFound = p0?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                if (matchesFound != null) {
-                    result = matchesFound.get(0)
-                    speechTxt.text = result
-                    statusTxt.text = "Status : DONE !!!"
-                }
-
-            }
-
-            override fun onPartialResults(p0: Bundle?) {
-
-            }
-
-            override fun onEvent(p0: Int, p1: Bundle?) {
-
-            }
-
-        })*/
         speakBtn.setOnClickListener {
             checkVoiceCommandPermission()
             // Add transition / animation when button click, from bottom.

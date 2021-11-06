@@ -34,7 +34,9 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
+
 
 }
 
@@ -81,5 +83,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links:19.0.0'
     // Preference
     implementation 'androidx.preference:preference-ktx:1.1.1'
+    // ML Kit : Entity-extraction
+    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta2'
+
+    implementation 'com.algorithmia:algorithmia-android:1.0.1'
 
 }

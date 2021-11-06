@@ -7,7 +7,6 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.core.graphics.drawable.toDrawable
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.jom_finance.income.AddNewIncome
@@ -15,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_home_fragment.*
 
 
 class HomeActivity : AppCompatActivity() {
@@ -35,6 +33,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         setupDataBase()
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentHomeView) as NavHostFragment
         val navController = navHostFragment.navController
