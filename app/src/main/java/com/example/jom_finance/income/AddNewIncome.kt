@@ -67,7 +67,7 @@ class AddNewIncome : AppCompatActivity() {
                                 fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
                             //Get Income Detail
                             var incomeDetail = Income(newIncome.toString(), 100.00)
-
+                            //TODO : Arrange constructor
                             //Insert Income to FireStore
                             documentReference.set(incomeDetail).addOnSuccessListener {
                                 var transaction = Transaction(incomeDetail.incomeName,incomeDetail.incomeAmount,"income")
