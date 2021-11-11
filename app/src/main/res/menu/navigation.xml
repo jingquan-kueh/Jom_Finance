@@ -15,7 +15,7 @@
         android:title=""
         android:enabled="false"/>
     <item
-        android:id="@+id/navigation_Budget"
+        android:id="@+id/budget_fragment"
         android:icon="@drawable/home_icon"
         android:title="Budget" />
     <item

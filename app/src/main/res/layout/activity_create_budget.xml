@@ -8,6 +8,17 @@
         android:layout_height="match_parent"
         android:background="#5D5FEF"
         tools:context=".CreateBudgetActivity">
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="How much do you want to spend?"
+            android:textColor="@color/whitish_grey"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/rm_text"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/rm_text"
@@ -22,7 +33,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextNumberDecimal"
+            android:id="@+id/budgetAmount_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -103,7 +114,7 @@
                 android:progressDrawable="@drawable/seekbar_progress" />
 
             <Button
-                android:id="@+id/budgetContinue_btn"
+                android:id="@+id/createBudgetConfirm_btn"
                 style="@style/long_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,20 +123,9 @@
                 app:backgroundTint="#5D5FEF"
                 app:cornerRadius="10dp" />
 
-
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="10dp"
-            android:text="How much do you want to spend?"
-            android:textColor="@color/whitish_grey"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/rm_text"
-            app:layout_constraintStart_toStartOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
