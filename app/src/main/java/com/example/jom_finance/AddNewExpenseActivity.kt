@@ -69,7 +69,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 for (document in it.documents){
-                    cat.add(document.data?.getValue("category_name").toString())
+                    cat.add(document.getString("category_name")!!)
                 }
             }
 
@@ -82,7 +82,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 for (document in it.documents){
-                    acc.add(document.data?.getValue("account_name").toString())
+                    acc.add(document.getString("account_name")!!)
                 }
             }
         val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
