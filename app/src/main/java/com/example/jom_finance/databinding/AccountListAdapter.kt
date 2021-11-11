@@ -21,7 +21,7 @@ class AccountListAdapter(private val accountList : ArrayList<Account>) : Recycle
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val account : Account = accountList[position]
-        holder.title.text = account.accountName.toString()
+        holder.name.text = account.accountName.toString()
         holder.amount.text = "RM ${account.accountAmount.toString()}"
 
         //Icon
@@ -42,7 +42,7 @@ class AccountListAdapter(private val accountList : ArrayList<Account>) : Recycle
     }
 
     class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-        val title : TextView = itemView.findViewById(R.id.accountNameList_text)
+        val name : TextView = itemView.findViewById(R.id.accountNameList_text)
         val amount : TextView = itemView.findViewById(R.id.accountAmountList_text)
         val icon : ImageView = itemView.findViewById(R.id.accountIconList_img)
         val iconBg : ImageView = itemView.findViewById(R.id.accountIconBgList_img)

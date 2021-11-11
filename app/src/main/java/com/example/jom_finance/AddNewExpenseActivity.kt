@@ -63,12 +63,28 @@ class AddNewExpenseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_new_expense)
         setupDataBase()
 
-        //drop down list
-        val exp = listOf("Shopping", "Groceries", "Transport", "Restaurant")
-        val expAdapter = ArrayAdapter(this, R.layout.item_dropdown, exp)
-        expenseCategory_autoCompleteTextView.setAdapter(expAdapter)
+        //category drop down list
+        val cat : MutableList<String> = mutableListOf()
+        fStore.collection("category/$userID/category_detail")
+            .get()
+            .addOnSuccessListener {
+                for (document in it.documents){
+                    cat.add(document.data?.getValue("category_name").toString())
+                }
+            }
 
-        val acc = listOf("Bank", "Cash", "Grab Pay", "Touch n Go")
+        val catAdapter = ArrayAdapter(this, R.layout.item_dropdown, cat)
+        expenseCategory_autoCompleteTextView.setAdapter(catAdapter)
+
+        //accounts drop down list
+        val acc : MutableList<String> = mutableListOf()
+        fStore.collection("accounts/$userID/account_detail")
+            .get()
+            .addOnSuccessListener {
+                for (document in it.documents){
+                    acc.add(document.data?.getValue("account_name").toString())
+                }
+            }
         val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
         expenseAccount_autoCompleteTextView.setAdapter(accAdapter)
 

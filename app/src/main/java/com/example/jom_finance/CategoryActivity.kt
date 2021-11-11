@@ -1,11 +1,15 @@
 package com.example.jom_finance
 
+import android.content.ContentValues
+import android.graphics.Color.BLACK
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
+import com.example.jom_finance.models.Category
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.maltaisn.icondialog.IconDialog
@@ -16,6 +20,7 @@ import com.maltaisn.icondialog.pack.IconPack
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import kotlinx.android.synthetic.main.activity_category.*
+import java.lang.Exception
 
 class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
 
@@ -25,12 +30,13 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
 
     private lateinit var categoryName: String
     private var categoryIcon: Int = 278
-    private var categoryColor: Int = -123456
+    private var categoryColor: Int = BLACK
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
+        setupDataBase()
 
         //setup ICON PICKER
         // If dialog is already added to fragment manager, get it. If not, create a new instance.
@@ -48,10 +54,8 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
         val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
         categoryIcon_img.setImageDrawable(drawable)
 
-
         //Load initial color
         categoryColour_btn.setBackgroundColor(categoryColour_btn.context.resources.getColor(R.color.iris))
-
 
         //Open Icon dialog
         categoryIcon_img.setOnClickListener {
@@ -233,6 +237,34 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             }
         }
 
+        categoryConfirm_btn.setOnClickListener {
+
+            categoryName = categoryName_edit.text.toString()
+            Toast.makeText(this, categoryName, Toast.LENGTH_SHORT).show()
+
+            try {
+                fStore.collection("category/$userID/category_detail")
+                    .get()
+                    .addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            //set pathway
+                            val documentReference =
+                                fStore.collection("category/$userID/category_detail").document(categoryName)
+
+                            //Category Details
+                            val categoryDetail = Category(categoryName, categoryIcon, categoryColor)
+
+                            //Insert to database
+                            documentReference.set(categoryDetail).addOnCompleteListener {
+                                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                            }
+
+                        }
+                    }
+            } catch (e: Exception) {
+                Log.w(ContentValues.TAG, "Error adding document", e)
+            }
+        }
     }
 
     private fun setColor(color: Int){
@@ -267,5 +299,14 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
 
     companion object {
         private const val ICON_DIALOG_TAG = "icon-dialog"
+    }
+
+    private fun setupDataBase() {
+        fAuth = FirebaseAuth.getInstance()
+        fStore = FirebaseFirestore.getInstance()
+        val currentUser = fAuth.currentUser
+        if (currentUser != null) {
+            userID = currentUser.uid
+        }
     }
 }
