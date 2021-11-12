@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.jom_finance.models.Category
+import com.example.jom_finance.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -50,10 +52,12 @@ class SignUpActivity : AppCompatActivity(){
                                 userID = currentUser.uid
                             }
                             val documentReference = fStore.collection("users").document(userID)
-                            var user = HashMap<String,String>()
-                            user.put("username",name)
-                            user.put("email",email)
+                            val user = User(email,name)
                             documentReference.set(user).addOnSuccessListener {
+                                // TODO : Add Default Category to db
+                                //Name,icon,Color
+                                val defaultCategory = Category()
+
                                 val intent = Intent(this, LoginActivity::class.java)
                                 startActivity(intent)
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

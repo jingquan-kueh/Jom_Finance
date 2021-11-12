@@ -57,6 +57,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
     implementation 'com.google.firebase:firebase-firestore-ktx:23.0.4'
     implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -87,5 +88,8 @@ dependencies {
     implementation 'com.google.mlkit:entity-extraction:16.0.0-beta2'
 
     implementation 'com.algorithmia:algorithmia-android:1.0.1'
+
+    //Preference
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
 }

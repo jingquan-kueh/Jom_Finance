@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="12dp"
-        android:text="$"
+        android:text="RM"
         android:textAlignment="viewStart"
         android:textColor="#FCFCFC"
         android:textSize="64sp"
@@ -75,6 +75,7 @@
         android:layout_marginTop="12dp"
         android:inputType="numberDecimal"
         android:hint="0"
+        android:layout_marginLeft="10dp"
         android:textColorHint="#FCFCFC"
         android:background="@android:color/transparent"
         android:textAlignment="viewStart"
@@ -107,32 +108,11 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/CategoryCard"
-                    android:layout_width="343dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="10dp"
-                    android:backgroundTint="@color/white"
-                    app:cardCornerRadius="18dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/spinnerCategory"
-                        android:layout_width="343dp"
-                        android:layout_height="58dp"
-                        android:spinnerMode="dropdown"
-                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
-                </androidx.cardview.widget.CardView>
-
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/expenseCategory_ddl"
+                    android:id="@+id/incomeCategory_ddl"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="15dp"
@@ -142,9 +122,9 @@
                     app:boxCornerRadiusTopStart="15dp">
 
                     <AutoCompleteTextView
-                        android:id="@+id/expenseCategory_autoCompleteTextView"
+                        android:id="@+id/incomeCategory_autoCompleteTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Category"
                         android:textColor="@color/black"
@@ -156,13 +136,19 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/DescriptionLayout"
-                    android:layout_width="343dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="Description"
                     android:textColorHint="#91919F"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    app:boxCornerRadiusBottomEnd="15dp"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopEnd="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/CategoryCard">
@@ -170,89 +156,165 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/DescriptionField"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/custom_input"
                         android:ems="15"
-                        android:padding="10dp"
                         android:singleLine="true"
                         android:textColor="@color/black" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/wallet"
-                    android:layout_width="343dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginEnd="10dp"
-                    android:backgroundTint="@color/white"
-                    app:cardCornerRadius="18dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/DescriptionLayout">
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/spinnerWallet"
-                        android:layout_width="match_parent"
-                        android:layout_height="58dp"
-                        android:spinnerMode="dropdown"
-                        android:theme="@style/ThemeOverlay.AppCompat.Light" />
-                </androidx.cardview.widget.CardView>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/AttachmentLayout"
-                    android:layout_width="343dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="40dp"
-                    android:hint="Add Attachment"
-                    android:textColorHint="#91919F"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/wallet">
+                    android:id="@+id/incomeAccount_ddl"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    app:boxCornerRadiusBottomEnd="15dp"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopEnd="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
+                    android:textColorHint="@color/black">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/attachment"
+                    <AutoCompleteTextView
+                        android:id="@+id/incomeAccount_autoCompleteTextView"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/custom_input"
-                        android:ems="15"
-                        android:padding="10dp"
-                        android:singleLine="true"
-                        android:textColor="@color/black" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Account"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:inputType="none" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/RepeatToggle"
-                    android:layout_width="338dp"
-                    android:layout_height="54dp"
-                    android:layout_marginTop="32dp"
-                    android:hint="Repeat"
-                    android:textColorHint="#292B2D"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/AttachmentLayout">
+                <Button
+                    android:id="@+id/incomeAddAttachment_btn"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/ic_baseline_attachment_24"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="Add Attachment"
+                    android:textAlignment="center"
+                    android:textColor="#91919F"
+                    app:backgroundTint="@android:color/transparent"
+                    app:cornerRadius="15dp" />
 
-                </com.google.android.material.switchmaterial.SwitchMaterial>
+                <TextView
+                    android:id="@+id/attachmentDocument_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/bg_budget_category"
+                    android:drawableLeft="@drawable/ic_baseline_insert_drive_file_red_24"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="TextView"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/attachment_img"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_marginStart="15dp"
+                    app:srcCompat="@mipmap/ic_launcher" />
+
+                <Switch
+                    android:id="@+id/incomeRepeat_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="Repeat"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/repeat_constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp">
+
+                    <TextView
+                        android:id="@+id/incomeFrequencyLabel_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Frequency"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/incomeFrequency_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:text="-"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/incomeFrequencyLabel_txt" />
+
+                    <TextView
+                        android:id="@+id/incomeRepeatEndLabel_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:text="End After"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toEndOf="@+id/incomeFrequencyLabel_txt"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/incomeRepeatEnd_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:text="-"
+                        app:layout_constraintStart_toEndOf="@+id/incomeFrequencyLabel_txt"
+                        app:layout_constraintTop_toBottomOf="@+id/incomeRepeatEndLabel_txt" />
+
+                    <Button
+                        android:id="@+id/incomeRepeatEdit_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="true"
+                        android:text="Edit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/iris"
+                        app:backgroundTint="#EEE5FF"
+                        app:cornerRadius="20dp"
+                        app:iconPadding="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/AddnewBtn"
                     style="@style/long_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="40dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="#5D5FEF"
+                    android:backgroundTint="@color/iris"
                     android:text="Add"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/RepeatToggle" />
-
+                    android:textColor="@color/white" />
 
             </LinearLayout>
 

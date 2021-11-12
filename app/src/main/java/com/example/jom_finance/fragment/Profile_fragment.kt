@@ -1,12 +1,14 @@
 package com.example.jom_finance.fragment
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat.finishAffinity
+import androidx.preference.PreferenceManager
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.setting.SettingActivity
@@ -44,6 +46,10 @@ class Profile_fragment : Fragment() {
         view.logoutBtn.setOnClickListener{
             fAuth.signOut()
             requireActivity().run {
+                val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                // Initialize sharedPreferences to edit
+                val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                editor.putBoolean("isLogin",false).apply()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
