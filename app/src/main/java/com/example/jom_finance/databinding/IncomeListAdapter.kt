@@ -18,14 +18,19 @@ class IncomeListAdapter(private val incomeList : ArrayList<Income>) : RecyclerVi
         val income : Income = incomeList[position]
         holder.title.text = income.incomeName.toString()
         holder.amount.text = income.incomeAmount.toString()
+        holder.itemView.setOnClickListener{
+            val position = position
+        }
     }
 
     override fun getItemCount(): Int {
         return incomeList.size
     }
 
-    public class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val title : TextView = itemView.findViewById(R.id.transaction_title)
         val amount : TextView = itemView.findViewById(R.id.transaction_amount)
+
+
     }
 }
