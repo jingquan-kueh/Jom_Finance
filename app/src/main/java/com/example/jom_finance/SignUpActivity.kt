@@ -21,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class SignUpActivity : AppCompatActivity(){
@@ -51,13 +52,23 @@ class SignUpActivity : AppCompatActivity(){
                             if (currentUser != null) {
                                 userID = currentUser.uid
                             }
-                            val documentReference = fStore.collection("users").document(userID)
+                            var documentReference = fStore.collection("users").document(userID)
                             val user = User(email,name)
                             documentReference.set(user).addOnSuccessListener {
                                 // TODO : Add Default Category to db
                                 //Name,icon,Color
-                                val defaultCategory = Category()
+                                //food,transport,shopping
 
+                                var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
+                                var categoryIconArray = arrayOf(1,2,3)
+                                var categoryColorArray = arrayOf(1,2,3)
+                                var defaultCategory : Category
+                                for(i in 0..2){
+                                    documentReference = fStore.collection("category/$userID/Category_detail").document(categoryNameArray[i])
+                                    defaultCategory = Category(categoryNameArray[i],categoryIconArray[i],categoryColorArray[i])
+                                    documentReference.set(defaultCategory)
+                                }
+                                // TODO : Direct Login
                                 val intent = Intent(this, LoginActivity::class.java)
                                 startActivity(intent)
                                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
