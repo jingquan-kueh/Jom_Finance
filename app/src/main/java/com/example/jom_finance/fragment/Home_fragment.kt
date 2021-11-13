@@ -46,6 +46,7 @@ class Home_fragment : Fragment(){
 
         recyclerView.adapter = incomeListAdapter
         EventChangeListener()
+
        /* ArrayAdapter.createFromResource(
             activity.getBaseContext(),
             R.array.Month,
