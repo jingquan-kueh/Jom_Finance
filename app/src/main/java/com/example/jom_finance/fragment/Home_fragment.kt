@@ -96,6 +96,9 @@ class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
     override fun onItemClick(position: Int) {
         val item = transactionArrayList[position]
         requireActivity().run {
+
+            //TODO : Put income Name to Detail Income
+
             val intent = Intent(this, DetailIncome::class.java)
             intent.putExtra("incomeID",item.incomeName)
             startActivity(intent)
