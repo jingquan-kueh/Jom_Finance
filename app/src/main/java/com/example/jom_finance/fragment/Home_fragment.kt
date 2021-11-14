@@ -1,23 +1,28 @@
 package com.example.jom_finance.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.models.Income
 import com.example.jom_finance.databinding.IncomeListAdapter
 
 import com.example.jom_finance.R
+import com.example.jom_finance.income.AddNewIncome
+import com.example.jom_finance.income.DetailIncome
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
 
 
-class Home_fragment : Fragment(){
+class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var userID : String
@@ -42,7 +47,7 @@ class Home_fragment : Fragment(){
         recyclerView.setHasFixedSize(true)
         transactionArrayList = arrayListOf()
 
-        incomeListAdapter = IncomeListAdapter(transactionArrayList)
+        incomeListAdapter = IncomeListAdapter(transactionArrayList,this)
 
         recyclerView.adapter = incomeListAdapter
         EventChangeListener()
@@ -85,6 +90,17 @@ class Home_fragment : Fragment(){
         val currentUser = fAuth.currentUser
         if (currentUser != null) {
             userID = currentUser.uid
+        }
+    }
+
+    override fun onItemClick(position: Int) {
+        val item = transactionArrayList[position]
+        requireActivity().run {
+            val intent = Intent(this, DetailIncome::class.java)
+            intent.putExtra("incomeID",item.incomeName)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
         }
     }
 

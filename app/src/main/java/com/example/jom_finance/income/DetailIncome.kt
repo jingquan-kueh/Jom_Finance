@@ -8,5 +8,10 @@ class DetailIncome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_income)
+
+        // Get intent string from recycleview
+        //val incomeID = intent.getStringExtra("incomeID")
+
+
     }
 }
