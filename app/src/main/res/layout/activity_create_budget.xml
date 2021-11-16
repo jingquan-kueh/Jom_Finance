@@ -8,6 +8,19 @@
         android:layout_height="match_parent"
         android:background="#5D5FEF"
         tools:context=".CreateBudgetActivity">
+
+        <TextView
+            android:id="@+id/budgetMonthYear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Nov 2021"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView8"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
@@ -85,7 +98,7 @@
 
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/budgetAlert_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"

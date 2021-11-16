@@ -35,6 +35,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding = true
     }
 
 }
@@ -70,9 +71,11 @@ dependencies {
     implementation "com.maltaisn:icondialog:3.1.0"
     implementation "com.maltaisn:iconpack-default:1.0.0"
 
-
     //color picker
     implementation 'com.afollestad.material-dialogs:color:3.2.1'
+
+    //Month-Year picker
+    implementation 'com.dibyendu.picker:picker:1.0.0'
 
     //Multidex
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -91,5 +94,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links:19.0.0'
     // Preference
     implementation 'androidx.preference:preference-ktx:1.1.1'
+
+    //Preference
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+
+    //Text recognition tool kit
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
 
 }

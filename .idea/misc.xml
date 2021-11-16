@@ -15,6 +15,7 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/empty_rounded_corner.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/empty_rounded_corners.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_account_balance_wallet_24.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_arrow_drop_down_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_attachment_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_attachment_red_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.38333333333333336" />
@@ -22,8 +23,11 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_image_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_insert_drive_file_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_insert_drive_file_red_24.xml" value="0.3" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_pie_chart_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/ic_baseline_swap_vert_24.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/icon_with_wrapper.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/pie_chart_icon.xml" value="0.38333333333333336" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/pie_chart_icon_2.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/popup_background.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_account.xml" value="0.38333333333333336" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable/profile_export.xml" value="0.38333333333333336" />
@@ -59,7 +63,7 @@
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/bottomsheet_attachment_fragment.xml" value="0.3671875" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/bottomsheet_repeat.xml" value="0.3016304347826087" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/dropdown_item.xml" value="0.3671875" />
-        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/fragment_budget_fragment.xml" value="0.3061594202898551" />
+        <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/fragment_budget_fragment.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/fragment_home_fragment.xml" value="0.3061594202898551" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/fragment_line_fragment.xml" value="0.3061594202898551" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/layout/fragment_pie_fragment.xml" value="0.3061594202898551" />

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color.BLACK
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
@@ -19,8 +20,12 @@ import android.widget.Toast
 import com.example.jom_finance.models.Budget
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_add_new_expense.*
 import kotlinx.android.synthetic.main.activity_create_budget.*
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class CreateBudgetActivity : AppCompatActivity() {
 
@@ -28,7 +33,7 @@ class CreateBudgetActivity : AppCompatActivity() {
     private lateinit var fStore: FirebaseFirestore
     private lateinit var userID: String
 
-    private lateinit var  budgetID: String
+    private lateinit var budgetDate: String
     private var budgetAmount: Double = 0.0
     private lateinit var budgetCategory: String
     private var budgetAlert: Boolean = false
@@ -42,16 +47,25 @@ class CreateBudgetActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_budget)
         setupDataBase()
 
-        //drop down list
-        val items = listOf("Shopping", "Groceries", "Transport", "Restaurant")
-        val adapter = ArrayAdapter(this, R.layout.item_dropdown, items)
+        //get month from previous activity/fragment
+        //set month-year text
+        val monthYear = intent?.extras?.getString("budget_date")
+        budgetMonthYear_text.text = monthYear
+
+        val date = monthYear?.split(" ")?.toTypedArray()
+        budgetDate = "${date?.get(0)}-${date?.get(1)}"
+
+        //category drop down list
+        val cat : MutableList<String> = mutableListOf()
+        fStore.collection("category/$userID/category_detail")
+            .get()
+            .addOnSuccessListener {
+                for (document in it.documents){
+                    cat.add(document.getString("category_name")!!)
+                }
+            }
+        val adapter = ArrayAdapter(this, R.layout.item_dropdown, cat)
         budgetCategories_autoCompleteTextView.setAdapter(adapter)
-
-        //drop down list onClickListener
-        //editTextNumberDecimal.setOnClickListener{
-        //hideKeyboard(it)
-        //}
-
 
         //seekbar progress
         thumbView = LayoutInflater.from(this)
@@ -67,6 +81,11 @@ class CreateBudgetActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        budgetAlert_switch.setOnCheckedChangeListener { _, isChecked ->
+            budgetAlert = isChecked
+            seekBar.progress = 0
+            seekBar.isEnabled = isChecked
+        }
 
         createBudgetConfirm_btn.setOnClickListener {
             addBudgetToDatabase()
@@ -74,25 +93,21 @@ class CreateBudgetActivity : AppCompatActivity() {
 
 
 
-
     }
 
     private fun addBudgetToDatabase(){
 
-        budgetID = "testBudget2"
-        budgetAmount = budgetAmount_edit.text.toString().toDouble()
         budgetCategory = budgetCategory_ddl.editText?.text.toString()
+        budgetAmount = budgetAmount_edit.text.toString().toDouble()
         budgetAlertPercentage = seekBar.progress
 
         try{
-            fStore.collection("budget/$userID/budget_detail")
+            fStore.collection("budget/$userID/$budgetDate")
                 .get()
                 .addOnCompleteListener {
                     if(it.isSuccessful){
-
-                        val documentReference = fStore.collection("budget/$userID/budget_detail").document(budgetID)
-
-                        val budgetDetail = Budget(budgetAmount, budgetCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
+                        val documentReference = fStore.collection("budget/$userID/$budgetDate").document(budgetCategory)
+                        val budgetDetail = Budget(budgetAmount, budgetDate, budgetCategory, BLACK, budgetAlert, budgetAlertPercentage, budgetSpent)
 
                         documentReference.set(budgetDetail).addOnCompleteListener {
                             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()

@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -25,6 +26,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
 import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.bottomsheet_repeat.*
@@ -72,7 +76,6 @@ class AddNewExpenseActivity : AppCompatActivity() {
                     cat.add(document.getString("category_name")!!)
                 }
             }
-
         val catAdapter = ArrayAdapter(this, R.layout.item_dropdown, cat)
         expenseCategory_autoCompleteTextView.setAdapter(catAdapter)
 
@@ -94,6 +97,75 @@ class AddNewExpenseActivity : AppCompatActivity() {
         //hide attachment image
         attachment_img.visibility = View.GONE
         attachmentDocument_txt.visibility = View.GONE
+
+
+        //set attachment if come from receipt scanner
+        val imagePath = intent?.extras?.getString("image_path").toString()
+        if (imagePath != "null"){
+            expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+            expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
+            expenseAddAttachment_btn.text = "Remove Attachment"
+            attachment_img.visibility = View.VISIBLE
+
+            Toast.makeText(this, imagePath, Toast.LENGTH_SHORT).show()
+
+            val image = BitmapFactory.decodeFile(imagePath)
+            imageBitmap = image
+            attachment_img.setImageBitmap(image)
+            transactionAttachment = true
+            attachmentType = "camera"
+
+            //EXTRACT IMPORTANT TEXT
+            //create instance of text recognizer
+            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+
+            //create InputImage object from Bitmap
+            val inputImage = InputImage.fromBitmap(image, 90)
+
+            var elementArr :ArrayList<String> = arrayListOf()
+            //process the image
+            //store all elements in an array
+            val result = recognizer.process(inputImage)
+                .addOnSuccessListener { visionText ->
+
+                    //loop through all elements and find "total"
+                    var foundTotal = false
+                    var temp : String = ""
+                    for (block in visionText.textBlocks){
+                        //val blockText = block.text
+                        for (line in block.lines){
+                            //val lineText = line.text
+                            for (element in line.elements){
+                                val elementText = element.text
+                                //elementArr.add(element.text)
+                                if (elementText.equals("total", true))
+                                    foundTotal = true
+
+                                if(foundTotal){
+                                    try {
+                                        if (elementText.contains(".")){
+                                            val total = elementText.toDouble()
+                                            if (total > 1.0)
+                                                expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(total.toString())
+                                        }
+                                    }catch (e : Exception){
+
+                                    }
+                                }
+                                temp += "$elementText | "
+                            }
+                        }
+                    }
+
+                    val b =visionText.textBlocks
+                    val l = b[0].lines
+                    expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(l[0].text)
+
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
+                }
+        }
 
         expenseAddAttachment_btn.setOnClickListener {
             if(attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE){
@@ -124,7 +196,8 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
             // TODO: 5/11/2021 make sure all inputs are not NULL
 
-            addIncomeToDatabase()
+            addExpenseToDatabase()
+            updateBudget()
 
         }
 
@@ -135,8 +208,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
     }
 
-    private fun addIncomeToDatabase(){
-
+    private fun addExpenseToDatabase(){
         transactionAmount = expenseAmount_edit.text.toString().toDouble()
         transactionCategory = expenseCategory_ddl.editText?.text.toString()
         transactionDescription = expenseDescription_outlinedTextField.editText?.text.toString()
@@ -191,8 +263,25 @@ class AddNewExpenseActivity : AppCompatActivity() {
         }catch (e: Exception) {
             Log.w(ContentValues.TAG, "Error adding document", e)
         }
+    }
 
+    private fun updateBudget(){
+        val budgetRef = fStore.collection("budget/$userID/November-2021").document(transactionCategory)
 
+        budgetRef
+            .get()
+            .addOnSuccessListener { document ->
+                var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
+                budgetSpent += transactionAmount
+                budgetRef
+                    .update("budget_spent", budgetSpent)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun setupDataBase() {
@@ -218,7 +307,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
             imageBitmap = takenImage
 
             // TODO: 5/11/2021 Image orientation
-
+            Toast.makeText(this, photoFile.absolutePath, Toast.LENGTH_SHORT).show()
             attachment_img.setImageBitmap(takenImage)
 
             transactionAttachment = true
@@ -252,9 +341,6 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
     }
 
-
-
-
     private fun openAttachmentBottomSheetDialog(){
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_attachment)
@@ -271,6 +357,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
             val fileProvider = FileProvider.getUriForFile(this,"com.example.jom_finance.fileprovider", photoFile)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+
 
             if(takePictureIntent.resolveActivity(this.packageManager) != null)
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
