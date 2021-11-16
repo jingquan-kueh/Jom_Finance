@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.R
 import com.example.jom_finance.models.Transaction
 
-class TransactionListAdapter(private val transactionList : ArrayList<Transaction>) : RecyclerView.Adapter<TransactionListAdapter.ListViewHolder>(){
+class TransactionListAdapter(
+    private val transactionList : ArrayList<Transaction>,
+    private val listener : OnItemClickListener) : RecyclerView.Adapter<TransactionListAdapter.ListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_item,parent,false)
         return ListViewHolder(itemView)
@@ -28,8 +30,21 @@ class TransactionListAdapter(private val transactionList : ArrayList<Transaction
         return transactionList.size
     }
 
-    public class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    inner class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView),View.OnClickListener{
         val title : TextView = itemView.findViewById(R.id.transaction_title)
         val amount : TextView = itemView.findViewById(R.id.transaction_amount)
+        init {
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v: View?) {
+            if(this.adapterPosition != RecyclerView.NO_POSITION){
+                listener.onItemClick(this.adapterPosition)
+            }
+        }
+
+    }
+    interface OnItemClickListener{
+        fun onItemClick(position : Int)
     }
 }
+

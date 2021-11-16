@@ -17,7 +17,6 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO : Voice name need to check
 
 public class textClass {
     private static final String TAG = "TEXTCLASS";
@@ -27,8 +26,7 @@ public class textClass {
 
         String moneyName = "";
         double moneyAmount = 0;
-
-        AlgorithmiaClient client = Algorithmia.client("simc7k3x9HwOoKSf9JXhnjDgIG81");
+        AlgorithmiaClient client = Algorithmia.client("simM1WqQdPsI8nRUsh1Z+n7kMWU1");
         //String input = "teh ice extra ice for 10 ringgit";
         String input = inputVoice;
         Algorithm algo = client.algo("StanfordNLP/Java2NER/0.1.1");
@@ -40,7 +38,6 @@ public class textClass {
         for (int i = 0; i < jsonArray.length(); i++) {
             stringArray.add(jsonArray.getString(i).replaceAll("[\\[\\]\"\"]","").trim());
         }
-        Log.d(TAG,"stringArray : " + stringArray);
         if(stringArray.contains("MONEY")){
             int moneyIndex = stringArray.lastIndexOf("MONEY");
             if(isNumeric(stringArray.get(moneyIndex-1))){

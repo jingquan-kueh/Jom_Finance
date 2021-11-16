@@ -8,27 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jom_finance.models.Income
-import com.example.jom_finance.databinding.IncomeListAdapter
 
 import com.example.jom_finance.R
-import com.example.jom_finance.income.AddNewIncome
+import com.example.jom_finance.databinding.TransactionListAdapter
 import com.example.jom_finance.income.DetailIncome
+import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
 
 
-class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
+class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var userID : String
     private lateinit var recyclerView: RecyclerView
-    private lateinit var transactionArrayList : ArrayList<Income>
-    private lateinit var incomeListAdapter: IncomeListAdapter
+    private lateinit var transactionArrayList : ArrayList<Transaction>
+    private lateinit var transactionListAdapter: TransactionListAdapter
     private lateinit var db : FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,21 +45,10 @@ class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
         recyclerView.setHasFixedSize(true)
         transactionArrayList = arrayListOf()
 
-        incomeListAdapter = IncomeListAdapter(transactionArrayList,this)
+        transactionListAdapter = TransactionListAdapter(transactionArrayList,this)
 
-        recyclerView.adapter = incomeListAdapter
+        recyclerView.adapter = transactionListAdapter
         EventChangeListener()
-
-       /* ArrayAdapter.createFromResource(
-            activity.getBaseContext(),
-            R.array.Month,
-            R.layout.spinner_list
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(R.layout.spinner_list)
-            // Apply the adapter to the spinner
-            spinnerMonth.adapter = adapter
-        }*/
 
         // Inflate the layout for this fragment
         return view
@@ -70,7 +57,7 @@ class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
         db.collection("incomes/$userID/Income_detail")
-            .addSnapshotListener(object : EventListener<QuerySnapshot>{
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){
                         Log.e("FireStore Error",error.message.toString())
@@ -78,10 +65,10 @@ class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
-                                transactionArrayList.add(dc.document.toObject(Income::class.java))
+                                transactionArrayList.add(dc.document.toObject(Transaction::class.java))
                         }
                     }
-                    incomeListAdapter.notifyDataSetChanged()
+                    transactionListAdapter.notifyDataSetChanged()
                 }
             })
     }
@@ -96,14 +83,20 @@ class Home_fragment : Fragment(),IncomeListAdapter.OnItemClickListener{
     override fun onItemClick(position: Int) {
         val item = transactionArrayList[position]
         requireActivity().run {
-
-            //TODO : Put income Name to Detail Income
-
-            val intent = Intent(this, DetailIncome::class.java)
-            intent.putExtra("incomeID",item.incomeName)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
+            val type = item.transactionType
+            if(type == "income"){
+                val intent = Intent(this, DetailIncome::class.java)
+                intent.putExtra("incomeName",item.transactionName)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
+            }else{
+                val intent = Intent(this, DetailIncome::class.java)
+                intent.putExtra("expenseName",item.transactionName)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                Toast.makeText(this, "expenses Clicked", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

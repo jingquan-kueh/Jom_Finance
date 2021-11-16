@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -58,16 +59,35 @@ private lateinit var photoFile: File
 private lateinit var imageUri : Uri
 private lateinit var imageBitmap: Bitmap
 private lateinit var documentUri : Uri
+private lateinit var incomeID : String
 
 class AddNewIncome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_income)
         setupDataBase()
+        val editIncomeIntent = intent.getBooleanExtra("editIncome",false)
+        if(editIncomeIntent){
+            val amount = intent.getDoubleExtra("incomeAmount",0.0)
+            val category = intent.getStringExtra("incomeCategory")
+            val description = intent.getStringExtra("incomeDescription")
+            val account = intent.getStringExtra("incomeAccount")
+            val attachment = intent.getBooleanExtra("incomeAttachment",false)
+            incomeID = intent.getStringExtra("incomeID").toString()
+            AddnewBtn.setText("Done")
+            amountField.setText(amount.toString())
+            DescriptionField.setText(description)
+            incomeCategory_autoCompleteTextView.setText(category)
+            incomeAccount_autoCompleteTextView.setText(account)
+            if(attachment){
+                // Show Attachment
+            }
+
+        }
 
         //category drop down list
         val cat : MutableList<String> = mutableListOf()
-        fStore.collection("category/$userID/category_detail")
+        fStore.collection("category/$userID/Category_detail")
             .get()
             .addOnSuccessListener {
                 for (document in it.documents){
@@ -123,12 +143,77 @@ class AddNewIncome : AppCompatActivity() {
         }
 
         AddnewBtn.setOnClickListener {
-            addIncomeToDatabase()
+            // Check Income Not Null
+            if(incomeValidate()){
+                if(editIncomeIntent)
+                    editIncomeToDatabase()
+                else
+                    addIncomeToDatabase()
+            }
         }
 
         attachmentDocument_txt.setOnClickListener {
             // TODO: 6/11/2021 display pdf when clicked
         }
+    }
+
+    private fun incomeValidate() :Boolean {
+        if(amountField.text.equals(0) || amountField.text.isNullOrBlank()){
+            amountField.requestFocus()
+            return false
+        }
+        if(DescriptionField.text.isNullOrEmpty() || DescriptionField.text.isNullOrBlank()){
+            DescriptionField.requestFocus()
+            return false
+        }
+        if(incomeAccount_autoCompleteTextView.text.isNullOrEmpty() || incomeAccount_autoCompleteTextView.text.isNullOrBlank()){
+            incomeAccount_autoCompleteTextView.requestFocus()
+            return false
+        }
+        if(incomeCategory_autoCompleteTextView.text.isNullOrEmpty() || incomeCategory_autoCompleteTextView.text.isNullOrBlank()){
+            incomeCategory_autoCompleteTextView.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun editIncomeToDatabase() {
+       try{
+           //Set Transaction Pathway
+           var documentReference =
+               fStore.collection("incomes/$userID/Income_detail").document(incomeID)
+           //Get Income Detail
+           var incomeDetail = Income(incomeID, incomeAmount, incomeAccount,
+               incomeAttachment, incomeCategory, incomeDescription)
+           documentReference.set(incomeDetail).addOnCompleteListener{
+               var transaction = Transaction(incomeDetail.incomeName, incomeDetail.incomeAmount,
+                   incomeDetail.incomeAccount,incomeDetail.incomeAttachment,incomeDetail.incomeCategory,
+                   incomeDescription, TRANSACTION_TYPE)
+
+
+               //store attachment if necessary
+               if(incomeAttachment){
+
+               }
+
+               documentReference =
+                   fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+               documentReference.set(transaction).addOnSuccessListener {
+                   val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                   val resetViewBuilder =
+                       AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                   val displayDialog = resetViewBuilder.show()
+                   displayDialog.setOnDismissListener{
+                       val intent = Intent(this, HomeActivity::class.java)
+                       startActivity(intent)
+                       overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                       finish()
+                   }
+               }
+           }
+       }catch (ex : Exception){
+
+       }
     }
 
     private fun addIncomeToDatabase(){
@@ -140,6 +225,10 @@ class AddNewIncome : AppCompatActivity() {
                     if (it.isSuccessful) {
                         lastIncome = it.result.size()  // Get lastIncome Index
                         var newIncome = lastIncome.inc() // LastIncome Increment
+                        incomeAmount = amountField.text.toString().toDouble()
+                        incomeDescription = DescriptionField.text.toString()
+                        incomeCategory = incomeCategory_autoCompleteTextView.text.toString()
+                        incomeAccount = incomeAccount_autoCompleteTextView.text.toString()
 
                         //Set Transaction Pathway
                         var documentReference =
