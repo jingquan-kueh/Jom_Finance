@@ -13,7 +13,7 @@ import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_accounts_list.*
 
 
-class AccountsListActivity : AppCompatActivity() {
+class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClickListener {
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
@@ -43,7 +43,7 @@ class AccountsListActivity : AppCompatActivity() {
         recyclerView.isNestedScrollingEnabled = true
         recyclerView.setHasFixedSize(true)
         accountArrayList= arrayListOf()
-        accountListAdapter = AccountListAdapter(accountArrayList)
+        accountListAdapter = AccountListAdapter(accountArrayList, this)
         recyclerView.adapter = accountListAdapter
         EventChangeListener()
 
@@ -84,6 +84,17 @@ class AccountsListActivity : AppCompatActivity() {
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    override fun onItemClick(position: Int) {
+        val item = accountArrayList[position]
+        val intent = Intent(this, AddNewAccountActivity::class.java)
+        intent.putExtra("account_name", item.accountName)
+        intent.putExtra("account_amount", item.accountAmount)
+        intent.putExtra("account_icon", item.accountIcon)
+        intent.putExtra("account_color", item.accountColor)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
 }

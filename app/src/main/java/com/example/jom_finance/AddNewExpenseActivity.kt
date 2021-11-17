@@ -98,7 +98,6 @@ class AddNewExpenseActivity : AppCompatActivity() {
         attachment_img.visibility = View.GONE
         attachmentDocument_txt.visibility = View.GONE
 
-
         //set attachment if come from receipt scanner
         val imagePath = intent?.extras?.getString("image_path").toString()
         if (imagePath != "null"){
@@ -271,16 +270,20 @@ class AddNewExpenseActivity : AppCompatActivity() {
         budgetRef
             .get()
             .addOnSuccessListener { document ->
-                var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
-                budgetSpent += transactionAmount
-                budgetRef
-                    .update("budget_spent", budgetSpent)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
-                    }
+                if(document.exists()){
+                    var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
+                    budgetSpent += transactionAmount
+                    budgetRef
+                        .update("budget_spent", budgetSpent)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                else
+                    Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
+                Log.w(ContentValues.TAG, "Error updating budget", it)
             }
     }
 

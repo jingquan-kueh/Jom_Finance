@@ -36,7 +36,9 @@ class BudgetListAdapter (private val budgetList : ArrayList<Budget>) : RecyclerV
 
         val budgetAmount =  budget.budgetAmount!!
         val budgetSpent = budget.budgetSpent!!
-        val budgetRemaining = budgetAmount - budgetSpent
+        var budgetRemaining = budgetAmount - budgetSpent
+        if (budgetRemaining < 0.0)
+            budgetRemaining = 0.0
 
         val budgetAmountText =  String.format("%.2f", budgetAmount)
         val budgetSpentText = String.format("%.2f", budgetSpent)

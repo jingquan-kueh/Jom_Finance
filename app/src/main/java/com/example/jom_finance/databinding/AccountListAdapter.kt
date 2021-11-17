@@ -13,7 +13,7 @@ import com.maltaisn.icondialog.pack.IconDrawableLoader
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 
-class AccountListAdapter(private val accountList : ArrayList<Account>) : RecyclerView.Adapter<AccountListAdapter.ListViewHolder>(){
+class AccountListAdapter(private val accountList : ArrayList<Account>, private val listener : OnItemClickListener) : RecyclerView.Adapter<AccountListAdapter.ListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_account,parent,false)
         return ListViewHolder(itemView)
@@ -41,10 +41,23 @@ class AccountListAdapter(private val accountList : ArrayList<Account>) : Recycle
         return accountList.size
     }
 
-    class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    inner class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
         val name : TextView = itemView.findViewById(R.id.accountNameList_text)
         val amount : TextView = itemView.findViewById(R.id.accountAmountList_text)
         val icon : ImageView = itemView.findViewById(R.id.accountIconList_img)
         val iconBg : ImageView = itemView.findViewById(R.id.accountIconBgList_img)
+
+        init{
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v: View?) {
+            if(this.adapterPosition != RecyclerView.NO_POSITION){
+                listener.onItemClick(this.adapterPosition)
+            }
+        }
+    }
+
+    interface OnItemClickListener{
+        fun onItemClick(position : Int)
     }
 }

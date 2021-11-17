@@ -53,12 +53,11 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         val iconPack = createDefaultIconPack(loader)
         iconPack.loadDrawables(loader.drawableLoader)
 
-        //Load initial icon
+        //Load default icon
         val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
         accountIcon_img.setImageDrawable(drawable)
 
-
-        //Load initial color
+        //Load default color
         accountColour_btn.setBackgroundColor(accountColour_btn.context.resources.getColor(R.color.iris))
 
 
@@ -266,7 +265,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                             documentReference.set(accountDetail).addOnCompleteListener {
                                 Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                             }
-
                         }
                     }
             } catch (e: Exception) {
