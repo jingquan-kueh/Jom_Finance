@@ -50,11 +50,11 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_accounts">
 
         <TextView
-            android:id="@+id/totalBalancelabel_text"
+            android:id="@+id/totalBalanceLabel_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:text="Total Balance"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -64,7 +64,7 @@
             android:id="@+id/totalBalanceAmount_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="30dp"
             android:text="RM 12,268.50"
             android:textAlignment="center"
             android:textColor="@color/white"

@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_category_list.*
 
-class CategoryListActivity : AppCompatActivity() {
+class CategoryListActivity : AppCompatActivity(), CategoryListAdapter.OnItemClickListener {
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
@@ -37,7 +37,7 @@ class CategoryListActivity : AppCompatActivity() {
         recyclerView.isNestedScrollingEnabled = true
         recyclerView.setHasFixedSize(true)
         categoryArrayList= arrayListOf()
-        categoryListAdapter = CategoryListAdapter(categoryArrayList)
+        categoryListAdapter = CategoryListAdapter(categoryArrayList, this)
         recyclerView.adapter = categoryListAdapter
         EventChangeListener()
 
@@ -68,5 +68,15 @@ class CategoryListActivity : AppCompatActivity() {
         if (currentUser != null) {
             userID = currentUser.uid
         }
+    }
+
+    override fun onItemClick(position: Int) {
+        val item = categoryArrayList[position]
+        val intent = Intent(this, CategoryActivity::class.java)
+        intent.putExtra("category_name", item.categoryName)
+        intent.putExtra("category_icon", item.categoryIcon)
+        intent.putExtra("category_color", item.categoryColor)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 }

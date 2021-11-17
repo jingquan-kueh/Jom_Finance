@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/accountBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/iris">
@@ -36,6 +37,8 @@
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -111,52 +114,52 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-        android:id="@+id/accountIconLabel_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Icon"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+            android:id="@+id/accountIconLabel_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Icon"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/accountIcon_img"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/ic_baseline_error_24" />
+        <ImageView
+            android:id="@+id/accountIcon_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/ic_baseline_error_24" />
 
-    <TextView
-        android:id="@+id/accountColourLabel_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Colour"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/accountColourLabel_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Colour"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/accountColour_btn"
             android:layout_width="60dp"
             android:layout_height="70dp"
-            app:cornerRadius="60dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            app:cornerRadius="60dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <Button
-        android:id="@+id/addNewAccountConfirm_btn"
-        style="@style/long_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Confirm"
-        app:backgroundTint="@color/iris"
-        app:cornerRadius="10dp" />
+            android:id="@+id/addNewAccountConfirm_btn"
+            style="@style/long_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="Confirm"
+            app:backgroundTint="@color/iris"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

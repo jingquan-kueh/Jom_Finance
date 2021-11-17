@@ -15,7 +15,10 @@ import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import kotlinx.android.synthetic.main.activity_add_new_account.*
 import android.content.ContentValues.TAG
+import android.graphics.Color.BLACK
+import android.text.Editable
 import android.util.Log
+import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.example.jom_finance.models.Account
 import com.google.firebase.auth.FirebaseAuth
@@ -32,7 +35,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
     private lateinit var accountName: String
     private var accountAmount: Double = 0.0
     private var accountIcon: Int = 278
-    private var accountColor: Int = -123456
+    private var accountColor: Int = BLACK
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +56,33 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         val iconPack = createDefaultIconPack(loader)
         iconPack.loadDrawables(loader.drawableLoader)
 
-        //Load default icon
-        val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
-        accountIcon_img.setImageDrawable(drawable)
+        accountName = intent?.extras?.getString("account_name").toString()
+        if(accountName != "null"){
+            accountAmount = intent?.extras?.getDouble("account_amount")!!
+            accountIcon = intent?.extras?.getInt("account_icon")!!
+            accountColor = intent?.extras?.getInt("account_color")!!
 
-        //Load default color
-        accountColour_btn.setBackgroundColor(accountColour_btn.context.resources.getColor(R.color.iris))
+            heading_addNewAccount.text = "Update account"
+            addNewAccountConfirm_btn.text = "Update"
+
+            balanceAmount_edit.text = Editable.Factory.getInstance().newEditable(accountAmount.toString())
+
+            accountName_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(accountName)
+
+            val drawable = iconPack.getIconDrawable(accountIcon, IconDrawableLoader(this))
+            accountIcon_img.setImageDrawable(drawable)
+
+            setColor(accountColor)
+
+        }else{
+            //Load default icon
+            val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
+            accountIcon_img.setImageDrawable(drawable)
+
+            //Load default color
+            accountColour_btn.setBackgroundColor(accountColour_btn.context.resources.getColor(R.color.iris))
+
+        }
 
 
         //Open Icon dialog
@@ -233,7 +257,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             MaterialDialog(this).show {
                 title(R.string.colors)
                 colorChooser(colors, subColors = subColors) { dialog, color ->
-                    setButtonColor(color)
+                    setColor(color)
                     accountColor = color
                 }
                 positiveButton(R.string.select)
@@ -246,7 +270,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
             accountName = accountName_outlinedTextField.editText?.text.toString()
             accountAmount = balanceAmount_edit.text.toString().toDouble()
-
 
             try {
                 fStore.collection("accounts/$userID/account_detail")
@@ -273,9 +296,11 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         }
     }
 
-
-    private fun setButtonColor(color: Int){
+    private fun setColor(color: Int){
+        accountBackground.setBackgroundColor(color)
+        backBtn_addNewAccount.setBackgroundColor(color)
         accountColour_btn.setBackgroundColor(color)
+        accountIcon_img.setColorFilter(color)
     }
 
     override val iconDialogIconPack: IconPack?

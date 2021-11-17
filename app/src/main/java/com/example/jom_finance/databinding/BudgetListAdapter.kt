@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class BudgetListAdapter (private val budgetList : ArrayList<Budget>) : RecyclerView.Adapter<BudgetListAdapter.ListViewHolder>(){
+class BudgetListAdapter (private val budgetList : ArrayList<Budget>, private val listener : OnItemClickListener) : RecyclerView.Adapter<BudgetListAdapter.ListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BudgetListAdapter.ListViewHolder{
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_budget,parent,false)
@@ -66,14 +66,26 @@ class BudgetListAdapter (private val budgetList : ArrayList<Budget>) : RecyclerV
         return budgetList.size
     }
 
-    class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    inner class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
         val category: TextView = itemView.findViewById(R.id.budgetCategoryList_text)
         val remaining: TextView = itemView.findViewById(R.id.budgetRemainingList_text)
         val remainingBar: LinearProgressIndicator = itemView.findViewById(R.id.budgetRemainingList_bar)
         val details: TextView = itemView.findViewById(R.id.budgetDetailsList_text)
-
         val exceededImage: ImageView = itemView.findViewById(R.id.budgetExceededList_img)
         val exceededText: TextView = itemView.findViewById(R.id.budgetExceededList_text)
+
+        init{
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v: View?) {
+            if(this.adapterPosition != RecyclerView.NO_POSITION){
+                listener.onItemClick(this.adapterPosition)
+            }
+        }
+    }
+
+    interface OnItemClickListener{
+        fun onItemClick(position : Int)
     }
 
 }

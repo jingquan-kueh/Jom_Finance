@@ -4,7 +4,9 @@ import android.content.ContentValues
 import android.graphics.Color.BLACK
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.afollestad.materialdialogs.MaterialDialog
@@ -19,6 +21,7 @@ import com.maltaisn.icondialog.pack.IconDrawableLoader
 import com.maltaisn.icondialog.pack.IconPack
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
+import kotlinx.android.synthetic.main.activity_add_new_account.*
 import kotlinx.android.synthetic.main.activity_category.*
 import java.lang.Exception
 
@@ -50,12 +53,31 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
         val iconPack = createDefaultIconPack(loader)
         iconPack.loadDrawables(loader.drawableLoader)
 
-        //Load initial icon
-        val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
-        categoryIcon_img.setImageDrawable(drawable)
+        categoryName = intent?.extras?.getString("category_name").toString()
+        if (categoryName != "null"){
+            categoryIcon = intent?.extras?.getInt("category_icon")!!
+            categoryColor= intent?.extras?.getInt("category_color")!!
 
-        //Load initial color
-        categoryColour_btn.setBackgroundColor(categoryColour_btn.context.resources.getColor(R.color.iris))
+            heading_Category.text = "Update category"
+            categoryConfirm_btn.text = "Update"
+
+            categoryName_edit.text = Editable.Factory.getInstance().newEditable(categoryName)
+
+            val drawable = iconPack.getIconDrawable(categoryIcon, IconDrawableLoader(this))
+            categoryIcon_img.setImageDrawable(drawable)
+
+            setColor(categoryColor)
+
+        }else{
+            //Load default icon
+            val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
+            categoryIcon_img.setImageDrawable(drawable)
+
+            //Load default color
+            categoryColour_btn.setBackgroundColor(categoryColour_btn.context.resources.getColor(R.color.iris))
+
+            deleteCategory_btn.visibility = View.GONE
+        }
 
         //Open Icon dialog
         categoryIcon_img.setOnClickListener {

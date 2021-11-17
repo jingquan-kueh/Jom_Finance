@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dibyendu.picker.listener.PickerListener
 import com.dibyendu.picker.util.PickerUtils
 import com.dibyendu.picker.view.MonthYearPickerDialog
+import com.example.jom_finance.BudgetDetailActivity
 import com.example.jom_finance.CreateBudgetActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.BudgetListAdapter
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Budget_fragment : Fragment() {
+class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
 
     private lateinit var fAuth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -62,7 +63,7 @@ class Budget_fragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         budgetArrayList = arrayListOf()
 
-        budgetListAdapter = BudgetListAdapter(budgetArrayList)
+        budgetListAdapter = BudgetListAdapter(budgetArrayList, this)
         recyclerView.adapter = budgetListAdapter
         eventChangeListener()
 
@@ -123,6 +124,22 @@ class Budget_fragment : Fragment() {
         val currentUser = fAuth.currentUser
         if (currentUser != null) {
             userID = currentUser.uid
+        }
+    }
+
+    override fun onItemClick(position: Int) {
+        val item = budgetArrayList[position]
+        requireActivity().run{
+            val intent = Intent(this, BudgetDetailActivity::class.java)
+            intent.putExtra("budget_amount", item.budgetAmount)
+            intent.putExtra("budget_date", item.budgetDate)
+            intent.putExtra("budget_category", item.budgetCategory)
+            intent.putExtra("budget_color", item.budgetColor)
+            intent.putExtra("budget_alert", item.budgetAlert)
+            intent.putExtra("budget_alert_percentage", item.budgetAlertPercentage)
+            intent.putExtra("budget_spent", item.budgetSpent)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 

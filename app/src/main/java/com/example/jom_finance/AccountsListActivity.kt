@@ -88,7 +88,7 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
 
     override fun onItemClick(position: Int) {
         val item = accountArrayList[position]
-        val intent = Intent(this, AddNewAccountActivity::class.java)
+        val intent = Intent(this, AccountDetailsActivity::class.java)
         intent.putExtra("account_name", item.accountName)
         intent.putExtra("account_amount", item.accountAmount)
         intent.putExtra("account_icon", item.accountIcon)

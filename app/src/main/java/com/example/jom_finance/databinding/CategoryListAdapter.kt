@@ -13,7 +13,7 @@ import com.maltaisn.icondialog.pack.IconDrawableLoader
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 
-class CategoryListAdapter(private val categoryList : ArrayList<Category>) : RecyclerView.Adapter<CategoryListAdapter.ListViewHolder>(){
+class CategoryListAdapter(private val categoryList : ArrayList<Category>, private val listener : OnItemClickListener) : RecyclerView.Adapter<CategoryListAdapter.ListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_category,parent,false)
         return ListViewHolder(itemView)
@@ -39,8 +39,22 @@ class CategoryListAdapter(private val categoryList : ArrayList<Category>) : Recy
         return categoryList.size
     }
 
-    class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+    inner class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
         val name : TextView = itemView.findViewById(R.id.categoryNameList_text)
         val icon : ImageView = itemView.findViewById(R.id.categoryIconList_img)
+
+        init{
+            itemView.setOnClickListener(this)
+        }
+        override fun onClick(v: View?) {
+            if(this.adapterPosition != RecyclerView.NO_POSITION){
+                listener.onItemClick(this.adapterPosition)
+            }
+        }
     }
+
+    interface OnItemClickListener{
+        fun onItemClick(position : Int)
+    }
+
 }
