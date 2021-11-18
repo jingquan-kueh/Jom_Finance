@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
 import com.example.jom_finance.income.DetailIncome
+import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -26,6 +27,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
     private lateinit var userID : String
     private lateinit var recyclerView: RecyclerView
     private lateinit var transactionArrayList : ArrayList<Transaction>
+    private lateinit var categoryArrayList : ArrayList<Category>
+    private lateinit var categoryHash : HashMap<String,Category>
     private lateinit var transactionListAdapter: TransactionListAdapter
     private lateinit var db : FirebaseFirestore
 
@@ -44,8 +47,9 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         recyclerView.isNestedScrollingEnabled = true
         recyclerView.setHasFixedSize(true)
         transactionArrayList = arrayListOf()
-
-        transactionListAdapter = TransactionListAdapter(transactionArrayList,this)
+        categoryArrayList = arrayListOf()
+        categoryHash = hashMapOf()
+        transactionListAdapter = TransactionListAdapter(transactionArrayList,categoryHash,this)
 
         recyclerView.adapter = transactionListAdapter
         EventChangeListener()
@@ -68,9 +72,26 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                                 transactionArrayList.add(dc.document.toObject(Transaction::class.java))
                         }
                     }
+                }
+            })
+
+        db.collection("category/$userID/Category_detail")
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if(error!=null){
+                        Log.e("FireStore Error",error.message.toString())
+                        return
+                    }
+                    for(dc : DocumentChange in value?.documentChanges!!){
+                        if(dc.type == DocumentChange.Type.ADDED){
+                            categoryArrayList.add(dc.document.toObject(Category::class.java))
+                            categoryHash[categoryArrayList.last().categoryName.toString()] = categoryArrayList.last()
+                        }
+                    }
                     transactionListAdapter.notifyDataSetChanged()
                 }
             })
+
     }
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()

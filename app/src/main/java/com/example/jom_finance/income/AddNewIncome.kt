@@ -57,10 +57,10 @@ private const val DOCUMENT_REQUEST_CODE = 111
 private lateinit var attachmentType: String
 private const val FILE_NAME = "photo.jpg" //temporary file name
 private lateinit var photoFile: File
-private lateinit var imageUri : Uri
+private lateinit var imageUri: Uri
 private lateinit var imageBitmap: Bitmap
-private lateinit var documentUri : Uri
-private lateinit var incomeID : String
+private lateinit var documentUri: Uri
+private lateinit var incomeID: String
 
 class AddNewIncome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,45 +68,31 @@ class AddNewIncome : AppCompatActivity() {
         setContentView(R.layout.activity_add_new_income)
 
         setupDataBase()
-        fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type","income")
-            .get()
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val num = it.result.size()
-                    Log.d("NewIncome",num.toString())
-                    Log.d("NewIncome",it.result.toString())
-                }
-            }
-
-
-
-
-
-        val editIncomeIntent = intent.getBooleanExtra("editIncome",false)
-        if(editIncomeIntent){
-            val amount = intent.getDoubleExtra("incomeAmount",0.0)
+        val editIncomeIntent = intent.getBooleanExtra("editIncome", false)
+        if (editIncomeIntent) {
+            val amount = intent.getDoubleExtra("incomeAmount", 0.0)
             val category = intent.getStringExtra("incomeCategory")
             val description = intent.getStringExtra("incomeDescription")
             val account = intent.getStringExtra("incomeAccount")
-            val attachment = intent.getBooleanExtra("incomeAttachment",false)
+            val attachment = intent.getBooleanExtra("incomeAttachment", false)
             incomeID = intent.getStringExtra("incomeID").toString()
-            AddnewBtn.setText("Done")
+            AddnewBtn.text = "Done"
             amountField.setText(amount.toString())
             DescriptionField.setText(description)
             incomeCategory_autoCompleteTextView.setText(category)
             incomeAccount_autoCompleteTextView.setText(account)
-            if(attachment){
+            if (attachment) {
                 // Show Attachment
             }
 
         }
 
         //category drop down list
-        val cat : MutableList<String> = mutableListOf()
+        val cat: MutableList<String> = mutableListOf()
         fStore.collection("category/$userID/Category_detail")
             .get()
             .addOnSuccessListener {
-                for (document in it.documents){
+                for (document in it.documents) {
                     cat.add(document.getString("category_name")!!)
                 }
             }
@@ -115,11 +101,11 @@ class AddNewIncome : AppCompatActivity() {
         incomeCategory_autoCompleteTextView.setAdapter(incAdapter)
 
         //accounts drop down list
-        val acc : MutableList<String> = mutableListOf()
+        val acc: MutableList<String> = mutableListOf()
         fStore.collection("accounts/$userID/account_detail")
             .get()
             .addOnSuccessListener {
-                for (document in it.documents){
+                for (document in it.documents) {
                     acc.add(document.getString("account_name")!!)
                 }
             }
@@ -134,13 +120,15 @@ class AddNewIncome : AppCompatActivity() {
         attachmentDocument_txt.visibility = View.GONE
 
         incomeAddAttachment_btn.setOnClickListener {
-            if(attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE){
+            if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
                 openAttachmentBottomSheetDialog()
-            }
-            else{
+            } else {
                 attachmentDocument_txt.visibility = View.GONE
                 attachment_img.visibility = View.GONE
-                incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24, 0, 0, 0)
+                incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                    0,
+                    0,
+                    0)
                 incomeAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
                 incomeAddAttachment_btn.text = "Add Attachment"
                 incomeAttachment = false
@@ -151,7 +139,7 @@ class AddNewIncome : AppCompatActivity() {
             openRepeatBottomSheetDialog()
         }
 
-        incomeRepeat_switch.setOnCheckedChangeListener{ _, isChecked ->
+        incomeRepeat_switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 repeat_constraintLayout.visibility = View.VISIBLE
             else
@@ -160,8 +148,8 @@ class AddNewIncome : AppCompatActivity() {
 
         AddnewBtn.setOnClickListener {
             // Check Income Not Null
-            if(incomeValidate()){
-                if(editIncomeIntent)
+            if (incomeValidate()) {
+                if (editIncomeIntent)
                     editIncomeToDatabase()
                 else
                     addIncomeToDatabase()
@@ -173,20 +161,20 @@ class AddNewIncome : AppCompatActivity() {
         }
     }
 
-    private fun incomeValidate() :Boolean {
-        if(amountField.text.equals(0) || amountField.text.isNullOrBlank()){
+    private fun incomeValidate(): Boolean {
+        if (amountField.text.equals(0) || amountField.text.isNullOrBlank()) {
             amountField.requestFocus()
             return false
         }
-        if(DescriptionField.text.isNullOrEmpty() || DescriptionField.text.isNullOrBlank()){
+        if (DescriptionField.text.isNullOrEmpty() || DescriptionField.text.isNullOrBlank()) {
             DescriptionField.requestFocus()
             return false
         }
-        if(incomeAccount_autoCompleteTextView.text.isNullOrEmpty() || incomeAccount_autoCompleteTextView.text.isNullOrBlank()){
+        if (incomeAccount_autoCompleteTextView.text.isNullOrEmpty() || incomeAccount_autoCompleteTextView.text.isNullOrBlank()) {
             incomeAccount_autoCompleteTextView.requestFocus()
             return false
         }
-        if(incomeCategory_autoCompleteTextView.text.isNullOrEmpty() || incomeCategory_autoCompleteTextView.text.isNullOrBlank()){
+        if (incomeCategory_autoCompleteTextView.text.isNullOrEmpty() || incomeCategory_autoCompleteTextView.text.isNullOrBlank()) {
             incomeCategory_autoCompleteTextView.requestFocus()
             return false
         }
@@ -194,69 +182,67 @@ class AddNewIncome : AppCompatActivity() {
     }
 
     private fun editIncomeToDatabase() {
-       try{
-           //Set Transaction Pathway
-           var documentReference =
-               fStore.collection("incomes/$userID/Income_detail").document(incomeID)
-           //Get Income Detail
-           var incomeDetail = Income(incomeID, incomeAmount, incomeAccount,
-               incomeAttachment, incomeCategory, incomeDescription)
-           documentReference.set(incomeDetail).addOnCompleteListener{
-               var transaction = Transaction(incomeDetail.incomeName, incomeDetail.incomeAmount,
-                   incomeDetail.incomeAccount,incomeDetail.incomeAttachment,incomeDetail.incomeCategory,
-                   incomeDescription, TRANSACTION_TYPE)
+        try {
+            //Set Transaction Pathway
+            var documentReference =
+                fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
 
+            var transaction = Transaction(incomeID, incomeAmount, incomeAccount,
+                incomeAttachment, incomeCategory, incomeDescription, TRANSACTION_TYPE)
 
-               //store attachment if necessary
-               if(incomeAttachment){
+            documentReference.set(transaction).addOnCompleteListener {
+                //store attachment if necessary
+                if (incomeAttachment) {
 
-                   val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/${transaction.transactionName}")
-                   lateinit var uploadTask: UploadTask
+                    val storageReference = FirebaseStorage.getInstance()
+                        .getReference("transaction_images/$userID/${transaction.transactionName}")
+                    lateinit var uploadTask: UploadTask
 
-                   when (attachmentType){
-                       "camera" -> {
-                           val baos = ByteArrayOutputStream()
-                           imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                           val data = baos.toByteArray()
-                           uploadTask = storageReference.putBytes(data)
-                       }
-                       "image" -> uploadTask = storageReference.putFile(imageUri)
-                       "document" -> uploadTask = storageReference.putFile(documentUri)
-                   }
+                    when (attachmentType) {
+                        "camera" -> {
+                            val baos = ByteArrayOutputStream()
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                            val data = baos.toByteArray()
+                            uploadTask = storageReference.putBytes(data)
+                        }
+                        "image" -> uploadTask = storageReference.putFile(imageUri)
+                        "document" -> uploadTask = storageReference.putFile(documentUri)
+                    }
 
-                   uploadTask
-                       .addOnSuccessListener {
-                           Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
-                       }
-                       .addOnFailureListener {
-                           Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-                       }
-               }
+                    uploadTask
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                        }
+                }
 
-               documentReference =
-                   fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
-               documentReference.set(transaction).addOnSuccessListener {
-                   val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                   val resetViewBuilder =
-                       AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
-                   val displayDialog = resetViewBuilder.show()
-                   displayDialog.setOnDismissListener{
-                       val intent = Intent(this, HomeActivity::class.java)
-                       startActivity(intent)
-                       overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                       finish()
-                   }
-               }
-           }
-       }catch (ex : Exception){
+                documentReference =
+                    fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+                documentReference.set(transaction).addOnSuccessListener {
+                    val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                    val resetViewBuilder =
+                        AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                    val displayDialog = resetViewBuilder.show()
+                    displayDialog.setOnDismissListener {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        finish()
+                    }
+                }
+            }
+        } catch (ex: Exception) {
 
-       }
+        }
     }
 
-    private fun addIncomeToDatabase(){
+    private fun addIncomeToDatabase() {
         var lastIncome by Delegates.notNull<Int>()
         try {
-            fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type","income")
+            fStore.collection("transaction/$userID/Transaction_detail")
+                .whereEqualTo("Transaction_type", "income")
                 .get()
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -269,10 +255,17 @@ class AddNewIncome : AppCompatActivity() {
 
                         //Set Transaction Pathway
                         var documentReference =
-                            fStore.collection("transaction/$userID/Transaction_detail").document("transaction$newIncome")
+                            fStore.collection("transaction/$userID/Transaction_detail")
+                                .document("transaction$newIncome")
 
-                        var transaction = Transaction("transaction$newIncome", incomeAmount, incomeAccount,
-                            incomeAttachment, incomeCategory,incomeDescription,TRANSACTION_TYPE)
+                        var transaction =
+                            Transaction("transaction$newIncome",
+                                incomeAmount,
+                                incomeAccount,
+                                incomeAttachment,
+                                incomeCategory,
+                                incomeDescription,
+                                TRANSACTION_TYPE)
                         //TODO : Update Total Income Amount
                         //documentReference = fStore.collection("incomes").document(userID).set()
 
@@ -280,12 +273,13 @@ class AddNewIncome : AppCompatActivity() {
                         documentReference.set(transaction).addOnSuccessListener {
 
                             //store attachment if necessary
-                            if(incomeAttachment){
+                            if (incomeAttachment) {
 
-                                val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/transaction$newIncome")
+                                val storageReference = FirebaseStorage.getInstance()
+                                    .getReference("transaction_images/$userID/transaction$newIncome")
                                 lateinit var uploadTask: UploadTask
 
-                                when (attachmentType){
+                                when (attachmentType) {
                                     "camera" -> {
                                         val baos = ByteArrayOutputStream()
                                         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -298,21 +292,26 @@ class AddNewIncome : AppCompatActivity() {
 
                                 uploadTask
                                     .addOnSuccessListener {
-                                        Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this,
+                                            "Successfully uploaded",
+                                            Toast.LENGTH_SHORT).show()
                                     }
                                     .addOnFailureListener {
                                         Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
                                     }
                             }
-                                val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                                val resetViewBuilder =
-                                    AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
-                                val displayDialog = resetViewBuilder.show()
-                                displayDialog.setOnDismissListener{
-                                    val intent = Intent(this, HomeActivity::class.java)
-                                    startActivity(intent)
-                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                    finish()
+                            val resetView =
+                                LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                            val resetViewBuilder =
+                                AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                    .setView(resetView)
+                            val displayDialog = resetViewBuilder.show()
+                            displayDialog.setOnDismissListener {
+                                val intent = Intent(this, HomeActivity::class.java)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.slide_in_right,
+                                    R.anim.slide_out_left)
+                                finish()
                             }
 
                         }
@@ -331,15 +330,19 @@ class AddNewIncome : AppCompatActivity() {
             userID = currentUser.uid
         }
     }
-    //After get attachment
-    override fun onActivityResult(requestCode:Int, resultCode: Int, data:Intent?){
 
-        incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+    //After get attachment
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
+            0,
+            0,
+            0)
         incomeAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
         incomeAddAttachment_btn.text = "Remove Attachment"
 
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             imageBitmap = takenImage
@@ -351,16 +354,14 @@ class AddNewIncome : AppCompatActivity() {
             incomeAttachment = true
             attachmentType = "camera"
 
-        }
-        else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             imageUri = data?.data!!
             attachment_img.setImageURI(imageUri)
 
             incomeAttachment = true
             attachmentType = "image"
-        }
-        else if(requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachmentDocument_txt.visibility = View.VISIBLE
             documentUri = data?.data!!
             attachmentDocument_txt.text = getFileName(documentUri)
@@ -368,18 +369,20 @@ class AddNewIncome : AppCompatActivity() {
             incomeAttachment = true
             attachmentType = "document"
 
-        }
-        else{
+        } else {
             attachmentDocument_txt.visibility = View.GONE
             attachment_img.visibility = View.GONE
-            incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24, 0, 0, 0)
+            incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                0,
+                0,
+                0)
             incomeAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
             incomeAddAttachment_btn.text = "Add Attachment"
         }
 
     }
 
-    private fun openAttachmentBottomSheetDialog(){
+    private fun openAttachmentBottomSheetDialog() {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_attachment)
 
@@ -393,10 +396,11 @@ class AddNewIncome : AppCompatActivity() {
 
             photoFile = getPhotoFile(FILE_NAME)
 
-            val fileProvider = FileProvider.getUriForFile(this,"com.example.jom_finance.fileprovider", photoFile)
+            val fileProvider =
+                FileProvider.getUriForFile(this, "com.example.jom_finance.fileprovider", photoFile)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
 
-            if(takePictureIntent.resolveActivity(this.packageManager) != null)
+            if (takePictureIntent.resolveActivity(this.packageManager) != null)
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
             else
                 Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show()
@@ -418,7 +422,8 @@ class AddNewIncome : AppCompatActivity() {
             //open document picker
             val pickDocumentIntent = Intent(Intent.ACTION_GET_CONTENT)
             pickDocumentIntent.type = "application/pdf"
-            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"), DOCUMENT_REQUEST_CODE)
+            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"),
+                DOCUMENT_REQUEST_CODE)
 
             bottomSheet.dismiss()
         }
@@ -427,13 +432,13 @@ class AddNewIncome : AppCompatActivity() {
     }
 
     // TODO: 5/11/2021 COULD PUT THE FOLLOWING THREE FUNCTIONS IN A UTIL FILE
-    private fun getPhotoFile(fileName: String): File{
+    private fun getPhotoFile(fileName: String): File {
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, "jpg", storageDirectory)
     }
 
     //get PDF file name
-    private fun Context.getFileName(uri: Uri): String? = when(uri.scheme) {
+    private fun Context.getFileName(uri: Uri): String? = when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let(::File)?.name
     }
@@ -441,18 +446,21 @@ class AddNewIncome : AppCompatActivity() {
     private fun Context.getContentFileName(uri: Uri): String? = runCatching {
         contentResolver.query(uri, null, null, null, null)?.use { cursor ->
             cursor.moveToFirst()
-            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME).let(cursor::getString)
+            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                .let(cursor::getString)
         }
     }.getOrNull()
 
     //REPEAT TRANSACTION
-    private fun openRepeatBottomSheetDialog(){
+    private fun openRepeatBottomSheetDialog() {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_repeat)
 
         val confirmBtn = bottomSheet.findViewById<Button>(R.id.repeatConfirm_btn) as Button
-        val freqRadioGroup = bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
-        val datePicker = bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
+        val freqRadioGroup =
+            bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
+        val datePicker =
+            bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
 
 
         confirmBtn.setOnClickListener {
