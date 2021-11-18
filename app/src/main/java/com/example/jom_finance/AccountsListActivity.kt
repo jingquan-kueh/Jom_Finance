@@ -31,12 +31,6 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
             finish()
         }
 
-        addNewAccount_btn.setOnClickListener {
-            val intent = Intent(this, AddNewAccountActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        }
-
         setUpdb()
         recyclerView = accounts_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -46,6 +40,18 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
         accountListAdapter = AccountListAdapter(accountArrayList, this)
         recyclerView.adapter = accountListAdapter
         EventChangeListener()
+
+        transferAmount_btn.setOnClickListener {
+            val intent = Intent(this, TransferActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
+        addNewAccount_btn.setOnClickListener {
+            val intent = Intent(this, AddNewAccountActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
 
     }
 

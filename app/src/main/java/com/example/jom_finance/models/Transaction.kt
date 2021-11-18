@@ -1,5 +1,6 @@
 package com.example.jom_finance.models
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.PropertyName
 
 data class Transaction(
@@ -9,5 +10,6 @@ data class Transaction(
     @get:PropertyName("Transaction_category") @set:PropertyName("Transaction_category") var transactionCategory: String?= null,
     @get:PropertyName("Transaction_description") @set:PropertyName("Transaction_description")var transactionDescription : String?=null,
     @get:PropertyName("Transaction_account") @set:PropertyName("Transaction_account")var transactionAccount : String?= null,
+    @get:PropertyName("Transaction_timestamp") @set:PropertyName("Transaction_timestamp")var transactionTime : Timestamp?= null,
     @get:PropertyName("Transaction_attachment") @set:PropertyName("Transaction_attachment")var transactionAttachment : Boolean?= null,
     )

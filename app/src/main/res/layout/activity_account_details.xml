@@ -104,15 +104,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/transferAmount_btn"
-        style="@style/long_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Transfer"
-        app:backgroundTint="@color/blue"
-        app:cornerRadius="10dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

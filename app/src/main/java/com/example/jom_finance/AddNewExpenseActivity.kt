@@ -1,6 +1,8 @@
 package com.example.jom_finance
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -18,10 +20,10 @@ import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.annotation.VisibleForTesting
 import androidx.core.content.FileProvider
 import com.example.jom_finance.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -30,11 +32,15 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
+import kotlinx.android.synthetic.main.activity_detail_income.*
 import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.bottomsheet_repeat.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 private lateinit var fAuth: FirebaseAuth
@@ -48,6 +54,7 @@ private var transactionAmount: Double = 0.0
 private lateinit var transactionCategory: String
 private lateinit var transactionDescription: String
 private lateinit var transactionAccount: String
+private lateinit var transactionTimestamp : Timestamp
 private  var transactionAttachment: Boolean = false
 
 private const val IMAGE_REQUEST_CODE = 100
@@ -61,7 +68,21 @@ private lateinit var imageUri : Uri
 private lateinit var imageBitmap: Bitmap
 private lateinit var documentUri : Uri
 
-class AddNewExpenseActivity : AppCompatActivity() {
+private var day = 0
+private var month = 0
+private var year = 0
+private var hour = 0
+private var minute = 0
+
+private lateinit var savedDay : String
+private lateinit var savedMonth : String
+private lateinit var savedYear : String
+private lateinit var savedHour : String
+private lateinit var savedMinute : String
+private lateinit var timestampString : String
+
+
+class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_expense)
@@ -94,7 +115,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
         //hide repeat section
         repeat_constraintLayout.visibility = View.GONE
 
-        //hide attachment image
+        //hide attachment image and doc
         attachment_img.visibility = View.GONE
         attachmentDocument_txt.visibility = View.GONE
 
@@ -166,6 +187,31 @@ class AddNewExpenseActivity : AppCompatActivity() {
                 }
         }
 
+        //current date & time
+        val cal = Calendar.getInstance()
+        day = cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR_OF_DAY)
+        minute = cal.get(Calendar.MINUTE)
+
+        savedDay = String.format("%02d", day)
+        savedMonth = String.format("%02d", month)
+        savedYear = year.toString()
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+        expenseDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
+        expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+        timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+        expenseDate_edit.setOnClickListener{
+            DatePickerDialog(this,  this, year, month, day).show()
+        }
+
+        expenseTime_edit.setOnClickListener {
+            TimePickerDialog(this, this, hour, minute, true).show()
+        }
+
         expenseAddAttachment_btn.setOnClickListener {
             if(attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE){
                 openAttachmentBottomSheetDialog()
@@ -207,11 +253,35 @@ class AddNewExpenseActivity : AppCompatActivity() {
 
     }
 
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        savedDay = String.format("%02d", dayOfMonth)
+        savedMonth =String.format("%02d", month + 1)
+        savedYear = year.toString()
+
+        expenseDate_edit.text = Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+    }
+
+    override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+
+        expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+    }
+
+
+
     private fun addExpenseToDatabase(){
         transactionAmount = expenseAmount_edit.text.toString().toDouble()
         transactionCategory = expenseCategory_ddl.editText?.text.toString()
         transactionDescription = expenseDescription_outlinedTextField.editText?.text.toString()
         transactionAccount = expenseAccount_ddl.editText?.text.toString()
+
+        timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+        val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+        val date : Date = sdf.parse(timestampString)
+
+        transactionTimestamp = Timestamp(date)
+
 
         try{
             fStore.collection("transaction/$userID/Transaction_detail")
@@ -225,7 +295,7 @@ class AddNewExpenseActivity : AppCompatActivity() {
                         val documentReference = fStore.collection("transaction/$userID/Transaction_detail").document("transaction$transactionNum")
 
                         //transaction details
-                        val transactionDetails = Transaction("transaction$transactionNum", TRANSACTION_TYPE, transactionAmount, transactionCategory, transactionDescription, transactionAccount, transactionAttachment)
+                        val transactionDetails = Transaction("transaction$transactionNum", TRANSACTION_TYPE, transactionAmount, transactionCategory, transactionDescription, transactionAccount, transactionTimestamp, transactionAttachment)
 
                         //Insert to database
                         documentReference.set(transactionDetails).addOnCompleteListener {

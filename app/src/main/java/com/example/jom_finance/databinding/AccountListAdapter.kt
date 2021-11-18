@@ -21,8 +21,10 @@ class AccountListAdapter(private val accountList : ArrayList<Account>, private v
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val account : Account = accountList[position]
+
         holder.name.text = account.accountName.toString()
-        holder.amount.text = "RM ${account.accountAmount.toString()}"
+
+        holder.amount.text = "RM " + String.format("%.2f", account.accountAmount)
 
         //Icon
         val loader = IconPackLoader(holder.icon.context)

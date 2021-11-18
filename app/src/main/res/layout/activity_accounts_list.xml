@@ -86,10 +86,20 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <Button
+        android:id="@+id/transferAmount_btn"
+        style="@style/long_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Transfer"
+        app:backgroundTint="@color/blue"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/addNewAccount_btn" />
+
+    <Button
         android:id="@+id/addNewAccount_btn"
         style="@style/long_button"
         android:layout_marginBottom="20dp"
-        android:text="+ Add New account"
+        android:text="Add New account"
         app:backgroundTint="@color/iris"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
