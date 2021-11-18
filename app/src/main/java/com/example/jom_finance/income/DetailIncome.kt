@@ -27,15 +27,15 @@ class DetailIncome : AppCompatActivity() {
         setContentView(R.layout.activity_detail_income)
         setUpdb()
         // Get intent string from recycleview
-        val incomeID = intent.getStringExtra("incomeName")
-        if(incomeID != null){
-            db.collection("incomes/$userID/Income_detail").document(incomeID)
+        val transactionID = intent.getStringExtra("transactionName")
+        if(transactionID != null){
+            db.collection("transaction/$userID/Transaction_detail").document(transactionID)
                 .get().addOnSuccessListener { document ->
-                    amount = document.getDouble("Income_amount")!!
-                    category = document.getString("Income_category").toString()
-                    description =  document.getString("Income_description").toString()
-                    account = document.getString("Income_account").toString()
-                    attachment = document.getBoolean("Income_attachment") == true
+                    amount = document.getDouble("Transaction_amount")!!
+                    category = document.getString("Transaction_category").toString()
+                    description =  document.getString("Transaction_description").toString()
+                    account = document.getString("Transaction_account").toString()
+                    attachment = document.getBoolean("Transaction_attachment") == true
 
                     amountIncome.text = "RM "+ amount
                     incomeCategoryDetail_text.text = category
@@ -56,7 +56,7 @@ class DetailIncome : AppCompatActivity() {
         editIncome_btn.setOnClickListener{
             val intent = Intent(this, AddNewIncome::class.java)
             intent.putExtra("editIncome",true)
-            intent.putExtra("incomeID",incomeID)
+            intent.putExtra("incomeID",transactionID)
             intent.putExtra("incomeAmount",amount)
             intent.putExtra("incomeCategory", category)
             intent.putExtra("incomeDescription", description)

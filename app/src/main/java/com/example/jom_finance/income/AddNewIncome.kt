@@ -15,6 +15,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
@@ -65,7 +66,22 @@ class AddNewIncome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_income)
+
         setupDataBase()
+        fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type","income")
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val num = it.result.size()
+                    Log.d("NewIncome",num.toString())
+                    Log.d("NewIncome",it.result.toString())
+                }
+            }
+
+
+
+
+
         val editIncomeIntent = intent.getBooleanExtra("editIncome",false)
         if(editIncomeIntent){
             val amount = intent.getDoubleExtra("incomeAmount",0.0)
@@ -194,6 +210,27 @@ class AddNewIncome : AppCompatActivity() {
                //store attachment if necessary
                if(incomeAttachment){
 
+                   val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/${transaction.transactionName}")
+                   lateinit var uploadTask: UploadTask
+
+                   when (attachmentType){
+                       "camera" -> {
+                           val baos = ByteArrayOutputStream()
+                           imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                           val data = baos.toByteArray()
+                           uploadTask = storageReference.putBytes(data)
+                       }
+                       "image" -> uploadTask = storageReference.putFile(imageUri)
+                       "document" -> uploadTask = storageReference.putFile(documentUri)
+                   }
+
+                   uploadTask
+                       .addOnSuccessListener {
+                           Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+                       }
+                       .addOnFailureListener {
+                           Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                       }
                }
 
                documentReference =
@@ -219,7 +256,7 @@ class AddNewIncome : AppCompatActivity() {
     private fun addIncomeToDatabase(){
         var lastIncome by Delegates.notNull<Int>()
         try {
-            fStore.collection("incomes/$userID/Income_detail")
+            fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type","income")
                 .get()
                 .addOnCompleteListener {
                     if (it.isSuccessful) {
@@ -232,19 +269,15 @@ class AddNewIncome : AppCompatActivity() {
 
                         //Set Transaction Pathway
                         var documentReference =
-                            fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
-                        //Get Income Detail
-                        var incomeDetail = Income("income$newIncome", incomeAmount, incomeAccount,
-                            incomeAttachment, incomeCategory, incomeDescription)
+                            fStore.collection("transaction/$userID/Transaction_detail").document("transaction$newIncome")
 
+                        var transaction = Transaction("transaction$newIncome", incomeAmount, incomeAccount,
+                            incomeAttachment, incomeCategory,incomeDescription,TRANSACTION_TYPE)
                         //TODO : Update Total Income Amount
                         //documentReference = fStore.collection("incomes").document(userID).set()
 
                         //Insert Income to FireStore
-                        documentReference.set(incomeDetail).addOnSuccessListener {
-                            var transaction = Transaction(incomeDetail.incomeName, incomeDetail.incomeAmount,
-                                incomeDetail.incomeAccount,incomeDetail.incomeAttachment,incomeDetail.incomeCategory,
-                                incomeDescription, TRANSACTION_TYPE)
+                        documentReference.set(transaction).addOnSuccessListener {
 
                             //store attachment if necessary
                             if(incomeAttachment){
@@ -271,10 +304,6 @@ class AddNewIncome : AppCompatActivity() {
                                         Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
                                     }
                             }
-
-                            documentReference =
-                                fStore.collection("transaction/$userID/Transaction_detail").document("income$newIncome")
-                            documentReference.set(transaction).addOnSuccessListener {
                                 val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
                                 val resetViewBuilder =
                                     AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
@@ -284,7 +313,6 @@ class AddNewIncome : AppCompatActivity() {
                                     startActivity(intent)
                                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                                     finish()
-                                }
                             }
 
                         }

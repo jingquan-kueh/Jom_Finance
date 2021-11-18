@@ -23,7 +23,7 @@ class TransactionListAdapter(
         holder.amount.text = transaction.transactionAmount.toString()
 
         // Set Amount Text Color
-        holder.amount.setTextColor(Color.parseColor("#00A86B"))
+        //holder.amount.setTextColor(Color.parseColor("#00A86B"))
     }
 
     override fun getItemCount(): Int {

@@ -56,7 +56,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
-        db.collection("incomes/$userID/Income_detail")
+        db.collection("transaction/$userID/Transaction_detail")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){
@@ -86,13 +86,13 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             val type = item.transactionType
             if(type == "income"){
                 val intent = Intent(this, DetailIncome::class.java)
-                intent.putExtra("incomeName",item.transactionName)
+                intent.putExtra("transactionName",item.transactionName)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
             }else{
                 val intent = Intent(this, DetailIncome::class.java)
-                intent.putExtra("expenseName",item.transactionName)
+                intent.putExtra("transactionName",item.transactionName)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 Toast.makeText(this, "expenses Clicked", Toast.LENGTH_SHORT).show()
