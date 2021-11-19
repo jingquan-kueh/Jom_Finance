@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.jom_finance.income.AddNewIncome
@@ -36,10 +37,39 @@ class HomeActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentHomeView) as NavHostFragment
+
         val navController = navHostFragment.navController
 
         val bottomNav = bottomNav
-        bottomNav.setupWithNavController(navController)
+        //bottomNav.setupWithNavController(navController)
+
+        val options = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.slide_in_up)
+            .setExitAnim(R.anim.slide_out_up)
+            .setPopEnterAnim(R.anim.slide_in_up)
+            .setPopExitAnim(R.anim.slide_out_up)
+            .setPopUpTo(navController.graph.startDestination, false)
+            .build()
+
+        bottomNav.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.home_fragment -> {
+                    navController.navigate(R.id.home_fragment,null,options)
+                }
+                R.id.transaction_fragment -> {
+                    navController.navigate(R.id.transaction_fragment,null,options)
+                }
+                R.id.profile_fragment -> {
+                    navController.navigate(R.id.profile_fragment,null,options)
+                }
+            }
+            true
+        }
+
+        bottomNav.setOnNavigationItemReselectedListener { item ->
+            return@setOnNavigationItemReselectedListener}
+
 
         fab_add.setOnClickListener{
             onAddButtonClicked()

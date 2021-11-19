@@ -235,7 +235,7 @@ class AddNewIncome : AppCompatActivity() {
                 }
             }
         } catch (ex: Exception) {
-
+            Toast.makeText(this, " " + ex.message, Toast.LENGTH_SHORT).show()
         }
     }
 

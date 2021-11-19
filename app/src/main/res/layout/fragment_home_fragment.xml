@@ -16,8 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/homeToolBar"
@@ -109,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
-                android:text="RM 9,400.00"
+                android:text="RM 1.00"
                 android:textAlignment="center"
                 android:textColor="#161719"
                 android:textSize="32sp"
@@ -156,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_marginLeft="10dp"
-                        android:text="RM 5,000.00"
+                        android:text="RM 1.00"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:textStyle="bold"
@@ -196,7 +195,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:layout_marginLeft="10dp"
-                        android:text="RM 1,200.00"
+                        android:text="RM 1.00"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:textStyle="bold"

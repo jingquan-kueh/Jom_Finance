@@ -60,6 +60,9 @@ class VoiceActivity : AppCompatActivity() {
                 val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
                 StrictMode.setThreadPolicy(policy)
                 val text = textClass().textClass(result)
+                if(text == "false"){
+                    Toast.makeText(this, "Error : Text does not have any number.", Toast.LENGTH_SHORT).show()
+                }
                 Toast.makeText(this, text.toString(), Toast.LENGTH_SHORT).show()
             }
         }
