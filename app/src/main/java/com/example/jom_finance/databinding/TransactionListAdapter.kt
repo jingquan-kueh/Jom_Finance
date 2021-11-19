@@ -1,7 +1,7 @@
 package com.example.jom_finance.databinding
 
 import android.graphics.Color
-import android.graphics.Color.WHITE
+import android.graphics.Color.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -27,8 +27,17 @@ class TransactionListAdapter(
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val transaction : Transaction = transactionList[position]
-        holder.title.text = transaction.transactionName.toString()
-        holder.amount.text = transaction.transactionAmount.toString()
+        val amount : Double? = transaction.transactionAmount
+        holder.title.text = transaction.transactionCategory.toString()
+
+        if(transaction.transactionType.equals("income")){
+            holder.amount.text = String.format("+ RM %.2f",amount)
+            holder.amount.setTextColor(parseColor("#00A86B"))
+        }else{
+            holder.amount.text = String.format("- RM %.2f",amount)
+            holder.amount.setTextColor(RED)
+        }
+        //holder.description.text = transaction.transactionDescription.toString()
         val IconCategory = categoryHash[transaction.transactionCategory]?.categoryIcon
         val IconColor = categoryHash[transaction.transactionCategory]?.categoryColor
         //Icon
@@ -56,8 +65,10 @@ class TransactionListAdapter(
     inner class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView),View.OnClickListener{
         val title : TextView = itemView.findViewById(R.id.transaction_title)
         val amount : TextView = itemView.findViewById(R.id.transaction_amount)
+        val description : TextView = itemView.findViewById(R.id.transaction_description)
         val icon : ImageView = itemView.findViewById(R.id.icon)
         val iconBg : ImageView = itemView.findViewById(R.id.icon_bg)
+        val time : TextView = itemView.findViewById(R.id.transaction_time)
         init {
             itemView.setOnClickListener(this)
         }

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.Transaction_fragment"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,14 +35,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.mlsdev.animatedrv.AnimatedRecyclerView
                     android:id="@+id/transaction_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingBottom="200dp"
-                    android:scrollbars="vertical">
+                    android:scrollbars="vertical"
+                    app:animationDuration="600"
+                    app:layoutAnimation="@anim/layout_animation_from_bottom"
+                    app:layoutManagerOrientation="vertical"
+                    app:layoutManagerReverse="false"
+                    app:layoutManagerType="linear" >
 
-                </androidx.recyclerview.widget.RecyclerView>
+                </com.mlsdev.animatedrv.AnimatedRecyclerView>
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>

@@ -33,6 +33,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_new_income.*
+import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Exception
@@ -229,7 +230,7 @@ class AddNewIncome : AppCompatActivity() {
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                        finish()
+                        finishAffinity()
                     }
                 }
             }
@@ -266,8 +267,16 @@ class AddNewIncome : AppCompatActivity() {
                                 incomeCategory,
                                 incomeDescription,
                                 TRANSACTION_TYPE)
-                        //TODO : Update Total Income Amount
-                        //documentReference = fStore.collection("incomes").document(userID).set()
+
+                        fStore.collection("transaction").document(userID)
+                            .get()
+                            .addOnCompleteListener{ value ->
+                                val income_amount : Double = value.result["Income"].toString().toDouble()
+                                val newIncomeAmount : Double = income_amount + incomeAmount
+
+                                //Update Income Amount
+                                fStore.collection("transaction").document(userID).update("Income",newIncomeAmount)
+                            }
 
                         //Insert Income to FireStore
                         documentReference.set(transaction).addOnSuccessListener {
@@ -311,7 +320,7 @@ class AddNewIncome : AppCompatActivity() {
                                 startActivity(intent)
                                 overridePendingTransition(R.anim.slide_in_right,
                                     R.anim.slide_out_left)
-                                finish()
+                                finishAffinity()
                             }
 
                         }
@@ -329,6 +338,12 @@ class AddNewIncome : AppCompatActivity() {
         if (currentUser != null) {
             userID = currentUser.uid
         }
+    }
+
+    //For reset Income
+    private fun resetIncome(){
+        //Reset Income Amount
+        fStore.collection("transaction").document(userID).update("Income",0)
     }
 
     //After get attachment

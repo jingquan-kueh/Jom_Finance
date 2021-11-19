@@ -18,6 +18,7 @@ import com.example.jom_finance.models.Category
 import com.example.jom_finance.report.FinancialReportActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
 import kotlinx.android.synthetic.main.fragment_transaction_fragment.view.*
 
@@ -25,7 +26,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var userID : String
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: AnimatedRecyclerView
     private lateinit var transactionArrayList : ArrayList<Transaction>
     private lateinit var categoryArrayList : ArrayList<Category>
     private lateinit var categoryHash : HashMap<String, Category>
@@ -49,7 +50,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
             }
         }
         setUpdb()
-        recyclerView = view.home_recyclerView
+        recyclerView = view.transaction_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.isNestedScrollingEnabled = true
         recyclerView.setHasFixedSize(true)
@@ -96,6 +97,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
                         }
                     }
                     transactionListAdapter.notifyDataSetChanged()
+                    recyclerView.scheduleLayoutAnimation()
                 }
             })
 

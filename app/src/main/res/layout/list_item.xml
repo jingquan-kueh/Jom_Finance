@@ -54,23 +54,28 @@
 
             <TextView
                 android:id="@+id/transaction_description"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:text="Buy Some grocery"
                 android:layout_marginLeft="9dp"
                 android:textColor="#91919F"
                 android:textSize="13sp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/icon_bg"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_title" />
 
             <TextView
                 android:id="@+id/transaction_amount"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:text="-RM 120"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:gravity="right"
                 android:textColor="#FD3C4A"
                 android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
