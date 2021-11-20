@@ -70,6 +70,7 @@ class AddNewIncome : AppCompatActivity() {
 
         setupDataBase()
         val editIncomeIntent = intent.getBooleanExtra("editIncome", false)
+        val voiceIncomeIntent = intent.getBooleanExtra("voiceIncome", false)
         if (editIncomeIntent) {
             val amount = intent.getDoubleExtra("incomeAmount", 0.0)
             val category = intent.getStringExtra("incomeCategory")
@@ -86,6 +87,9 @@ class AddNewIncome : AppCompatActivity() {
                 // Show Attachment
             }
 
+        }else if(voiceIncomeIntent){
+            val amount = intent.getDoubleExtra("incomeAmount", 0.0)
+            val description = intent.getStringExtra("incomeDescription")
         }
 
         //category drop down list

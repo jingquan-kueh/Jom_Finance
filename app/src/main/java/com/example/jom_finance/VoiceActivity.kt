@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.os.StrictMode
 import android.provider.Settings
 import android.speech.RecognitionListener
@@ -28,6 +29,8 @@ import kotlin.collections.ArrayList
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isInvisible
+import com.example.jom_finance.income.AddNewIncome
+import com.example.jom_finance.income.DetailIncome
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -46,6 +49,7 @@ class VoiceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_voice)
+        hideComponent()
         var colors = intArrayOf(
             ContextCompat.getColor(this, R.color.color1),
             ContextCompat.getColor(this, R.color.color2),
@@ -56,19 +60,52 @@ class VoiceActivity : AppCompatActivity() {
         var heights = intArrayOf(60, 76, 58, 80, 55)
 
         yesBtn.setOnClickListener{
-            if(result!=null){
+            if(result!=""){
                 val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
                 StrictMode.setThreadPolicy(policy)
                 val text = textClass().textClass(result)
                 if(text == "false"){
                     Toast.makeText(this, "Error : Text does not have any number.", Toast.LENGTH_SHORT).show()
+                }else{
+                    var stringArray: List<String> = text.split(",")
+                    val moneyName = stringArray[0]
+                    val moneyAmount = stringArray[1].toDouble()
+                    val moneyType = stringArray[2]
+                    when(moneyType){
+                        "Income"  -> {
+                            val intent = Intent(this, AddNewIncome::class.java)
+                            intent.putExtra("voiceIncome",true)
+                            intent.putExtra("incomeAmount",moneyAmount)
+                            intent.putExtra("incomeDescription",moneyName)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                            finish()
+                        }
+                        "Expense" -> {
+                            val intent = Intent(this, AddNewIncome::class.java)
+                            intent.putExtra("voiceExpense",true)
+                            intent.putExtra("expenseAmount",moneyAmount)
+                            intent.putExtra("expenseDescription",moneyName)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                            finish()
+                        }
+                        else ->{
+                            //ask income or expenese, popup
+                        }
+
+                    }
                 }
-                Toast.makeText(this, text.toString(), Toast.LENGTH_SHORT).show()
+
             }
+        }
+        noBtn.setOnClickListener{
+            hideComponent()
         }
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
         recognition_view.setSpeechRecognizer(speechRecognizer)
+
         recognition_view.setRecognitionListener(object : RecognitionListenerAdapter() {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onResults(results: Bundle) {
@@ -82,10 +119,26 @@ class VoiceActivity : AppCompatActivity() {
                         recognition_view.play()
 
                     }
-
                 }
-
             }
+
+            override fun onEndOfSpeech() {
+                Handler().postDelayed({
+                   if(result==""){
+                       recognition_view.stop()
+                       voiceActive = false
+                       speechRecognizer.cancel()
+                       showComponent()
+                       onVoiceClick()
+                       recognition_view.play()
+                       hideComponent()
+                       result == ""
+                       statusTxt.text = "Unable to Capture"
+                       speechTxt.text = "NUll..."
+                   }
+                }, 10000)
+            }
+
         })
 
         recognition_view.setColors(colors)
@@ -98,16 +151,35 @@ class VoiceActivity : AppCompatActivity() {
         recognition_view.play()
 
         speakBtn.setOnClickListener {
-            checkVoiceCommandPermission()
+            hideComponent()
             // Add transition / animation when button click, from bottom.
             if(!voiceActive){
+
                 voiceActive = true
+                checkVoiceCommandPermission()
                 onVoiceClick()
                 startRecognition()
                 recognition_view.postDelayed({ startRecognition() },50)
                 result = ""
             }
         }
+    }
+
+    private fun hideComponent(){
+        yesBtn.visibility = View.INVISIBLE
+        noBtn.visibility = View.INVISIBLE
+
+        yesBtn.isClickable = false
+        noBtn.isClickable = false
+    }
+    private fun showComponent(){
+        yesBtn.visibility = View.VISIBLE
+        noBtn.visibility = View.VISIBLE
+        speakBtn.visibility = View.VISIBLE
+
+        yesBtn.isClickable = true
+        noBtn.isClickable = true
+        speakBtn.isClickable = true
     }
 
     private fun startRecognition() {
@@ -127,6 +199,7 @@ class VoiceActivity : AppCompatActivity() {
     private fun showResults(results: Bundle) {
         val matchesFound = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         if (matchesFound != null) {
+            showComponent()
             result = matchesFound.get(0)
             speechTxt.text = result
             statusTxt.text = "Status : DONE !!!"
@@ -153,11 +226,16 @@ class VoiceActivity : AppCompatActivity() {
         setVisibility(voiceActive)
         setAnimation(voiceActive)
     }
+
     private fun setVisibility(voiceActive : Boolean) {
         if(!voiceActive){
+            speakBtn.visibility = View.VISIBLE
+            speakBtn.isClickable = true
             speechTxt.visibility = View.VISIBLE
             recognition_view.visibility = View.INVISIBLE
         }else{
+            speakBtn.visibility = View.INVISIBLE
+            speakBtn.isClickable = false
             speechTxt.visibility = View.INVISIBLE
             recognition_view.visibility = View.VISIBLE
         }

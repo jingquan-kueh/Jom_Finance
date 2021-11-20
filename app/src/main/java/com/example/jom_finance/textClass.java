@@ -16,6 +16,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class textClass {
@@ -25,12 +26,13 @@ public class textClass {
     public String textClass(String inputVoice) throws APIException, AlgorithmException, JSONException {
 
         String moneyName = "";
+        String moneyType = "No";
         double moneyAmount = 0;
         AlgorithmiaClient client = Algorithmia.client("simM1WqQdPsI8nRUsh1Z+n7kMWU1");
-        //String input = "teh ice extra ice for 10 ringgit";
-        String input = inputVoice;
+        String input = "Nasi Lemak 10 Ringgit";
+        //String input = inputVoice;
         Algorithm algo = client.algo("StanfordNLP/Java2NER/0.1.1");
-        algo.setTimeout(300L, java.util.concurrent.TimeUnit.SECONDS); //optional
+        algo.setTimeout(300L, TimeUnit.SECONDS); //optional
         AlgoResponse result = algo.pipe(input);
 
         List<String> stringArray = new ArrayList<>();
@@ -38,6 +40,34 @@ public class textClass {
         for (int i = 0; i < jsonArray.length(); i++) {
             stringArray.add(jsonArray.getString(i).replaceAll("[\\[\\]\"\"]","").trim());
         }
+        // Identify Income or Expense
+        if(stringArray.contains("income") || stringArray.contains("Income")){
+            moneyType = "Income";
+            if(stringArray.contains("income")){
+                int incomeIndex = stringArray.indexOf("income");
+                stringArray.remove(incomeIndex+1);
+                stringArray.remove(incomeIndex);
+            }
+            if(stringArray.contains("Income")){
+                int incomeIndex = stringArray.indexOf("Income");
+                stringArray.remove(incomeIndex+1);
+                stringArray.remove(incomeIndex);
+            }
+        }
+        if(stringArray.contains("expense") || stringArray.contains("Expense")){
+            moneyType = "Expense";
+            if(stringArray.contains("expense")){
+                int expenseIndex = stringArray.indexOf("expense");
+                stringArray.remove(expenseIndex+1);
+                stringArray.remove(expenseIndex);
+            }
+            if(stringArray.contains("Expense")){
+                int expenseIndex = stringArray.indexOf("Expense");
+                stringArray.remove(expenseIndex+1);
+                stringArray.remove(expenseIndex);
+            }
+        }
+
         if(stringArray.contains("MONEY")){
             int moneyIndex = stringArray.lastIndexOf("MONEY");
             if(isNumeric(stringArray.get(moneyIndex-1))){
@@ -47,6 +77,7 @@ public class textClass {
             }
             while(stringArray.contains("MONEY")){
                 moneyIndex = stringArray.lastIndexOf("MONEY");
+                stringArray.remove(moneyIndex);
                 stringArray.remove(moneyIndex-1);
             }
 
@@ -109,7 +140,7 @@ public class textClass {
                 String listString = String.join(" ", stringArray);
                 Log.d(TAG,"listString : " + listString);
                 algo = client.algo("demo/text_processing_demo/0.1.0");
-                algo.setTimeout(300L, java.util.concurrent.TimeUnit.SECONDS); //optional
+                algo.setTimeout(300L, TimeUnit.SECONDS); //optional
                 result = algo.pipe(listString);
 
                 ArrayList<String> stringArray2 = new ArrayList<String>();
@@ -121,7 +152,7 @@ public class textClass {
                 moneyName = listString2;
             }
         }
-        return moneyName +"," + moneyAmount;
+        return moneyName + "," + moneyAmount + "," + moneyType;
     }
 
     public static boolean isNumeric(String string) {
