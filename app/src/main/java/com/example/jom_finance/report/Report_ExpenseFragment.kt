@@ -16,7 +16,7 @@ import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.mlsdev.animatedrv.AnimatedRecyclerView
-import kotlinx.android.synthetic.main.fragment_report__expense.view.*
+import kotlinx.android.synthetic.main.fragment_report_expense.view.*
 
 class Report_ExpenseFragment : Fragment(),TransactionListAdapter.OnItemClickListener {
 
@@ -38,7 +38,7 @@ class Report_ExpenseFragment : Fragment(),TransactionListAdapter.OnItemClickList
         savedInstanceState: Bundle?,
     ): View? {
         setUpdb()
-        val view : View = inflater.inflate(R.layout.fragment_report__expense, container, false)
+        val view : View = inflater.inflate(R.layout.fragment_report_expense, container, false)
         recyclerView = view.financialReport_recyclerView_Expense
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.isNestedScrollingEnabled = true
