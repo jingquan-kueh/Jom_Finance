@@ -38,6 +38,7 @@ class ReportActivity : AppCompatActivity() {
             .add(R.id.chartFragment, Line_fragment())
             .commit()
 
+
         toggleChartGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             isLine = (checkedId == R.id.lineChartBtn)
             if (isLine) {
@@ -54,16 +55,37 @@ class ReportActivity : AppCompatActivity() {
                     .commit()
             }
         }
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.Report_Recycle_Fragment, Report_ExpenseFragment())
+            .commit()
+
         toggleExpenseIncomeGroup.addOnButtonCheckedListener{ group, checkedId, isChecked ->
             isExpense = (checkedId == R.id.ExpenseReportBtn)
+
             if(isExpense){
                 ExpenseReportBtn.setTextColor(ContextCompat.getColor(this,R.color.iris))
                 IncomeReportBtn.setTextColor(ContextCompat.getColor(this,R.color.black))
+
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
+                    .replace(R.id.Report_Recycle_Fragment, Report_ExpenseFragment())
+                    .commit()
+
             }else{
                 ExpenseReportBtn.setTextColor(ContextCompat.getColor(this,R.color.black))
                 IncomeReportBtn.setTextColor(ContextCompat.getColor(this,R.color.iris))
+
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+                    .replace(R.id.Report_Recycle_Fragment, Report_IncomeFragment())
+                    .commit()
             }
         }
+
+
+
+
 
     }
     private fun changeState(isLine : Boolean){

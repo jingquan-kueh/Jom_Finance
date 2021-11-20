@@ -2,6 +2,7 @@ package com.example.jom_finance
 
 import android.Manifest
 import android.Manifest.permission.RECORD_AUDIO
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -32,6 +34,7 @@ import androidx.core.view.isInvisible
 import com.example.jom_finance.income.AddNewIncome
 import com.example.jom_finance.income.DetailIncome
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.voice_popup.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -91,7 +94,30 @@ class VoiceActivity : AppCompatActivity() {
                             finish()
                         }
                         else ->{
-                            //ask income or expenese, popup
+                            val resetView = LayoutInflater.from(this).inflate(R.layout.voice_popup, null)
+                            val resetViewBuilder =
+                                AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                            val displayDialog = resetViewBuilder.show()
+                            // Income btn Click
+                            resetView.voicePopupIncomeBtn.setOnClickListener{
+                                val intent = Intent(this, AddNewIncome::class.java)
+                                intent.putExtra("voiceIncome",true)
+                                intent.putExtra("incomeAmount",moneyAmount)
+                                intent.putExtra("incomeDescription",moneyName)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                                finish()
+                            }
+                            // Expense btn Click
+                            resetView.voicePopupExpenseBtn.setOnClickListener{
+                                val intent = Intent(this, AddNewIncome::class.java)
+                                intent.putExtra("voiceExpense",true)
+                                intent.putExtra("expenseAmount",moneyAmount)
+                                intent.putExtra("expenseDescription",moneyName)
+                                startActivity(intent)
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                                finish()
+                            }
                         }
 
                     }
@@ -152,9 +178,10 @@ class VoiceActivity : AppCompatActivity() {
 
         speakBtn.setOnClickListener {
             hideComponent()
+            result = ""
+            speechTxt.text="..."
             // Add transition / animation when button click, from bottom.
             if(!voiceActive){
-
                 voiceActive = true
                 checkVoiceCommandPermission()
                 onVoiceClick()

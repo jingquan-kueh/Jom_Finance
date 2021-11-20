@@ -37,7 +37,7 @@ class TransactionListAdapter(
             holder.amount.text = String.format("- RM %.2f",amount)
             holder.amount.setTextColor(RED)
         }
-        //holder.description.text = transaction.transactionDescription.toString()
+        holder.description.text = transaction.transactionDescription.toString()
         val IconCategory = categoryHash[transaction.transactionCategory]?.categoryIcon
         val IconColor = categoryHash[transaction.transactionCategory]?.categoryColor
         //Icon

@@ -29,8 +29,8 @@ public class textClass {
         String moneyType = "No";
         double moneyAmount = 0;
         AlgorithmiaClient client = Algorithmia.client("simM1WqQdPsI8nRUsh1Z+n7kMWU1");
-        String input = "Nasi Lemak 10 Ringgit";
-        //String input = inputVoice;
+        //String input = "Nasi Lemak 10 Ringgit";
+        String input = inputVoice;
         Algorithm algo = client.algo("StanfordNLP/Java2NER/0.1.1");
         algo.setTimeout(300L, TimeUnit.SECONDS); //optional
         AlgoResponse result = algo.pipe(input);

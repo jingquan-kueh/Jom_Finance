@@ -90,6 +90,8 @@ class AddNewIncome : AppCompatActivity() {
         }else if(voiceIncomeIntent){
             val amount = intent.getDoubleExtra("incomeAmount", 0.0)
             val description = intent.getStringExtra("incomeDescription")
+            amountField.setText(amount.toString())
+            DescriptionField.setText(description)
         }
 
         //category drop down list
