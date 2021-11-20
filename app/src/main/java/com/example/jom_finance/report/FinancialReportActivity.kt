@@ -38,13 +38,13 @@ class FinancialReportActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_financial_report)
         val myViewPagerAdapter = MyViewPagerAdapter()
+        financial_view_pager.offscreenPageLimit = 4
         financial_view_pager.adapter = myViewPagerAdapter
         categoryArrayList = arrayListOf()
         categoryHash = hashMapOf()
         setUpdb()
         readDB()
-        // TODO : Solve When Scroll at 3 page will reset first page
-        //myViewPagerAdapter.saveState()
+
     }
 
     class MyViewPagerAdapter : PagerAdapter() {
@@ -61,9 +61,6 @@ class FinancialReportActivity : AppCompatActivity() {
                 container.addView(it)
             }
 
-        override fun saveState(): Parcelable? {
-            return super.saveState()
-        }
         override fun getCount(): Int {
             return layouts.count()
         }
