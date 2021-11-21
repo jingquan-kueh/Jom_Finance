@@ -44,7 +44,6 @@ class FinancialReportActivity : AppCompatActivity() {
         categoryHash = hashMapOf()
         setUpdb()
         readDB()
-
     }
 
     class MyViewPagerAdapter : PagerAdapter() {
@@ -163,6 +162,8 @@ class FinancialReportActivity : AppCompatActivity() {
                     report_expense_icon_bg.setColorFilter(IconExpenseColor)
                 }
             }
+        // Budget limit
+
     }
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()

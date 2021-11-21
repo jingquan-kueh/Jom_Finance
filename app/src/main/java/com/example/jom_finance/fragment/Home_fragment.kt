@@ -56,11 +56,9 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         categoryArrayList = arrayListOf()
         categoryHash = hashMapOf()
         transactionListAdapter = TransactionListAdapter(transactionArrayList,categoryHash,this)
-
         recyclerView.adapter = transactionListAdapter
 
         EventChangeListener()
-
         // Inflate the layout for this fragment
         return view
     }

@@ -16,6 +16,7 @@ import com.example.jom_finance.databinding.TransactionListAdapter
 import com.example.jom_finance.income.DetailIncome
 import com.example.jom_finance.models.Category
 import com.example.jom_finance.report.FinancialReportActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.mlsdev.animatedrv.AnimatedRecyclerView
@@ -46,8 +47,11 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
         view.toFinancialReportBtn.setOnClickListener{
             requireActivity().run{
                 startActivity(Intent(this, FinancialReportActivity::class.java))
-                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
+        }
+        view.filterBtn.setOnClickListener{
+            openAttachmentBottomSheetDialog(it)
         }
         setUpdb()
         recyclerView = view.transaction_recyclerView
@@ -65,7 +69,11 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
         // Inflate the layout for this fragment
         return view
     }
-
+    private fun openAttachmentBottomSheetDialog(view : View) {
+        val bottomSheet = BottomSheetDialog(view.context)
+        bottomSheet.setContentView(R.layout.bottomsheet_filter)
+        bottomSheet.show()
+    }
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
         db.collection("transaction/$userID/Transaction_detail")

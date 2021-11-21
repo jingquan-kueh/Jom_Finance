@@ -31,7 +31,6 @@ class MainActivity :AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splashscreen)
-
         firstTimeCheck()
         setupDataBase()
 
@@ -40,7 +39,6 @@ class MainActivity :AppCompatActivity(){
 
     // No login, show splashscreen
     // Logged, change perference to notFirst/ logged
-
 
     private fun firstTimeCheck(){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
