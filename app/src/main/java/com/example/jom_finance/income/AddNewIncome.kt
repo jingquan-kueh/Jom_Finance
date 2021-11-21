@@ -245,7 +245,7 @@ class AddNewIncome : AppCompatActivity() {
         }
     }
 
-    private fun haddIncomeToDatabase() {
+    private fun addIncomeToDatabase() {
         var lastIncome by Delegates.notNull<Int>()
         try {
             fStore.collection("transaction/$userID/Transaction_detail")
