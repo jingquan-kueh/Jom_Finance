@@ -1,23 +1,22 @@
 package com.example.jom_finance.databinding
 
-import android.graphics.Color.BLACK
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.R
 import com.example.jom_finance.models.Budget
+import com.example.jom_finance.models.Category
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
-
-class BudgetListAdapter (private val budgetList : ArrayList<Budget>, private val listener : OnItemClickListener) : RecyclerView.Adapter<BudgetListAdapter.ListViewHolder>(){
+class BudgetListAdapter (
+    private val budgetList : ArrayList<Budget>,
+    private val categoryHash : HashMap<String,Category>,
+    private val listener : OnItemClickListener) : RecyclerView.Adapter<BudgetListAdapter.ListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BudgetListAdapter.ListViewHolder{
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_budget,parent,false)
@@ -29,10 +28,11 @@ class BudgetListAdapter (private val budgetList : ArrayList<Budget>, private val
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val budget : Budget = budgetList[position]
+        val color = categoryHash[budget.budgetCategory]?.categoryColor
 
         holder.category.text = budget.budgetCategory.toString()
 
-        holder.category.compoundDrawables[0].setTint(budget.budgetColor!!)
+
 
         val budgetAmount =  budget.budgetAmount!!
         val budgetSpent = budget.budgetSpent!!
@@ -50,7 +50,11 @@ class BudgetListAdapter (private val budgetList : ArrayList<Budget>, private val
         val percentage = (budgetSpent / budgetAmount) * 100
         holder.remainingBar.progress = percentage.toInt()
 
-        holder.remainingBar.setIndicatorColor(budget.budgetColor!!)
+        if(color != null){
+            holder.category.compoundDrawables[0].setTint(color)
+            holder.remainingBar.setIndicatorColor(color)
+        }
+
 
         holder.details.text = "RM$budgetSpentText of RM$budgetAmountText"
 

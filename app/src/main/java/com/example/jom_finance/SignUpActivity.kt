@@ -129,14 +129,14 @@ class SignUpActivity : AppCompatActivity(){
 
     private fun googleSetup() {
         // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+/*        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         // Initialize Firebase Auth
-        auth = Firebase.auth
+        auth = Firebase.auth*/
     }
 
     private fun googleSignIn() {

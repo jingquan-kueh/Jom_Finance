@@ -196,7 +196,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         minute = cal.get(Calendar.MINUTE)
 
         savedDay = String.format("%02d", day)
-        savedMonth = String.format("%02d", month)
+        savedMonth = String.format("%02d", month + 1)
         savedYear = year.toString()
         savedHour = String.format("%02d", hour)
         savedMinute = String.format("%02d", minute)
@@ -243,6 +243,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
             addExpenseToDatabase()
             updateBudget()
+            updateAccount()
 
         }
 
@@ -288,7 +289,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 .get()
                 .addOnCompleteListener {
                     if(it.isSuccessful){
-                        //set pathway
 
                         transactionNum = it.result.size().inc()
 
@@ -301,6 +301,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                         documentReference.set(transactionDetails).addOnCompleteListener {
                             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                         }
+
                     }
 
                     //store attachment if necessary
@@ -335,15 +336,34 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
     }
 
     private fun updateBudget(){
-        val budgetRef = fStore.collection("budget/$userID/November-2021").document(transactionCategory)
+        val monthHashMap : HashMap<Int, String> = hashMapOf(
+            1 to "January",
+            2 to "February",
+            3 to "March",
+            4 to "April",
+            5 to "May",
+            6 to "June",
+            7 to "July",
+            8 to "August",
+            9 to "September",
+            10 to "October",
+            11 to "November",
+            12 to "December"
+        )
 
-        budgetRef
+        val budgetMonth = savedMonth.toInt()
+        val budgetDate = monthHashMap[budgetMonth]  + " $savedYear"
+        val budgetRef = fStore.collection("budget/$userID/budget_detail")
+
+        budgetRef.whereEqualTo("budget_date", budgetDate).whereEqualTo("budget_category", transactionCategory)
             .get()
-            .addOnSuccessListener { document ->
+            .addOnSuccessListener {
+                for (document in it.documents)
                 if(document.exists()){
+                    val budgetID = document.getString("budget_id")!!
                     var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
                     budgetSpent += transactionAmount
-                    budgetRef
+                    budgetRef.document(budgetID)
                         .update("budget_spent", budgetSpent)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
@@ -354,6 +374,27 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             }
             .addOnFailureListener {
                 Log.w(ContentValues.TAG, "Error updating budget", it)
+            }
+    }
+
+    private fun updateAccount(){
+        val accountRef = fStore.collection("accounts/$userID/account_detail").document(transactionAccount)
+
+        accountRef
+            .get()
+            .addOnSuccessListener { document ->
+                if(document.exists()){
+                    var accountAmount = document.data?.getValue("account_amount").toString().toDouble()
+                    accountAmount -= transactionAmount
+                    accountRef
+                        .update("account_amount", accountAmount)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Updated account", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Log.w(ContentValues.TAG, "Error updating account amount", it)
             }
     }
 

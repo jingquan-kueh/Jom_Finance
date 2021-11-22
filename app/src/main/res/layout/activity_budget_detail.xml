@@ -24,12 +24,10 @@
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/back_arrow_white"
             app:tint="@color/black"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="12dp" />
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         <TextView
-            android:id="@+id/heading_Category"
+            android:id="@+id/heading_Budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -40,7 +38,7 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/deleteCategory_btn"
+            android:id="@+id/deleteBudget_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
@@ -48,7 +46,7 @@
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/trash"
             app:tint="@color/black"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"/>
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -59,6 +57,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_budget_category"
         android:drawableLeft="@drawable/ic_baseline_shopping_cart_24"
+        android:drawablePadding="5dp"
         android:padding="10dp"
         android:text=" Shopping"
         android:textColor="@color/black"

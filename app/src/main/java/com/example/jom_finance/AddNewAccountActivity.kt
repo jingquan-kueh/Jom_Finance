@@ -15,6 +15,7 @@ import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import kotlinx.android.synthetic.main.activity_add_new_account.*
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Color.BLACK
 import android.text.Editable
 import android.util.Log
@@ -73,6 +74,17 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
             setColor(accountColor)
 
+            addNewAccountConfirm_btn.setOnClickListener {
+                updateAccount()
+                val intent = Intent(this, AccountDetailsActivity::class.java)
+                intent.putExtra("account_name", accountName)
+                intent.putExtra("account_amount", accountAmount)
+                intent.putExtra("account_icon", accountIcon)
+                intent.putExtra("account_color", accountColor)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            }
+
         }else{
             //Load default icon
             val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
@@ -81,6 +93,12 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             //Load default color
             accountColour_btn.setBackgroundColor(accountColour_btn.context.resources.getColor(R.color.iris))
 
+            addNewAccountConfirm_btn.setOnClickListener {
+                addAccount()
+                val intent = Intent(this, AccountsListActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            }
         }
 
 
@@ -264,34 +282,61 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             }
         }
 
-        //Add new account to database
-        addNewAccountConfirm_btn.setOnClickListener {
+    }
 
-            accountName = accountName_outlinedTextField.editText?.text.toString()
-            accountAmount = balanceAmount_edit.text.toString().toDouble()
+    private fun addAccount(){
+        accountName = accountName_outlinedTextField.editText?.text.toString()
+        accountAmount = balanceAmount_edit.text.toString().toDouble()
 
-            try {
-                fStore.collection("accounts/$userID/account_detail")
-                    .get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
+        try {
+            fStore.collection("accounts/$userID/account_detail")
+                .get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
 
-                            //set pathway
-                            val documentReference =
-                                fStore.collection("accounts/$userID/account_detail").document(accountName)
+                        //set pathway
+                        val documentReference =
+                            fStore.collection("accounts/$userID/account_detail").document(accountName)
 
-                            //Account Details
-                            val accountDetail = Account(accountName, accountAmount, accountIcon, accountColor)
+                        //Account Details
+                        val accountDetail = Account(accountName, accountAmount, accountIcon, accountColor)
 
-                            //Insert to database
-                            documentReference.set(accountDetail).addOnCompleteListener {
-                                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-                            }
+                        //Insert to database
+                        documentReference.set(accountDetail).addOnCompleteListener {
+                            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                         }
                     }
-            } catch (e: Exception) {
-                Log.w(TAG, "Error adding document", e)
-            }
+                }
+        } catch (e: Exception) {
+            Log.w(TAG, "Error adding document", e)
+        }
+    }
+
+    private fun updateAccount(){
+        val newAccountName = accountName_outlinedTextField.editText?.text.toString()
+
+        if (accountName == newAccountName){
+            addAccount()
+        }else{
+            //delete old account
+            fStore.collection("accounts/$userID/account_detail").document(accountName)
+                .delete()
+                .addOnSuccessListener { Toast.makeText(this, "Deleted old account successfully", Toast.LENGTH_SHORT).show()}
+                .addOnFailureListener {  e -> Log.w("delete old category", e) }
+
+            //Update transactions associated with this category
+            fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_account", accountName)
+                .get()
+                .addOnSuccessListener {
+                    for (document in it.documents){
+                        val transName = document.getString("Transaction_name")!!
+                        fStore.collection("transaction/$userID/Transaction_detail").document(transName).update("Transaction_account", newAccountName)
+                    }
+                }
+
+            //add new account
+            addAccount()
+
         }
     }
 

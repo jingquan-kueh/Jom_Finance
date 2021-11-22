@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_create_budget.*
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class CreateBudgetActivity : AppCompatActivity() {
@@ -33,6 +34,7 @@ class CreateBudgetActivity : AppCompatActivity() {
     private lateinit var fStore: FirebaseFirestore
     private lateinit var userID: String
 
+    private var budgetNum by Delegates.notNull<Int>()
     private lateinit var budgetDate: String
     private var budgetAmount: Double = 0.0
     private lateinit var budgetCategory: String
@@ -52,8 +54,7 @@ class CreateBudgetActivity : AppCompatActivity() {
         val monthYear = intent?.extras?.getString("budget_date")
         budgetMonthYear_text.text = monthYear
 
-        val date = monthYear?.split(" ")?.toTypedArray()
-        budgetDate = "${date?.get(0)}-${date?.get(1)}"
+        budgetDate = monthYear!!
 
         //category drop down list
         val cat : MutableList<String> = mutableListOf()
@@ -91,8 +92,6 @@ class CreateBudgetActivity : AppCompatActivity() {
             addBudgetToDatabase()
         }
 
-
-
     }
 
     private fun addBudgetToDatabase(){
@@ -102,12 +101,14 @@ class CreateBudgetActivity : AppCompatActivity() {
         budgetAlertPercentage = seekBar.progress
 
         try{
-            fStore.collection("budget/$userID/$budgetDate")
+            fStore.collection("budget/$userID/budget_detail")
                 .get()
                 .addOnCompleteListener {
                     if(it.isSuccessful){
-                        val documentReference = fStore.collection("budget/$userID/$budgetDate").document(budgetCategory)
-                        val budgetDetail = Budget(budgetAmount, budgetDate, budgetCategory, BLACK, budgetAlert, budgetAlertPercentage, budgetSpent)
+                        budgetNum = it.result.size().inc()
+
+                        val documentReference = fStore.collection("budget/$userID/budget_detail").document("budget$budgetNum")
+                        val budgetDetail = Budget("budget$budgetNum",budgetAmount, budgetDate, budgetCategory, BLACK, budgetAlert, budgetAlertPercentage, budgetSpent)
 
                         documentReference.set(budgetDetail).addOnCompleteListener {
                             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()

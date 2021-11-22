@@ -1,17 +1,20 @@
 package com.example.jom_finance
 
-import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Color.BLACK
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.example.jom_finance.models.Category
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.maltaisn.icondialog.IconDialog
@@ -21,9 +24,12 @@ import com.maltaisn.icondialog.pack.IconDrawableLoader
 import com.maltaisn.icondialog.pack.IconPack
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
-import kotlinx.android.synthetic.main.activity_add_new_account.*
 import kotlinx.android.synthetic.main.activity_category.*
+import kotlinx.android.synthetic.main.activity_category.backBtn_Category
+import kotlinx.android.synthetic.main.activity_category.deleteCategory_btn
+import kotlinx.android.synthetic.main.activity_category.heading_Category
 import java.lang.Exception
+import kotlin.properties.Delegates
 
 class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
 
@@ -31,6 +37,7 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
     private lateinit var fStore: FirebaseFirestore
     private lateinit var userID: String
 
+    private var categoryID by Delegates.notNull<Int>()
     private lateinit var categoryName: String
     private var categoryIcon: Int = 278
     private var categoryColor: Int = BLACK
@@ -68,6 +75,14 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
 
             setColor(categoryColor)
 
+            categoryConfirm_btn.setOnClickListener {
+                updateCategory()
+            }
+
+            deleteCategory_btn.setOnClickListener {
+                openDeleteBottomSheetDialog()
+            }
+
         }else{
             //Load default icon
             val drawable = iconPack.getIconDrawable(278, IconDrawableLoader(this))
@@ -77,6 +92,10 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             categoryColour_btn.setBackgroundColor(categoryColour_btn.context.resources.getColor(R.color.iris))
 
             deleteCategory_btn.visibility = View.GONE
+
+            categoryConfirm_btn.setOnClickListener {
+                addCategory()
+            }
         }
 
         //Open Icon dialog
@@ -259,34 +278,102 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             }
         }
 
-        categoryConfirm_btn.setOnClickListener {
 
-            categoryName = categoryName_edit.text.toString()
-            Toast.makeText(this, categoryName, Toast.LENGTH_SHORT).show()
+    }
 
-            try {
-                fStore.collection("category/$userID/category_detail")
-                    .get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            //set pathway
-                            val documentReference =
-                                fStore.collection("category/$userID/category_detail").document(categoryName)
+    private fun addCategory(){
+        categoryName = categoryName_edit.text.toString()
 
-                            //Category Details
-                            val categoryDetail = Category(categoryName, categoryIcon, categoryColor)
+        fStore.collection("category/$userID/category_detail")
+            .get()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
 
-                            //Insert to database
-                            documentReference.set(categoryDetail).addOnCompleteListener {
-                                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-                            }
+                    val documentReference =
+                        fStore.collection("category/$userID/category_detail").document(categoryName)
 
-                        }
+                    //Category Details
+                    val categoryDetail = Category(categoryName, categoryIcon, categoryColor)
+
+                    //Insert to database
+                    documentReference.set(categoryDetail).addOnCompleteListener {
+                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, CategoryListActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     }
-            } catch (e: Exception) {
-                Log.w(ContentValues.TAG, "Error adding document", e)
+                }
             }
+    }
+
+    private fun updateCategory(){
+        val newCategoryName = categoryName_edit.text.toString()
+
+        if (categoryName == newCategoryName){
+            addCategory()
+        }else{
+            //delete old category
+            fStore.collection("category/$userID/category_detail").document(categoryName)
+                .delete()
+                .addOnSuccessListener { Toast.makeText(this, "Deleted old category successfully", Toast.LENGTH_SHORT).show()}
+                .addOnFailureListener {  e -> Log.w("delete old category", e) }
+
+            //update transactions associated with this category
+            fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_category", categoryName)
+                .get()
+                .addOnSuccessListener {
+                    for (document in it.documents){
+                        val transName = document.getString("Transaction_name")!!
+                        fStore.collection("transaction/$userID/Transaction_detail").document(transName).update("Transaction_category", newCategoryName)
+                    }
+                }
+
+            //update budgets associated with this category
+            fStore.collection("budget/$userID/budget_detail").whereEqualTo("budget_category", categoryName)
+                .get()
+                .addOnSuccessListener {
+                    for (document in it.documents){
+                        val budgetID = document.getString("budget_id")!!
+                        fStore.collection("budget/$userID/budget_detail").document(budgetID).update("budget_category", newCategoryName)
+                    }
+                }
+
+            //Add new category
+            addCategory()
+
         }
+    }
+
+    private fun openDeleteBottomSheetDialog(){
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_delete)
+        val yesBtn = bottomSheet.findViewById<Button>(R.id.removeYesbtn) as Button
+        val noBtn = bottomSheet.findViewById<Button>(R.id.removeNobtn) as Button
+        val title = bottomSheet.findViewById<TextView>(R.id.bottomsheetDeleteTitle_text) as TextView
+        val description = bottomSheet.findViewById<TextView>(R.id.bottomsheetDeleteDesc_text) as TextView
+
+        title.text = "Remove this category?"
+        description.text = "Are you sure you want to remove this category?"
+
+        yesBtn.setOnClickListener {
+            fStore.collection("category/$userID/category_detail").document(categoryName)
+                .delete()
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Deleted category successfully", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, CategoryListActivity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Could not delete category : $it", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        noBtn.setOnClickListener {
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.show()
     }
 
     private fun setColor(color: Int){

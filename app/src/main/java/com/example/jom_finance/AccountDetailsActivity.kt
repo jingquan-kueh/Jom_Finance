@@ -6,7 +6,10 @@ import android.graphics.Color.WHITE
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.maltaisn.icondialog.pack.IconDrawableLoader
@@ -28,7 +31,7 @@ class AccountDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_details)
-        setupDataBase()
+        setupDatabase()
 
         setFavourite_btn.visibility = View.GONE
 
@@ -65,7 +68,27 @@ class AccountDetailsActivity : AppCompatActivity() {
         }
 
         deleteAccount_btn.setOnClickListener {
-            // TODO: 18/11/2021 bottomsheet confirmation
+            openDeleteBottomSheetDialog()
+        }
+
+        setFavourite_btn.setOnClickListener{
+            setFavourite()
+        }
+
+    }
+
+    private fun openDeleteBottomSheetDialog(){
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_delete)
+        val yesBtn = bottomSheet.findViewById<Button>(R.id.removeYesbtn) as Button
+        val noBtn = bottomSheet.findViewById<Button>(R.id.removeNobtn) as Button
+        val title = bottomSheet.findViewById<TextView>(R.id.bottomsheetDeleteTitle_text) as TextView
+        val description = bottomSheet.findViewById<TextView>(R.id.bottomsheetDeleteDesc_text) as TextView
+
+        title.text = "Remove this account?"
+        description.text = "Are you sure you want to remove this account?"
+
+        yesBtn.setOnClickListener {
             fStore.collection("accounts/$userID/account_detail").document(accountName)
                 .delete()
                 .addOnSuccessListener {
@@ -77,19 +100,20 @@ class AccountDetailsActivity : AppCompatActivity() {
                 .addOnFailureListener {
                     Toast.makeText(this, "Could not delete account : $it", Toast.LENGTH_SHORT).show()
                 }
-
         }
 
-        setFavourite_btn.setOnClickListener{
-            setFavourite()
+        noBtn.setOnClickListener {
+            bottomSheet.dismiss()
         }
 
+        bottomSheet.show()
     }
+
     private fun setFavourite(){
         setFavourite_btn.setImageResource(R.drawable.ic_baseline_star_24)
     }
 
-    private fun setupDataBase() {
+    private fun setupDatabase() {
         fAuth = FirebaseAuth.getInstance()
         fStore = FirebaseFirestore.getInstance()
         val currentUser = fAuth.currentUser

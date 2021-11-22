@@ -17,6 +17,7 @@ import com.example.jom_finance.CreateBudgetActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.BudgetListAdapter
 import com.example.jom_finance.models.Budget
+import com.example.jom_finance.models.Category
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
@@ -24,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_budget_fragment.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
 
@@ -32,6 +34,8 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
     private lateinit var userID: String
     private lateinit var recyclerView: RecyclerView
     private lateinit var budgetArrayList: ArrayList<Budget>
+    private lateinit var categoryArrayList : ArrayList<Category>
+    private lateinit var categoryHash : HashMap<String, Category>
     private lateinit var budgetListAdapter: BudgetListAdapter
 
     private lateinit var month: String
@@ -53,8 +57,8 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
         val yearDate = SimpleDateFormat("yyyy")
         month = monthDate.format(Date())
         year = yearDate.format(Date())
-        budgetDate = "$month-$year"
-        view.budgetDate_text.text = "$month $year"
+        budgetDate = "$month $year"
+        view.budgetDate_text.text = budgetDate
 
         setupDatabase()
         recyclerView = view.budget_recyclerView
@@ -62,8 +66,9 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
         recyclerView.isNestedScrollingEnabled = true
         recyclerView.setHasFixedSize(true)
         budgetArrayList = arrayListOf()
-
-        budgetListAdapter = BudgetListAdapter(budgetArrayList, this)
+        categoryArrayList = arrayListOf()
+        categoryHash = hashMapOf()
+        budgetListAdapter = BudgetListAdapter(budgetArrayList, categoryHash, this)
         recyclerView.adapter = budgetListAdapter
         eventChangeListener()
 
@@ -73,8 +78,8 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
                     override fun onSetResult(calendar: Calendar) {
                         month = PickerUtils.getMonth(calendar, PickerUtils.Format.LONG)!!
                         year = PickerUtils.getYear(calendar)!!
-                        budgetDate = "$month-$year"
-                        view.budgetDate_text.text = "$month $year"
+                        budgetDate = "$month $year"
+                        view.budgetDate_text.text = budgetDate
                         budgetArrayList.clear()
                         eventChangeListener()
                         if (budgetArrayList.isEmpty())
@@ -87,7 +92,7 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
         view.createBudget_btn.setOnClickListener {
             requireActivity().run {
                 val intent = Intent(this, CreateBudgetActivity::class.java)
-                intent.putExtra("budget_date", "$month $year")
+                intent.putExtra("budget_date", budgetDate)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
@@ -98,7 +103,7 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
 
 
     private fun eventChangeListener() {
-        db.collection("budget/$userID/$budgetDate")
+        db.collection("budget/$userID/budget_detail").whereEqualTo("budget_date", budgetDate)
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(
                     value: QuerySnapshot?,
@@ -116,6 +121,23 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
                     }
                 }
             })
+
+        db.collection("category/$userID/category_detail")
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if(error != null){
+                        Log.e("FireStore Error",error.message.toString())
+                        return
+                    }
+                    for(dc : DocumentChange in value?.documentChanges!!){
+                        if(dc.type == DocumentChange.Type.ADDED){
+                            categoryArrayList.add(dc.document.toObject(Category::class.java))
+                            categoryHash[categoryArrayList.last().categoryName.toString()] = categoryArrayList.last()
+                        }
+                    }
+                    budgetListAdapter.notifyDataSetChanged()
+                }
+            })
     }
 
     private fun setupDatabase() {
@@ -129,15 +151,18 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
 
     override fun onItemClick(position: Int) {
         val item = budgetArrayList[position]
+        val category = categoryHash[item.budgetCategory]
         requireActivity().run{
             val intent = Intent(this, BudgetDetailActivity::class.java)
+            intent.putExtra("budget_id", item.budgetID)
             intent.putExtra("budget_amount", item.budgetAmount)
             intent.putExtra("budget_date", item.budgetDate)
             intent.putExtra("budget_category", item.budgetCategory)
-            intent.putExtra("budget_color", item.budgetColor)
             intent.putExtra("budget_alert", item.budgetAlert)
             intent.putExtra("budget_alert_percentage", item.budgetAlertPercentage)
             intent.putExtra("budget_spent", item.budgetSpent)
+            intent.putExtra("category_color", category?.categoryColor)
+            intent.putExtra("category_icon", category?.categoryIcon)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
