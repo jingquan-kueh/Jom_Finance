@@ -1,10 +1,15 @@
 package com.example.jom_finance.income
 
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.Button
 import androidx.core.view.isVisible
+import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detail_income.*
@@ -65,6 +70,14 @@ class DetailIncome : AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
+
+        deleteIncomeBtn.setOnClickListener{
+            if (transactionID != null) {
+                openDeleteBottomSheetDialog(transactionID)
+            }
+
+        }
+
     }
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()
@@ -74,4 +87,53 @@ class DetailIncome : AppCompatActivity() {
             userID = currentUser.uid
         }
     }
+    private fun openDeleteBottomSheetDialog(transactionID : String) {
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_delete)
+        val yesBtn = bottomSheet.findViewById<Button>(R.id.removeYesbtn) as Button
+        val noBtn = bottomSheet.findViewById<Button>(R.id.removeNobtn) as Button
+
+        yesBtn.setOnClickListener{
+            if (transactionID != null) {
+                bottomSheet.dismiss()
+                db.collection("transaction/$userID/Transaction_detail").document(transactionID)
+                    .delete()
+                    .addOnCompleteListener{
+                        db.collection("transaction").document(userID)
+                            .get()
+                            .addOnCompleteListener{ value ->
+                                val income_amount : Double = value.result["Income"].toString().toDouble()
+                                val newIncomeAmount : Double = income_amount - amount
+
+                                //Update Income Amount
+                                db.collection("transaction").document(userID)
+                                    .update("Income",newIncomeAmount)
+                                    .addOnCompleteListener{
+                                        val resetView =
+                                            LayoutInflater.from(this).inflate(R.layout.popup_remove_success, null)
+                                        val resetViewBuilder =
+                                            AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                                .setView(resetView)
+                                        val displayDialog = resetViewBuilder.show()
+                                        displayDialog.setOnDismissListener {
+                                            val intent = Intent(this, HomeActivity::class.java)
+                                            startActivity(intent)
+                                            overridePendingTransition(R.anim.slide_in_right,
+                                                R.anim.slide_out_left)
+                                            finishAffinity()
+                                        }
+                                }
+                            }
+
+                    }
+
+            }
+        }
+
+        noBtn.setOnClickListener{
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show()
+    }
+
 }

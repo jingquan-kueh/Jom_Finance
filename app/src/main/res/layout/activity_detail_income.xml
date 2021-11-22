@@ -53,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
+                android:clickable="true"
                 android:background="@color/incomeTheme"
                 app:srcCompat="@drawable/trash"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
@@ -197,7 +198,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet."
+            android:text="-"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -214,7 +215,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            app:srcCompat="@mipmap/ic_launcher" />
+            />
 
     </LinearLayout>
 

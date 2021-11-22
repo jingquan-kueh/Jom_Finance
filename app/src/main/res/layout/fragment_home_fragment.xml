@@ -271,7 +271,7 @@
                     android:id="@+id/home_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="400dp"
+                    android:paddingBottom="500dp"
                     android:scrollbars="vertical"
                     app:animationDuration="600"
                     app:layoutAnimation="@anim/layout_animation_from_bottom"
