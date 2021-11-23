@@ -2,12 +2,14 @@ package com.example.jom_finance
 
 import android.content.Intent
 import android.graphics.Color.BLACK
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,6 +34,7 @@ class BudgetDetailActivity : AppCompatActivity() {
     private var color : Int = 0
     private var icon : Int = 1
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_budget_detail)
@@ -74,6 +77,19 @@ class BudgetDetailActivity : AppCompatActivity() {
 
             deleteBudget_btn.setOnClickListener {
                 openDeleteBottomSheetDialog()
+            }
+
+            editBudget_btn.setOnClickListener {
+                val intent = Intent(this, CreateBudgetActivity::class.java)
+                intent.putExtra("budget_id", budgetID)
+                intent.putExtra("budget_amount", budgetAmount)
+                intent.putExtra("budget_date", budgetDate)
+                intent.putExtra("budget_category", budgetCategory)
+                intent.putExtra("budget_alert", budgetAlert)
+                intent.putExtra("budget_alert_percentage", budgetAlertPercentage)
+                intent.putExtra("budget_spent", budgetSpent)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
 
         }
