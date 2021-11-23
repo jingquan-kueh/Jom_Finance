@@ -87,7 +87,7 @@ class AddNewIncome : AppCompatActivity() {
                 // Show Attachment
             }
 
-        }else if(voiceIncomeIntent){
+        } else if (voiceIncomeIntent) {
             val amount = intent.getDoubleExtra("incomeAmount", 0.0)
             val description = intent.getStringExtra("incomeDescription")
             amountField.setText(amount.toString())
@@ -248,90 +248,113 @@ class AddNewIncome : AppCompatActivity() {
     private fun addIncomeToDatabase() {
         var lastIncome by Delegates.notNull<Int>()
         try {
-            fStore.collection("transaction/$userID/Transaction_detail")
-                .whereEqualTo("Transaction_type", "income")
+            fStore.collection("transaction").document(userID)
                 .get()
                 .addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        lastIncome = it.result.size()  // Get lastIncome Index
-                        var newIncome = lastIncome.inc() // LastIncome Increment
-                        incomeAmount = amountField.text.toString().toDouble()
-                        incomeDescription = DescriptionField.text.toString()
-                        incomeCategory = incomeCategory_autoCompleteTextView.text.toString()
-                        incomeAccount = incomeAccount_autoCompleteTextView.text.toString()
+                    lastIncome =
+                        it.result["Transaction_counter"].toString().toInt() // Get lastIncome Index
+                    fStore.collection("transaction/$userID/Transaction_detail")
+                        .whereEqualTo("Transaction_type", "income")
+                        .get()
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                var newIncome = lastIncome.inc() // LastIncome Increment
+                                incomeAmount = amountField.text.toString().toDouble()
+                                incomeDescription = DescriptionField.text.toString()
+                                incomeCategory = incomeCategory_autoCompleteTextView.text.toString()
+                                incomeAccount = incomeAccount_autoCompleteTextView.text.toString()
 
-                        //Set Transaction Pathway
-                        var documentReference =
-                            fStore.collection("transaction/$userID/Transaction_detail")
-                                .document("transaction$newIncome")
+                                //Set Transaction Pathway
+                                var documentReference =
+                                    fStore.collection("transaction/$userID/Transaction_detail")
+                                        .document("transaction$newIncome")
 
-                        var transaction =
-                            Transaction("transaction$newIncome",
-                                incomeAmount,
-                                incomeAccount,
-                                incomeAttachment,
-                                incomeCategory,
-                                incomeDescription,
-                                TRANSACTION_TYPE)
+                                var transaction =
+                                    Transaction("transaction$newIncome",
+                                        incomeAmount,
+                                        incomeAccount,
+                                        incomeAttachment,
+                                        incomeCategory,
+                                        incomeDescription,
+                                        TRANSACTION_TYPE)
 
-                        fStore.collection("transaction").document(userID)
-                            .get()
-                            .addOnCompleteListener{ value ->
-                                val income_amount : Double = value.result["Income"].toString().toDouble()
-                                val newIncomeAmount : Double = income_amount + incomeAmount
+                                fStore.collection("transaction").document(userID)
+                                    .get()
+                                    .addOnCompleteListener { value ->
+                                        val income_amount: Double =
+                                            value.result["Income"].toString().toDouble()
+                                        val newIncomeAmount: Double = income_amount + incomeAmount
 
-                                //Update Income Amount
-                                fStore.collection("transaction").document(userID).update("Income",newIncomeAmount)
-                            }
-
-                        //Insert Income to FireStore
-                        documentReference.set(transaction).addOnSuccessListener {
-
-                            //store attachment if necessary
-                            if (incomeAttachment) {
-
-                                val storageReference = FirebaseStorage.getInstance()
-                                    .getReference("transaction_images/$userID/transaction$newIncome")
-                                lateinit var uploadTask: UploadTask
-
-                                when (attachmentType) {
-                                    "camera" -> {
-                                        val baos = ByteArrayOutputStream()
-                                        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                                        val data = baos.toByteArray()
-                                        uploadTask = storageReference.putBytes(data)
+                                        //Update Income Amount
+                                        fStore.collection("transaction").document(userID)
+                                            .update("Income", newIncomeAmount)
                                     }
-                                    "image" -> uploadTask = storageReference.putFile(imageUri)
-                                    "document" -> uploadTask = storageReference.putFile(documentUri)
+
+                                //Insert Income to FireStore
+                                documentReference.set(transaction).addOnSuccessListener {
+
+                                    //store attachment if necessary
+                                    if (incomeAttachment) {
+
+                                        val storageReference = FirebaseStorage.getInstance()
+                                            .getReference("transaction_images/$userID/transaction$newIncome")
+                                        lateinit var uploadTask: UploadTask
+
+                                        when (attachmentType) {
+                                            "camera" -> {
+                                                val baos = ByteArrayOutputStream()
+                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG,
+                                                    100,
+                                                    baos)
+                                                val data = baos.toByteArray()
+                                                uploadTask = storageReference.putBytes(data)
+                                            }
+                                            "image" -> uploadTask =
+                                                storageReference.putFile(imageUri)
+                                            "document" -> uploadTask =
+                                                storageReference.putFile(documentUri)
+                                        }
+
+                                        uploadTask
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this,
+                                                    "Successfully uploaded",
+                                                    Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener {
+                                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                                                    .show()
+                                            }
+                                    }
+                                    //Update Income Amount
+                                    fStore.collection("transaction").document(userID)
+                                        .update("Transaction_counter", lastIncome.inc())
+                                    val resetView =
+                                        LayoutInflater.from(this)
+                                            .inflate(R.layout.activity_popup, null)
+                                    val resetViewBuilder =
+                                        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                            .setView(resetView)
+                                    val displayDialog = resetViewBuilder.show()
+                                    displayDialog.setOnDismissListener {
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        startActivity(intent)
+                                        overridePendingTransition(R.anim.slide_in_right,
+                                            R.anim.slide_out_left)
+                                        finishAffinity()
+                                    }
+
                                 }
-
-                                uploadTask
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this,
-                                            "Successfully uploaded",
-                                            Toast.LENGTH_SHORT).show()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                                    .addOnFailureListener{ ex->
+                                        Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
                                     }
                             }
-                            val resetView =
-                                LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                            val resetViewBuilder =
-                                AlertDialog.Builder(this, R.style.CustomAlertDialog)
-                                    .setView(resetView)
-                            val displayDialog = resetViewBuilder.show()
-                            displayDialog.setOnDismissListener {
-                                val intent = Intent(this, HomeActivity::class.java)
-                                startActivity(intent)
-                                overridePendingTransition(R.anim.slide_in_right,
-                                    R.anim.slide_out_left)
-                                finishAffinity()
-                            }
-
                         }
-                    }
+                        .addOnFailureListener{ ex->
+                            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+                        }
                 }
+
         } catch (e: Exception) {
             Toast.makeText(this, " " + e.message, Toast.LENGTH_SHORT).show()
         }
@@ -347,9 +370,9 @@ class AddNewIncome : AppCompatActivity() {
     }
 
     //For reset Income
-    private fun resetIncome(){
+    private fun resetIncome() {
         //Reset Income Amount
-        fStore.collection("transaction").document(userID).update("Income",0)
+        fStore.collection("transaction").document(userID).update("Income", 0)
     }
 
     //After get attachment

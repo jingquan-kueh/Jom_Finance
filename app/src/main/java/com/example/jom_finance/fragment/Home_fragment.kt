@@ -2,6 +2,7 @@ package com.example.jom_finance.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -57,7 +58,6 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         categoryHash = hashMapOf()
         transactionListAdapter = TransactionListAdapter(transactionArrayList,categoryHash,this)
         recyclerView.adapter = transactionListAdapter
-
         EventChangeListener()
         // Inflate the layout for this fragment
         return view
@@ -70,6 +70,9 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             val income_amount : Double = it.result["Income"].toString().toDouble()
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
             val balance_amount : Double = income_amount - expense_amount
+            if(balance_amount<0.0){
+                home_balance.setTextColor(Color.RED)
+            }
             home_income_amount.text = String.format("RM %.2f",income_amount)
             home_expenses_amount.text =String.format("RM %.2f",expense_amount)
             home_balance.text = String.format("RM %.2f",balance_amount)
@@ -78,6 +81,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
+        // TODO : Set Descending Order and Limit few recent transactions
         db.collection("transaction/$userID/Transaction_detail")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {

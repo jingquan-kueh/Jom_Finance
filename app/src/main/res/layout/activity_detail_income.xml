@@ -64,7 +64,7 @@
             android:id="@+id/amountIncome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RM 5000"
+            android:text="RM -"
             android:textAlignment="center"
             android:textColor="#FCFCFC"
             android:textSize="48sp"

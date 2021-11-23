@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.viewpager.widget.PagerAdapter
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
@@ -115,25 +116,32 @@ class FinancialReportActivity : AppCompatActivity() {
             .orderBy("Transaction_amount", Query.Direction.DESCENDING).limit(1)
             .get()
             .addOnCompleteListener{
-                val highestIncome = it.result.toObjects(Transaction::class.java)
-                val highestIncomeAmount = highestIncome[0].transactionAmount
-                val highestIncomeCategory = highestIncome[0].transactionCategory
-                biggestEarnText.text = highestIncomeCategory
-                biggestEarnAmount.text = "RM $highestIncomeAmount"
-
-                val IconIncomeCategory = categoryHash[highestIncomeCategory]?.categoryIcon
-                val IconIncomeColor = categoryHash[highestIncomeCategory]?.categoryColor
-                val loader = IconPackLoader(report_income_icon.context)
-                val iconPack = createDefaultIconPack(loader)
-                val drawable =
-                    IconIncomeCategory?.let { it1 -> iconPack.getIconDrawable(it1, IconDrawableLoader(this)) }
-                report_income_icon.setImageDrawable(drawable)
-                //Change icon to white color
-                report_income_icon.setColorFilter(Color.WHITE)
-                //Color of account
-                if (IconIncomeColor != null) {
-                    report_income_icon_bg.setColorFilter(IconIncomeColor)
+                if(it.result.size()==0){
+                    cardViewIncome.visibility = View.INVISIBLE
                 }
+                else{
+                    val highestIncome = it.result.toObjects(Transaction::class.java)
+                    val highestIncomeAmount = highestIncome[0].transactionAmount
+                    val highestIncomeCategory = highestIncome[0].transactionCategory
+                    biggestEarnText.text = highestIncomeCategory
+                    biggestEarnAmount.text = "RM $highestIncomeAmount"
+
+                    val IconIncomeCategory = categoryHash[highestIncomeCategory]?.categoryIcon
+                    val IconIncomeColor = categoryHash[highestIncomeCategory]?.categoryColor
+                    val loader = IconPackLoader(report_income_icon.context)
+                    val iconPack = createDefaultIconPack(loader)
+                    val drawable =
+                        IconIncomeCategory?.let { it1 -> iconPack.getIconDrawable(it1, IconDrawableLoader(this)) }
+                    report_income_icon.setImageDrawable(drawable)
+                    //Change icon to white color
+                    report_income_icon.setColorFilter(Color.WHITE)
+                    //Color of account
+                    if (IconIncomeColor != null) {
+                        report_income_icon_bg.setColorFilter(IconIncomeColor)
+                    }
+                }
+            }.addOnFailureListener{
+
             }
 
         //get highest expense
@@ -142,25 +150,32 @@ class FinancialReportActivity : AppCompatActivity() {
             .orderBy("Transaction_amount", Query.Direction.DESCENDING).limit(1)
             .get()
             .addOnCompleteListener{
-                val highestExpense = it.result.toObjects(Transaction::class.java)
-                val highestExpenseAmount = highestExpense[0].transactionAmount
-                val highestExpenseCategory = highestExpense[0].transactionCategory
-                biggestSpendingText.text = highestExpenseCategory
-                biggestSpendingAmount.text = "RM $highestExpenseAmount"
-
-                val IconExpenseCategory = categoryHash[highestExpenseCategory]?.categoryIcon
-                val IconExpenseColor = categoryHash[highestExpenseCategory]?.categoryColor
-                val loader = IconPackLoader(report_income_icon.context)
-                val iconPack = createDefaultIconPack(loader)
-                val drawable =
-                    IconExpenseCategory?.let { it1 -> iconPack.getIconDrawable(it1, IconDrawableLoader(this)) }
-                report_expense_icon.setImageDrawable(drawable)
-                //Change icon to white color
-                report_expense_icon.setColorFilter(Color.WHITE)
-                //Color of account
-                if (IconExpenseColor != null) {
-                    report_expense_icon_bg.setColorFilter(IconExpenseColor)
+                if(it.result.size()==0){
+                    cardViewExpense.visibility = View.INVISIBLE
                 }
+                else{
+                    val highestExpense = it.result.toObjects(Transaction::class.java)
+                    val highestExpenseAmount = highestExpense[0].transactionAmount
+                    val highestExpenseCategory = highestExpense[0].transactionCategory
+                    biggestSpendingText.text = highestExpenseCategory
+                    biggestSpendingAmount.text = "RM $highestExpenseAmount"
+
+                    val IconExpenseCategory = categoryHash[highestExpenseCategory]?.categoryIcon
+                    val IconExpenseColor = categoryHash[highestExpenseCategory]?.categoryColor
+                    val loader = IconPackLoader(report_income_icon.context)
+                    val iconPack = createDefaultIconPack(loader)
+                    val drawable =
+                        IconExpenseCategory?.let { it1 -> iconPack.getIconDrawable(it1, IconDrawableLoader(this)) }
+                    report_expense_icon.setImageDrawable(drawable)
+                    //Change icon to white color
+                    report_expense_icon.setColorFilter(Color.WHITE)
+                    //Color of account
+                    if (IconExpenseColor != null) {
+                        report_expense_icon_bg.setColorFilter(IconExpenseColor)
+                    }
+                }
+            }.addOnFailureListener{
+
             }
         // Budget limit
 

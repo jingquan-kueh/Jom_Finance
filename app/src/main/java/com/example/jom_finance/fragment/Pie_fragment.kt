@@ -36,7 +36,6 @@ class Pie_fragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -57,12 +56,26 @@ class Pie_fragment : Fragment() {
         categoryArrayList = arrayListOf()
         categoryHash = hashMapOf()
         setupDB()
+
+
         //Use Category to cal transaction number
         //If Category[i] == transaction[i].category, add counter
+        readDB(p,"expense")
+        // Inflate the layout for this fragment
+        return view
+    }
 
+    fun changeData(type : String){
+        if(type == "income"){
+
+        }else{
+
+        }
+    }
+
+    private fun readDB(p : PieChart,type : String) {
         fStore = FirebaseFirestore.getInstance()
-
-        fStore.collection("transaction/$userID/Transaction_detail")
+        fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type",type)
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){
@@ -88,16 +101,12 @@ class Pie_fragment : Fragment() {
                                     }
                                 }
                                 for(item in transactionArrayList){
-                                    Log.d("Pie transaction 2",categoryHash.containsKey(item.transactionCategory).toString())
                                     if(categoryHash.containsKey(item.transactionCategory)){
-                                        Log.d("Pie FOdd",categoryHash["Food"].toString())
                                         categoryHash[item.transactionCategory.toString()] = categoryHash[item.transactionCategory.toString()]!!.plus(1)
                                     }
                                 }
 
                                 for (item in categoryHash){
-                                    Log.d("Pie float",item.value.toFloat().toString())
-                                    Log.d("Pie key",item.key)
                                     yValues.add(PieEntry(1f,item.key))
                                 }
                                 createPie(yValues,p)
@@ -106,8 +115,6 @@ class Pie_fragment : Fragment() {
                 }
             })
 
-        // Inflate the layout for this fragment
-        return view
     }
 
     private fun createPie(yValues : ArrayList<PieEntry>,p:PieChart) {

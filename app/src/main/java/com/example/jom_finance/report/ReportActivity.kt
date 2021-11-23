@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
@@ -83,8 +84,21 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
+    //TODO : Chart unable to change value when icome and expense change btn.
 
+ /*       val arguments = Bundle()
+        arguments.putInt("VALUE1", 0)
+        arguments.putInt("VALUE2", 100)
 
+        val myFragment: Fragment = Report_IncomeFragment()
+        myFragment.arguments = arguments
+
+        val fm = supportFragmentManager
+
+        fm.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+            .replace(R.id.Report_Recycle_Fragment, myFragment)
+            .commit()*/
 
 
     }

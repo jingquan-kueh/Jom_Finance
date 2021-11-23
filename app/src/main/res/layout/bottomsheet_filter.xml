@@ -5,9 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:backgroundTint="@color/white"
     app:cornerRadius="20dp">
-
 
     <ImageView
         android:id="@+id/bar_img"
@@ -33,6 +32,7 @@
             android:textStyle="bold"/>
 
         <Button
+            android:id="@+id/filter_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/iris"
@@ -51,30 +51,45 @@
         android:text="Filter By"
         android:layout_marginLeft="20dp"
         android:textStyle="bold"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter Transaction"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_weight="4"/>
+        android:layout_margin="5dp">
 
         <Button
+            android:id="@+id/filter_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/iris"
-            android:text="Reset"
+            android:text="Income"
             app:cornerRadius="20dp"
             android:backgroundTint="#EEE5FF"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
+
+        <Button
+            android:id="@+id/filter_expense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/iris"
+            android:text="Expense"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#EEE5FF"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
 
     </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -83,6 +98,76 @@
         android:text="Sort By"
         android:layout_marginLeft="20dp"
         android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
+
+
+
+        <Button
+            android:id="@+id/filter_highest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/iris"
+            android:text="Highest"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#EEE5FF"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
+
+        <Button
+            android:id="@+id/filter_lowest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/iris"
+            android:text="Lowest"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#EEE5FF"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
+        <Button
+            android:id="@+id/filter_newest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/iris"
+            android:text="Newest"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#EEE5FF"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+
+        <Button
+            android:id="@+id/filter_oldest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/iris"
+            android:text="Oldest"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#EEE5FF"
+            android:layout_marginHorizontal="20dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="10dp"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

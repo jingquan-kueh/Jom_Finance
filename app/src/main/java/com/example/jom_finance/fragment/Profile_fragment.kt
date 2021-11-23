@@ -3,6 +3,7 @@ package com.example.jom_finance.fragment
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.preference.PreferenceManager
 import com.example.jom_finance.LoginActivity
@@ -20,6 +22,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_new_income.*
 import kotlinx.android.synthetic.main.bottomsheet_logout.*
 import kotlinx.android.synthetic.main.fragment_profile_fragment.*
@@ -42,6 +46,13 @@ class Profile_fragment : Fragment() {
                     usernamePlaceHolder.text = document.getString("username")
                 }
             }
+        // TODO : Check Profile Pic from DB
+/*        fStore.collection("user").document(userID).get()
+            .addOnSuccessListener { document->
+                if (document != null) {
+                    usernamePlaceHolder.text = document.get("username")
+                }
+            }*/
     }
 
     override fun onCreateView(
@@ -75,6 +86,22 @@ class Profile_fragment : Fragment() {
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             val imageUri = data?.data!!
             profileCircleImageView.setImageURI(imageUri)
+
+            val storageReference = FirebaseStorage.getInstance()
+                .getReference("user/$userID")
+            var uploadTask: UploadTask = storageReference.putFile(imageUri)
+
+            uploadTask
+                .addOnSuccessListener {
+                    Toast.makeText(this.context,
+                        "Successfully uploaded",
+                        Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this.context, "Failed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
         }
     }
 
