@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.activity_report.*
 
 class ReportActivity : AppCompatActivity() {
 
-    private var isLine = false
-    private var isExpense = false
+    private var isLine = true
+    private var isExpense = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
@@ -50,9 +50,19 @@ class ReportActivity : AppCompatActivity() {
                     .commit()
             } else {
                changeState(isLine)
-                supportFragmentManager.beginTransaction()
+                val arguments = Bundle()
+                if(isExpense){
+                    arguments.putString("Type","expense")
+                }else{
+                    arguments.putString("Type","income")
+                }
+
+                val pieFragment: Fragment = Pie_fragment()
+                pieFragment.arguments = arguments
+                val fm = supportFragmentManager
+                fm.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
-                    .replace(R.id.chartFragment, Pie_fragment())
+                    .replace(R.id.chartFragment, pieFragment)
                     .commit()
             }
         }
@@ -68,6 +78,20 @@ class ReportActivity : AppCompatActivity() {
                 ExpenseReportBtn.setTextColor(ContextCompat.getColor(this,R.color.iris))
                 IncomeReportBtn.setTextColor(ContextCompat.getColor(this,R.color.black))
 
+                if(!isLine){
+                    val arguments = Bundle()
+                    arguments.putString("Type","expense")
+                    val pieFragment: Fragment = Pie_fragment()
+                    pieFragment.arguments = arguments
+                    val fm = supportFragmentManager
+
+                    fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+                        .replace(R.id.chartFragment, pieFragment)
+                        .commit()
+                }
+
+
                 supportFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
                     .replace(R.id.Report_Recycle_Fragment, Report_ExpenseFragment())
@@ -81,6 +105,18 @@ class ReportActivity : AppCompatActivity() {
                     .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
                     .replace(R.id.Report_Recycle_Fragment, Report_IncomeFragment())
                     .commit()
+                if(!isLine) {
+                    val arguments = Bundle()
+                    arguments.putString("Type", "income")
+                    val pieFragment: Fragment = Pie_fragment()
+                    pieFragment.arguments = arguments
+                    val fm = supportFragmentManager
+
+                    fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.chartFragment, pieFragment)
+                        .commit()
+                }
             }
         }
 

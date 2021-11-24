@@ -42,6 +42,9 @@ class Pie_fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val args = arguments
+        val type = args!!.getString("Type")
+
         val view : View = inflater.inflate(R.layout.fragment_pie_fragment, container, false)
         val p = view.pieChart
         p.setUsePercentValues(true)
@@ -57,20 +60,18 @@ class Pie_fragment : Fragment() {
         categoryHash = hashMapOf()
         setupDB()
 
-
         //Use Category to cal transaction number
         //If Category[i] == transaction[i].category, add counter
-        readDB(p,"expense")
+        if (type != null) {
+            readDB(p,type)
+            p.notifyDataSetChanged()
+        }
         // Inflate the layout for this fragment
         return view
     }
 
     fun changeData(type : String){
-        if(type == "income"){
 
-        }else{
-
-        }
     }
 
     private fun readDB(p : PieChart,type : String) {
@@ -107,7 +108,7 @@ class Pie_fragment : Fragment() {
                                 }
 
                                 for (item in categoryHash){
-                                    yValues.add(PieEntry(1f,item.key))
+                                    yValues.add(PieEntry(item.value.toFloat(),item.key))
                                 }
                                 createPie(yValues,p)
                             }
