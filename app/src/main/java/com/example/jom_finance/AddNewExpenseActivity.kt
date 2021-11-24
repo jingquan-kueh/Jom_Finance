@@ -47,6 +47,7 @@ private lateinit var fAuth: FirebaseAuth
 private lateinit var fStore: FirebaseFirestore
 private lateinit var userID: String
 
+private lateinit var transactionID : String
 private var transactionNum by Delegates.notNull<Int>()
 
 private const val TRANSACTION_TYPE = "expense"
@@ -88,6 +89,64 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         setContentView(R.layout.activity_add_new_expense)
         setupDataBase()
 
+        //hide repeat section
+        repeat_constraintLayout.visibility = View.GONE
+
+        //hide attachment image and doc
+        attachment_img.visibility = View.GONE
+        attachmentDocument_txt.visibility = View.GONE
+
+        transactionID = intent?.extras?.getString("transactionName").toString()
+        if(transactionID != "null"){
+            //UPDATE TRANSACTION
+            transactionAmount = intent?.extras?.getDouble("transactionAmount")!!
+            transactionCategory = intent?.extras?.getString("transactionCategory").toString()
+            transactionAccount = intent?.extras?.getString("transactionAccount").toString()
+            transactionDescription = intent?.extras?.getString("transactionDescription").toString()
+            transactionAttachment = intent?.extras?.getBoolean("transactionAttachment")!!
+
+            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(transactionAmount.toString())
+            expenseCategory_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionCategory)
+            expenseAccount_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionAccount)
+            expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(transactionDescription)
+
+            if(transactionAttachment){
+                expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+                expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
+                expenseAddAttachment_btn.text = "Remove Attachment"
+                attachment_img.visibility = View.VISIBLE
+            }
+
+
+
+        }else{
+            //ADD TRANSACTION
+            //current date & time
+            val cal = Calendar.getInstance()
+            day = cal.get(Calendar.DAY_OF_MONTH)
+            month = cal.get(Calendar.MONTH)
+            year = cal.get(Calendar.YEAR)
+            hour = cal.get(Calendar.HOUR_OF_DAY)
+            minute = cal.get(Calendar.MINUTE)
+
+            savedDay = String.format("%02d", day)
+            savedMonth = String.format("%02d", month + 1)
+            savedYear = year.toString()
+            savedHour = String.format("%02d", hour)
+            savedMinute = String.format("%02d", minute)
+            expenseDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
+            expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+            timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+            expenseConfirm_btn.setOnClickListener {
+                // TODO: 5/11/2021 make sure all inputs are not NULL
+                addExpenseToDatabase()
+                updateBudget()
+                updateAccount()
+            }
+
+        }
+
         //category drop down list
         val cat : MutableList<String> = mutableListOf()
         fStore.collection("category/$userID/category_detail")
@@ -111,13 +170,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             }
         val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
         expenseAccount_autoCompleteTextView.setAdapter(accAdapter)
-
-        //hide repeat section
-        repeat_constraintLayout.visibility = View.GONE
-
-        //hide attachment image and doc
-        attachment_img.visibility = View.GONE
-        attachmentDocument_txt.visibility = View.GONE
 
         //set attachment if come from receipt scanner
         val imagePath = intent?.extras?.getString("image_path").toString()
@@ -187,23 +239,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 }
         }
 
-        //current date & time
-        val cal = Calendar.getInstance()
-        day = cal.get(Calendar.DAY_OF_MONTH)
-        month = cal.get(Calendar.MONTH)
-        year = cal.get(Calendar.YEAR)
-        hour = cal.get(Calendar.HOUR_OF_DAY)
-        minute = cal.get(Calendar.MINUTE)
-
-        savedDay = String.format("%02d", day)
-        savedMonth = String.format("%02d", month + 1)
-        savedYear = year.toString()
-        savedHour = String.format("%02d", hour)
-        savedMinute = String.format("%02d", minute)
-        expenseDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
-        expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
-        timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
-
         expenseDate_edit.setOnClickListener{
             DatePickerDialog(this,  this, year, month, day).show()
         }
@@ -237,21 +272,9 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 repeat_constraintLayout.visibility = View.GONE
         }
 
-        expenseConfirm_btn.setOnClickListener {
-
-            // TODO: 5/11/2021 make sure all inputs are not NULL
-
-            addExpenseToDatabase()
-            updateBudget()
-            updateAccount()
-
-        }
-
         attachmentDocument_txt.setOnClickListener {
             // TODO: 6/11/2021 display pdf when clicked 
         }
-
-
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -268,8 +291,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
         expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
     }
-
-
 
     private fun addExpenseToDatabase(){
         transactionAmount = expenseAmount_edit.text.toString().toDouble()
@@ -503,7 +524,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         bottomSheet.show()
     }
 
-    // TODO: 5/11/2021 COULD PUT THE FOLLOWING THREE FUNCTIONS IN A UTIL FILE
     private fun getPhotoFile(fileName: String): File{
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, "jpg", storageDirectory)
@@ -521,7 +541,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME).let(cursor::getString)
         }
     }.getOrNull()
-
 
     //REPEAT TRANSACTION
     private fun openRepeatBottomSheetDialog(){
