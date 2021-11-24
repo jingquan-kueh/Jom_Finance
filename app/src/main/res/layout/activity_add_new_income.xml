@@ -189,6 +189,63 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/incomeDateLabel_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:text="Date" />
+
+                    <TextView
+                        android:id="@+id/incomeTimeLabel_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:text="Time" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/incomeDate_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawableLeft="@drawable/ic_baseline_calendar_24"
+                        android:drawablePadding="5dp"
+                        android:focusable="false"
+                        android:text="19-11-2021"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <EditText
+                        android:id="@+id/incomeTime_edit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawableLeft="@drawable/ic_baseline_access_time_24"
+                        android:drawablePadding="5dp"
+                        android:focusable="false"
+                        android:text="07:56 pm"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </LinearLayout>
                 <Button
                     android:id="@+id/incomeAddAttachment_btn"
                     style="@style/Widget.AppCompat.Button.Borderless"

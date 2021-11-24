@@ -2,6 +2,8 @@ package com.example.jom_finance.income
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -37,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Exception
+import java.util.*
 import kotlin.properties.Delegates
 
 
@@ -63,7 +66,20 @@ private lateinit var imageBitmap: Bitmap
 private lateinit var documentUri: Uri
 private lateinit var incomeID: String
 
-class AddNewIncome : AppCompatActivity() {
+private var day = 0
+private var month = 0
+private var year = 0
+private var hour = 0
+private var minute = 0
+
+private lateinit var savedDay : String
+private lateinit var savedMonth : String
+private lateinit var savedYear : String
+private lateinit var savedHour : String
+private lateinit var savedMinute : String
+private lateinit var timestampString : String
+
+class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_income)
@@ -126,6 +142,38 @@ class AddNewIncome : AppCompatActivity() {
         attachment_img.visibility = View.GONE
         attachmentDocument_txt.visibility = View.GONE
 
+        //set attachment if come from receipt scanner
+
+
+        //current date & time
+        val cal = Calendar.getInstance()
+        day = cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR_OF_DAY)
+        minute = cal.get(Calendar.MINUTE)
+
+        savedDay = String.format("%02d", day)
+        savedMonth = String.format("%02d", month + 1)
+        savedYear = year.toString()
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+
+        incomeDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
+        incomeTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+
+        timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+        incomeDate_edit.setOnClickListener{
+            DatePickerDialog(this,  this, year, month, day).show()
+        }
+
+        incomeTime_edit.setOnClickListener {
+            TimePickerDialog(this, this, hour, minute, true).show()
+        }
+
+
+
         incomeAddAttachment_btn.setOnClickListener {
             if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
                 openAttachmentBottomSheetDialog()
@@ -167,6 +215,23 @@ class AddNewIncome : AppCompatActivity() {
             // TODO: 6/11/2021 display pdf when clicked
         }
     }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        savedDay = String.format("%02d", dayOfMonth)
+        savedMonth =String.format("%02d", month + 1)
+        savedYear = year.toString()
+
+        incomeDate_edit.text = Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+    }
+
+    override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+
+       incomeTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+    }
+
+
 
     private fun incomeValidate(): Boolean {
         if (amountField.text.equals(0) || amountField.text.isNullOrBlank()) {
