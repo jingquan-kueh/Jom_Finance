@@ -17,43 +17,28 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 
+private var x1 = 0f
+private var x2 = 0f
+val MIN_DISTANCE = 150
+
+private lateinit var fAuth : FirebaseAuth
+private lateinit var fStore : FirebaseFirestore
+private lateinit var userID : String
+private lateinit var sharedPreferences : SharedPreferences
 
 class MainActivity :AppCompatActivity(){
-    private var x1 = 0f
-    private var x2 = 0f
-    val MIN_DISTANCE = 150
-
-    private lateinit var fAuth : FirebaseAuth
-    private lateinit var fStore : FirebaseFirestore
-    private lateinit var userID : String
-    private lateinit var sharedPreferences : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splashscreen)
-
         firstTimeCheck()
         setupDataBase()
 
-        /*// Initialize sharedPreferences File
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        // Initialize sharedPreferences to edit
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putBoolean("isLogin",true)
-
-        if(fAuth.currentUser != null){
-            userID = fAuth.currentUser!!.uid
-        }
-
-        if(userID != null){
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-            finish()
-        }*/
-
         handleDynamicLink()
     }
+
+    // No login, show splashscreen
+    // Logged, change perference to notFirst/ logged
 
     private fun firstTimeCheck(){
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -66,10 +51,11 @@ class MainActivity :AppCompatActivity(){
         }
     }
 
-    override fun onStart() {
+/*    override fun onStart() {
         super.onStart()
         handleDynamicLink()
-    }
+    }*/
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> x1 = event.x

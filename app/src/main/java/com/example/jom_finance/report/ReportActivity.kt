@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
@@ -15,8 +16,8 @@ import kotlinx.android.synthetic.main.activity_report.*
 
 class ReportActivity : AppCompatActivity() {
 
-    private var isLine = false
-    private var isExpense = false
+    private var isLine = true
+    private var isExpense = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report)
@@ -38,6 +39,7 @@ class ReportActivity : AppCompatActivity() {
             .add(R.id.chartFragment, Line_fragment())
             .commit()
 
+
         toggleChartGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             isLine = (checkedId == R.id.lineChartBtn)
             if (isLine) {
@@ -48,22 +50,92 @@ class ReportActivity : AppCompatActivity() {
                     .commit()
             } else {
                changeState(isLine)
-                supportFragmentManager.beginTransaction()
+                val arguments = Bundle()
+                if(isExpense){
+                    arguments.putString("Type","expense")
+                }else{
+                    arguments.putString("Type","income")
+                }
+
+                val pieFragment: Fragment = Pie_fragment()
+                pieFragment.arguments = arguments
+                val fm = supportFragmentManager
+                fm.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
-                    .replace(R.id.chartFragment, Pie_fragment())
+                    .replace(R.id.chartFragment, pieFragment)
                     .commit()
             }
         }
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.Report_Recycle_Fragment, Report_ExpenseFragment())
+            .commit()
+
         toggleExpenseIncomeGroup.addOnButtonCheckedListener{ group, checkedId, isChecked ->
             isExpense = (checkedId == R.id.ExpenseReportBtn)
+
             if(isExpense){
                 ExpenseReportBtn.setTextColor(ContextCompat.getColor(this,R.color.iris))
                 IncomeReportBtn.setTextColor(ContextCompat.getColor(this,R.color.black))
+
+                if(!isLine){
+                    val arguments = Bundle()
+                    arguments.putString("Type","expense")
+                    val pieFragment: Fragment = Pie_fragment()
+                    pieFragment.arguments = arguments
+                    val fm = supportFragmentManager
+
+                    fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+                        .replace(R.id.chartFragment, pieFragment)
+                        .commit()
+                }
+
+
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right)
+                    .replace(R.id.Report_Recycle_Fragment, Report_ExpenseFragment())
+                    .commit()
+
             }else{
                 ExpenseReportBtn.setTextColor(ContextCompat.getColor(this,R.color.black))
                 IncomeReportBtn.setTextColor(ContextCompat.getColor(this,R.color.iris))
+
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+                    .replace(R.id.Report_Recycle_Fragment, Report_IncomeFragment())
+                    .commit()
+                if(!isLine) {
+                    val arguments = Bundle()
+                    arguments.putString("Type", "income")
+                    val pieFragment: Fragment = Pie_fragment()
+                    pieFragment.arguments = arguments
+                    val fm = supportFragmentManager
+
+                    fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(R.id.chartFragment, pieFragment)
+                        .commit()
+                }
             }
         }
+
+    //TODO : Chart unable to change value when icome and expense change btn.
+
+ /*       val arguments = Bundle()
+        arguments.putInt("VALUE1", 0)
+        arguments.putInt("VALUE2", 100)
+
+        val myFragment: Fragment = Report_IncomeFragment()
+        myFragment.arguments = arguments
+
+        val fm = supportFragmentManager
+
+        fm.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
+            .replace(R.id.Report_Recycle_Fragment, myFragment)
+            .commit()*/
+
 
     }
     private fun changeState(isLine : Boolean){

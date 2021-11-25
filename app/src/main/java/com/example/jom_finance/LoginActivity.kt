@@ -1,10 +1,12 @@
 package com.example.jom_finance
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -33,6 +35,11 @@ class LoginActivity :AppCompatActivity(){
         if(validate()){
             FirebaseAuth.signInWithEmailAndPassword(LoginEmailField.text.toString().trim(),LoginPasswordField.text.toString())
                 .addOnSuccessListener {
+                    val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                    // Initialize sharedPreferences to edit
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    editor.putBoolean("isLogin",true).apply()
+
                     Toast.makeText(this,"Welcome User !!!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)

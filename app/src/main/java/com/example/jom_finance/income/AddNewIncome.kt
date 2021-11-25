@@ -1,111 +1,442 @@
 package com.example.jom_finance.income
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.OpenableColumns
+import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
-import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.view.View
+import android.widget.*
+import androidx.core.content.FileProvider
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.models.Income
 import com.example.jom_finance.models.Transaction
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_new_income.*
+import kotlinx.android.synthetic.main.fragment_home_fragment.*
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.properties.Delegates
 
-class AddNewIncome : AppCompatActivity() {
 
-    private lateinit var fAuth: FirebaseAuth
-    private lateinit var fStore: FirebaseFirestore
-    private lateinit var userID: String
+private const val TRANSACTION_TYPE = "income"
+private var incomeAmount: Double = 0.0
+private lateinit var incomeCategory: String
+private lateinit var incomeDescription: String
+private lateinit var incomeAccount: String
+private var incomeAttachment: Boolean = false
+private lateinit var transactionTimestamp : Timestamp
 
-    private lateinit var incomeCategory: String
-    private lateinit var incomeDescription: String
-    private lateinit var walletType: String
-    private lateinit var attachment: String
+private lateinit var fAuth: FirebaseAuth
+private lateinit var fStore: FirebaseFirestore
+private lateinit var userID: String
 
+private const val IMAGE_REQUEST_CODE = 100
+private const val CAMERA_REQUEST_CODE = 42
+private const val DOCUMENT_REQUEST_CODE = 111
+
+private lateinit var attachmentType: String
+private const val FILE_NAME = "photo.jpg" //temporary file name
+private lateinit var photoFile: File
+private lateinit var imageUri: Uri
+private lateinit var imageBitmap: Bitmap
+private lateinit var documentUri: Uri
+private lateinit var incomeID: String
+
+private var day = 0
+private var month = 0
+private var year = 0
+private var hour = 0
+private var minute = 0
+
+private lateinit var savedDay : String
+private lateinit var savedMonth : String
+private lateinit var savedYear : String
+private lateinit var savedHour : String
+private lateinit var savedMinute : String
+private lateinit var timestampString : String
+
+class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_income)
+
         setupDataBase()
+        val editIncomeIntent = intent.getBooleanExtra("editIncome", false)
+        val voiceIncomeIntent = intent.getBooleanExtra("voiceIncome", false)
+        if (editIncomeIntent) {
+            val amount = intent.getDoubleExtra("incomeAmount", 0.0)
+            val category = intent.getStringExtra("incomeCategory")
+            val description = intent.getStringExtra("incomeDescription")
+            val account = intent.getStringExtra("incomeAccount")
+            val attachment = intent.getBooleanExtra("incomeAttachment", false)
+            incomeID = intent.getStringExtra("incomeID").toString()
+            AddnewBtn.text = "Done"
+            amountField.setText(amount.toString())
+            DescriptionField.setText(description)
+            incomeCategory_autoCompleteTextView.setText(category)
+            incomeAccount_autoCompleteTextView.setText(account)
+            if (attachment) {
+                // Show Attachment
+            }
 
-        val exp = listOf("Shopping", "Groceries", "Transport", "Restaurant")
-        val expAdapter = ArrayAdapter(this, R.layout.item_dropdown, exp)
-        expenseCategory_autoCompleteTextView.setAdapter(expAdapter)
+        } else if (voiceIncomeIntent) {
+            val amount = intent.getDoubleExtra("incomeAmount", 0.0)
+            val description = intent.getStringExtra("incomeDescription")
+            amountField.setText(amount.toString())
+            DescriptionField.setText(description)
+        }
 
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.Category,
-            R.layout.spinner_list
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(R.layout.spinner_list)
-            // Apply the adapter to the spinner
-            spinnerCategory.adapter = adapter
+        //category drop down list
+        val cat: MutableList<String> = mutableListOf()
+        fStore.collection("category/$userID/Category_detail")
+            .get()
+            .addOnSuccessListener {
+                for (document in it.documents) {
+                    cat.add(document.getString("category_name")!!)
+                }
+            }
+
+        val incAdapter = ArrayAdapter(this, R.layout.item_dropdown, cat)
+        incomeCategory_autoCompleteTextView.setAdapter(incAdapter)
+
+        //accounts drop down list
+        val acc: MutableList<String> = mutableListOf()
+        fStore.collection("accounts/$userID/account_detail")
+            .get()
+            .addOnSuccessListener {
+                for (document in it.documents) {
+                    acc.add(document.getString("account_name")!!)
+                }
+            }
+        val accAdapter = ArrayAdapter(this, R.layout.item_dropdown, acc)
+        incomeAccount_autoCompleteTextView.setAdapter(accAdapter)
+
+        //hide repeat section
+        repeat_constraintLayout.visibility = View.GONE
+
+        //hide attachment image
+        attachment_img.visibility = View.GONE
+        attachmentDocument_txt.visibility = View.GONE
+
+        //set attachment if come from receipt scanner
+
+
+        //current date & time
+        val cal = Calendar.getInstance()
+        day = cal.get(Calendar.DAY_OF_MONTH)
+        month = cal.get(Calendar.MONTH)
+        year = cal.get(Calendar.YEAR)
+        hour = cal.get(Calendar.HOUR_OF_DAY)
+        minute = cal.get(Calendar.MINUTE)
+
+        savedDay = String.format("%02d", day)
+        savedMonth = String.format("%02d", month + 1)
+        savedYear = year.toString()
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+
+        incomeDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
+        incomeTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+
+        timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+        incomeDate_edit.setOnClickListener{
+            DatePickerDialog(this,  this, year, month, day).show()
+        }
+
+        incomeTime_edit.setOnClickListener {
+            TimePickerDialog(this, this, hour, minute, true).show()
+        }
+
+
+
+        incomeAddAttachment_btn.setOnClickListener {
+            if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
+                openAttachmentBottomSheetDialog()
+            } else {
+                attachmentDocument_txt.visibility = View.GONE
+                attachment_img.visibility = View.GONE
+                incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                    0,
+                    0,
+                    0)
+                incomeAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
+                incomeAddAttachment_btn.text = "Add Attachment"
+                incomeAttachment = false
+            }
+        }
+
+        incomeRepeatEdit_btn.setOnClickListener {
+            openRepeatBottomSheetDialog()
+        }
+
+        incomeRepeat_switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                repeat_constraintLayout.visibility = View.VISIBLE
+            else
+                repeat_constraintLayout.visibility = View.GONE
         }
 
         AddnewBtn.setOnClickListener {
-/*            var lastIncome by Delegates.notNull<Int>()
-            try {
-                fStore.collection("incomes/$userID/Income_detail")
-                    .get()
-                    .addOnCompleteListener {
-                        if (it.isSuccessful) {
+            // Check Income Not Null
+            if (incomeValidate()) {
+                if (editIncomeIntent)
+                    editIncomeToDatabase()
+                else
+                    addIncomeToDatabase()
+            }
+        }
 
-                            lastIncome = it.result.size()  // Get lastIncome Index
-                            var newIncome = lastIncome.inc() // LastIncome Increment
-
-                            //Set Transaction Pathway
-                            var documentReference =
-                                fStore.collection("incomes/$userID/Income_detail").document("income$newIncome")
-                            //Get Income Detail
-                            var incomeDetail = Income(newIncome.toString(), 100.00)
-
-                            //Insert Income to FireStore
-                            documentReference.set(incomeDetail).addOnSuccessListener {
-                                var transaction = Transaction(incomeDetail.incomeName,incomeDetail.incomeAmount,"income")
-                                documentReference =
-                                    fStore.collection("transaction/$userID/Transaction_detail").document("income$newIncome")
-                                documentReference.set(transaction).addOnSuccessListener {
-                                   val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
-                                   val resetViewBuilder =
-                                       AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
-                                   val displayDialog = resetViewBuilder.show()
-                                    displayDialog.setOnDismissListener{
-                                        val intent = Intent(this, HomeActivity::class.java)
-                                        startActivity(intent)
-                                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                        finish()
-                                    }
-                               }
-
-                            }
-                        }
-                    }
-                //updateIncomeCounter(newIncome)
-            } catch (e: Exception) {
-                Toast.makeText(this, " " + e.message, Toast.LENGTH_SHORT).show()
-            }*/
+        attachmentDocument_txt.setOnClickListener {
+            // TODO: 6/11/2021 display pdf when clicked
         }
     }
 
-    private fun updateIncomeCounter(lastIncome: Int) {
-        val documentReference = fStore.collection("incomes").document(userID)
-        documentReference
-            .update("income", lastIncome)
-            .addOnSuccessListener { document ->
-                Toast.makeText(this, "Counter Updated", Toast.LENGTH_SHORT).show()
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        savedDay = String.format("%02d", dayOfMonth)
+        savedMonth =String.format("%02d", month + 1)
+        savedYear = year.toString()
+
+        incomeDate_edit.text = Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+    }
+
+    override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
+        savedHour = String.format("%02d", hour)
+        savedMinute = String.format("%02d", minute)
+
+       incomeTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+    }
+
+
+
+    private fun incomeValidate(): Boolean {
+        if (amountField.text.equals(0) || amountField.text.isNullOrBlank()) {
+            amountField.requestFocus()
+            return false
+        }
+        if (DescriptionField.text.isNullOrEmpty() || DescriptionField.text.isNullOrBlank()) {
+            DescriptionField.requestFocus()
+            return false
+        }
+        if (incomeAccount_autoCompleteTextView.text.isNullOrEmpty() || incomeAccount_autoCompleteTextView.text.isNullOrBlank()) {
+            incomeAccount_autoCompleteTextView.requestFocus()
+            return false
+        }
+        if (incomeCategory_autoCompleteTextView.text.isNullOrEmpty() || incomeCategory_autoCompleteTextView.text.isNullOrBlank()) {
+            incomeCategory_autoCompleteTextView.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun editIncomeToDatabase() {
+        try {
+            //Set Transaction Pathway
+            var documentReference =
+                fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+            timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+            val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+            val date : Date = sdf.parse(timestampString)
+
+            transactionTimestamp = Timestamp(date)
+
+            var transaction = Transaction(incomeID, incomeAmount, incomeAccount,
+                incomeAttachment, incomeCategory, incomeDescription, TRANSACTION_TYPE,transactionTimestamp)
+
+            documentReference.set(transaction).addOnCompleteListener {
+                //store attachment if necessary
+                if (incomeAttachment) {
+
+                    val storageReference = FirebaseStorage.getInstance()
+                        .getReference("transaction_images/$userID/${transaction.transactionName}")
+                    lateinit var uploadTask: UploadTask
+
+                    when (attachmentType) {
+                        "camera" -> {
+                            val baos = ByteArrayOutputStream()
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                            val data = baos.toByteArray()
+                            uploadTask = storageReference.putBytes(data)
+                        }
+                        "image" -> uploadTask = storageReference.putFile(imageUri)
+                        "document" -> uploadTask = storageReference.putFile(documentUri)
+                    }
+
+                    uploadTask
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
+                        }
+                }
+
+                documentReference =
+                    fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+                documentReference.set(transaction).addOnSuccessListener {
+                    val resetView = LayoutInflater.from(this).inflate(R.layout.activity_popup, null)
+                    val resetViewBuilder =
+                        AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+                    val displayDialog = resetViewBuilder.show()
+                    displayDialog.setOnDismissListener {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        finishAffinity()
+                    }
+                }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, " " + it.message, Toast.LENGTH_SHORT).show()
-            }
+        } catch (ex: Exception) {
+            Toast.makeText(this, " " + ex.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun addIncomeToDatabase() {
+        var lastIncome by Delegates.notNull<Int>()
+        try {
+            fStore.collection("transaction").document(userID)
+                .get()
+                .addOnCompleteListener {
+                    lastIncome =
+                        it.result["Transaction_counter"].toString().toInt() // Get lastIncome Index
+                    fStore.collection("transaction/$userID/Transaction_detail")
+                        .whereEqualTo("Transaction_type", "income")
+                        .get()
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                var newIncome = lastIncome.inc() // LastIncome Increment
+                                incomeAmount = amountField.text.toString().toDouble()
+                                incomeDescription = DescriptionField.text.toString()
+                                incomeCategory = incomeCategory_autoCompleteTextView.text.toString()
+                                incomeAccount = incomeAccount_autoCompleteTextView.text.toString()
+
+                                timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+                                val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+                                val date : Date = sdf.parse(timestampString)
+
+                                transactionTimestamp = Timestamp(date)
+
+                                //Set Transaction Pathway
+                                var documentReference =
+                                    fStore.collection("transaction/$userID/Transaction_detail")
+                                        .document("transaction$newIncome")
+
+                                var transaction =
+                                    Transaction("transaction$newIncome",
+                                        incomeAmount,
+                                        incomeAccount,
+                                        incomeAttachment,
+                                        incomeCategory,
+                                        incomeDescription,
+                                        TRANSACTION_TYPE,transactionTimestamp)
+
+                                fStore.collection("transaction").document(userID)
+                                    .get()
+                                    .addOnCompleteListener { value ->
+                                        val income_amount: Double =
+                                            value.result["Income"].toString().toDouble()
+                                        val newIncomeAmount: Double = income_amount + incomeAmount
+
+                                        //Update Income Amount
+                                        fStore.collection("transaction").document(userID)
+                                            .update("Income", newIncomeAmount)
+                                    }
+
+                                //Insert Income to FireStore
+                                documentReference.set(transaction).addOnSuccessListener {
+
+                                    //store attachment if necessary
+                                    if (incomeAttachment) {
+
+                                        val storageReference = FirebaseStorage.getInstance()
+                                            .getReference("transaction_images/$userID/transaction$newIncome")
+                                        lateinit var uploadTask: UploadTask
+
+                                        when (attachmentType) {
+                                            "camera" -> {
+                                                val baos = ByteArrayOutputStream()
+                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG,
+                                                    100,
+                                                    baos)
+                                                val data = baos.toByteArray()
+                                                uploadTask = storageReference.putBytes(data)
+                                            }
+                                            "image" -> uploadTask =
+                                                storageReference.putFile(imageUri)
+                                            "document" -> uploadTask =
+                                                storageReference.putFile(documentUri)
+                                        }
+
+                                        uploadTask
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this,
+                                                    "Successfully uploaded",
+                                                    Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener {
+                                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                                                    .show()
+                                            }
+                                    }
+                                    //Update Income Amount
+                                    fStore.collection("transaction").document(userID)
+                                        .update("Transaction_counter", lastIncome.inc())
+                                    val resetView =
+                                        LayoutInflater.from(this)
+                                            .inflate(R.layout.activity_popup, null)
+                                    val resetViewBuilder =
+                                        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                            .setView(resetView)
+                                    val displayDialog = resetViewBuilder.show()
+                                    displayDialog.setOnDismissListener {
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        startActivity(intent)
+                                        overridePendingTransition(R.anim.slide_in_right,
+                                            R.anim.slide_out_left)
+                                        finishAffinity()
+                                    }
+
+                                }
+                                    .addOnFailureListener{ ex->
+                                        Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+                                    }
+                            }
+                        }
+                        .addOnFailureListener{ ex->
+                            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+                        }
+                }
+
+        } catch (e: Exception) {
+            Toast.makeText(this, " " + e.message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupDataBase() {
@@ -116,4 +447,159 @@ class AddNewIncome : AppCompatActivity() {
             userID = currentUser.uid
         }
     }
+
+    //For reset Income
+    private fun resetIncome() {
+        //Reset Income Amount
+        fStore.collection("transaction").document(userID).update("Income", 0)
+    }
+
+    //After get attachment
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
+            0,
+            0,
+            0)
+        incomeAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
+        incomeAddAttachment_btn.text = "Remove Attachment"
+
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            attachment_img.visibility = View.VISIBLE
+            val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
+            imageBitmap = takenImage
+
+            // TODO: 5/11/2021 Image orientation
+
+            attachment_img.setImageBitmap(takenImage)
+
+            incomeAttachment = true
+            attachmentType = "camera"
+
+        } else if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            attachment_img.visibility = View.VISIBLE
+            imageUri = data?.data!!
+            attachment_img.setImageURI(imageUri)
+
+            incomeAttachment = true
+            attachmentType = "image"
+        } else if (requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            attachmentDocument_txt.visibility = View.VISIBLE
+            documentUri = data?.data!!
+            attachmentDocument_txt.text = getFileName(documentUri)
+
+            incomeAttachment = true
+            attachmentType = "document"
+
+        } else {
+            attachmentDocument_txt.visibility = View.GONE
+            attachment_img.visibility = View.GONE
+            incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                0,
+                0,
+                0)
+            incomeAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
+            incomeAddAttachment_btn.text = "Add Attachment"
+        }
+
+    }
+
+    private fun openAttachmentBottomSheetDialog() {
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_attachment)
+
+        val camera = bottomSheet.findViewById<Button>(R.id.attachementCamera_btn) as Button
+        val image = bottomSheet.findViewById<Button>(R.id.attachementImage_btn) as Button
+        val document = bottomSheet.findViewById<Button>(R.id.attachementDocument_btn) as Button
+
+        camera.setOnClickListener {
+
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+            photoFile = getPhotoFile(FILE_NAME)
+
+            val fileProvider =
+                FileProvider.getUriForFile(this, "com.example.jom_finance.fileprovider", photoFile)
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+
+            if (takePictureIntent.resolveActivity(this.packageManager) != null)
+                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
+            else
+                Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show()
+
+            bottomSheet.dismiss()
+        }
+
+
+        image.setOnClickListener {
+            //open image picker
+            val pickImageIntent = Intent(Intent.ACTION_PICK)
+            pickImageIntent.type = "image/*"
+            startActivityForResult(pickImageIntent, IMAGE_REQUEST_CODE)
+
+            bottomSheet.dismiss()
+        }
+
+        document.setOnClickListener {
+            //open document picker
+            val pickDocumentIntent = Intent(Intent.ACTION_GET_CONTENT)
+            pickDocumentIntent.type = "application/pdf"
+            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"),
+                DOCUMENT_REQUEST_CODE)
+
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.show()
+    }
+
+    // TODO: 5/11/2021 COULD PUT THE FOLLOWING THREE FUNCTIONS IN A UTIL FILE
+    private fun getPhotoFile(fileName: String): File {
+        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(fileName, "jpg", storageDirectory)
+    }
+
+    //get PDF file name
+    private fun Context.getFileName(uri: Uri): String? = when (uri.scheme) {
+        ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
+        else -> uri.path?.let(::File)?.name
+    }
+
+    private fun Context.getContentFileName(uri: Uri): String? = runCatching {
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                .let(cursor::getString)
+        }
+    }.getOrNull()
+
+    //REPEAT TRANSACTION
+    private fun openRepeatBottomSheetDialog() {
+        val bottomSheet = BottomSheetDialog(this)
+        bottomSheet.setContentView(R.layout.bottomsheet_repeat)
+
+        val confirmBtn = bottomSheet.findViewById<Button>(R.id.repeatConfirm_btn) as Button
+        val freqRadioGroup =
+            bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
+        val datePicker =
+            bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
+
+
+        confirmBtn.setOnClickListener {
+
+            val selectedBtnID = freqRadioGroup.checkedRadioButtonId
+            val selectedFreq = bottomSheet.findViewById<RadioButton>(selectedBtnID)?.text
+            val date: String = "${datePicker.dayOfMonth} / ${datePicker.month} / ${datePicker.year}"
+
+            incomeFrequency_txt.text = selectedFreq
+            incomeRepeatEnd_txt.text = date
+
+            bottomSheet.dismiss()
+
+        }
+
+        bottomSheet.show()
+    }
+
 }

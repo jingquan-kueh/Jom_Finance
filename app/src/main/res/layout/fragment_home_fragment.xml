@@ -16,8 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/homeToolBar"
@@ -43,15 +42,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profile_Icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/rounded_corner"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/keanu_reeves" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_launcher"
+                        app:civ_border_color="#AD00FF"
+                        app:civ_border_width="2dp" />
+
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -106,10 +104,11 @@
                 android:textSize="14sp"></TextView>
 
             <TextView
+                android:id="@+id/home_balance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
-                android:text="RM 9,400.00"
+                android:text="RM 1.00"
                 android:textAlignment="center"
                 android:textColor="#161719"
                 android:textSize="32sp"
@@ -146,8 +145,7 @@
                         android:text="Income"
                         android:textColor="@color/white"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.1"
+                        android:layout_marginLeft="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"></TextView>
 
@@ -156,16 +154,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="RM 5,000.00"
+                        android:layout_marginLeft="10dp"
+                        android:text="RM 1.00"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.175"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_incomeTitle"
-                        app:layout_constraintVertical_bias="0.0">
+                        app:layout_constraintTop_toBottomOf="@+id/home_incomeTitle">
 
                     </TextView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -190,8 +185,7 @@
                         android:text="Expenses"
                         android:textColor="@color/white"
                         android:textSize="14sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.1"
+                        android:layout_marginLeft="10dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"></TextView>
 
@@ -200,16 +194,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="RM 1,200.00"
+                        android:layout_marginLeft="10dp"
+                        android:text="RM 1.00"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.175"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_expensesTitle"
-                        app:layout_constraintVertical_bias="0.0">
+                        app:layout_constraintTop_toBottomOf="@+id/home_expensesTitle">>
 
                     </TextView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -276,14 +267,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.mlsdev.animatedrv.AnimatedRecyclerView
                     android:id="@+id/home_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="400dp"
-                    android:scrollbars="vertical">
+                    android:paddingBottom="500dp"
+                    android:scrollbars="vertical"
+                    app:animationDuration="600"
+                    app:layoutAnimation="@anim/layout_animation_from_bottom"
+                    app:layoutManagerOrientation="vertical"
+                    app:layoutManagerReverse="false"
+                    app:layoutManagerType="linear">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                </com.mlsdev.animatedrv.AnimatedRecyclerView>
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>

@@ -23,5 +23,4 @@
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/scroll_rounded_corner</item>
     </style>
-
 </resources>

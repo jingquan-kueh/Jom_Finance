@@ -13,7 +13,6 @@ import android.view.animation.Animation
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.jom_finance.ExpenseDetailActivity
 
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
@@ -22,18 +21,17 @@ import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-//import com.mlsdev.animatedrv.AnimatedRecyclerView
+import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 
 
 class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     private lateinit var fAuth : FirebaseAuth
     private lateinit var userID : String
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: AnimatedRecyclerView
     private lateinit var transactionArrayList : ArrayList<Transaction>
     private lateinit var categoryArrayList : ArrayList<Category>
     private lateinit var categoryHash : HashMap<String,Category>
@@ -67,7 +65,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     @SuppressLint("SetTextI18n")
     private fun readDB() {
-/*        db = FirebaseFirestore.getInstance()
+        db = FirebaseFirestore.getInstance()
         db.collection("transaction").document(userID).get().addOnCompleteListener{
             val income_amount : Double = it.result["Income"].toString().toDouble()
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
@@ -78,7 +76,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             home_income_amount.text = String.format("RM %.2f",income_amount)
             home_expenses_amount.text =String.format("RM %.2f",expense_amount)
             home_balance.text = String.format("RM %.2f",balance_amount)
-        }*/
+        }
     }
 
     private fun EventChangeListener() {
@@ -93,7 +91,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
-                            transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                                transactionArrayList.add(dc.document.toObject(Transaction::class.java))
                         }
                     }
                 }
@@ -130,24 +128,14 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         val item = transactionArrayList[position]
         requireActivity().run {
             val type = item.transactionType
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy")
-            val timeFormat = SimpleDateFormat("hh:mm")
-            val date = item.transactionTime?.toDate()
             if(type == "income"){
                 val intent = Intent(this, DetailIncome::class.java)
                 intent.putExtra("transactionName",item.transactionName)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }else{
-                val intent = Intent(this, ExpenseDetailActivity::class.java)
+                val intent = Intent(this, DetailIncome::class.java)
                 intent.putExtra("transactionName",item.transactionName)
-                intent.putExtra("transactionAmount",item.transactionAmount)
-                intent.putExtra("transactionCategory",item.transactionCategory)
-                intent.putExtra("transactionAccount",item.transactionAccount)
-                intent.putExtra("transactionDescription",item.transactionDescription)
-                intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
-                intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }

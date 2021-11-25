@@ -4,12 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.Transaction_fragment"
-    android:background="@color/white">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+            <ImageView
+                android:clickable="true"
+                android:id="@+id/filterBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/filter">
+            </ImageView>
+        </LinearLayout>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/toFinancialReportBtn"
             android:layout_width="match_parent"
@@ -34,14 +50,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
+                <com.mlsdev.animatedrv.AnimatedRecyclerView
                     android:id="@+id/transaction_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="200dp"
-                    android:scrollbars="vertical">
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="100dp"
+                    android:scrollbars="vertical"
+                    app:animationDuration="600"
+                    app:layoutAnimation="@anim/layout_animation_from_bottom"
+                    app:layoutManagerOrientation="vertical"
+                    app:layoutManagerReverse="false"
+                    app:layoutManagerType="linear">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                </com.mlsdev.animatedrv.AnimatedRecyclerView>
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>
