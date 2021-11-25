@@ -68,8 +68,8 @@ class SignUpActivity : AppCompatActivity(){
                                     Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
                                 }.addOnSuccessListener {
                                     var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
-                                    var categoryIconArray = arrayOf(1,2,3)
-                                    var categoryColorArray = arrayOf(1,2,3)
+                                    var categoryIconArray = arrayOf(452,384,258)
+                                    var categoryColorArray = arrayOf(-278483,-10044566,-12627531)
                                     var defaultCategory : Category
                                     for(i in 0..2){
                                         documentReference = fStore.collection("category/$userID/category_detail").document(categoryNameArray[i])
