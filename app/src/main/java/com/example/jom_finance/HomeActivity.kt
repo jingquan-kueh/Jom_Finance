@@ -67,6 +67,9 @@ class HomeActivity : AppCompatActivity() {
                 R.id.transaction_fragment -> {
                     navController.navigate(R.id.transaction_fragment,null,options)
                 }
+                R.id.budget_fragment ->{
+                    navController.navigate(R.id.budget_fragment,null,options)
+                }
                 R.id.profile_fragment -> {
                     navController.navigate(R.id.profile_fragment,null,options)
                 }
