@@ -26,10 +26,13 @@ class MainActivity :AppCompatActivity(){
     private lateinit var fAuth : FirebaseAuth
     private lateinit var fStore : FirebaseFirestore
     private lateinit var userID : String
+    private lateinit var sharedPreferences : SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.splashscreen)
+
+        firstTimeCheck()
         setupDataBase()
 
         /*// Initialize sharedPreferences File
@@ -50,6 +53,17 @@ class MainActivity :AppCompatActivity(){
         }*/
 
         handleDynamicLink()
+    }
+
+    private fun firstTimeCheck(){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val isLogin = sharedPreferences.getBoolean("isLogin", false)
+        if (isLogin) {
+            val i = Intent(this, HomeActivity::class.java)
+            startActivity(i)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            finish()
+        }
     }
 
     override fun onStart() {

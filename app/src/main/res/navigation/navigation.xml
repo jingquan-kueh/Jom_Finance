@@ -20,4 +20,9 @@
         android:name="com.example.jom_finance.fragment.Transaction_fragment"
         android:label="fragment_transaction_fragment"
         tools:layout="@layout/fragment_transaction_fragment" />
+    <fragment
+        android:id="@+id/budget_fragment"
+        android:name="com.example.jom_finance.fragment.Budget_fragment"
+        android:label="fragment_budget_fragment"
+        tools:layout="@layout/fragment_budget_fragment" />
 </navigation>

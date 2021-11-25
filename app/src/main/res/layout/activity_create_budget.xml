@@ -10,13 +10,25 @@
         tools:context=".CreateBudgetActivity">
 
         <TextView
-            android:id="@+id/howMuch_text"
+            android:id="@+id/budgetMonthYear_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
+            android:text="Nov 2021"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/textView8"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
             android:text="How much do you want to spend?"
-            android:textColor="#FCFCFC"
+            android:textColor="@color/whitish_grey"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/rm_text"
             app:layout_constraintStart_toStartOf="parent" />
@@ -34,10 +46,10 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
-            android:id="@+id/editTextNumberDecimal"
+            android:id="@+id/budgetAmount_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
@@ -65,24 +77,28 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp">
 
                 <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView_categories"
+                    android:id="@+id/budgetCategories_autoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="20dp"
                     android:layout_weight="1"
                     android:inputType="none"
-                    android:text="Shopping" />
+                    android:hint="Category" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/budgetAlert_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -111,7 +127,7 @@
                 android:progressDrawable="@drawable/seekbar_progress" />
 
             <Button
-                android:id="@+id/budgetContinue_btn"
+                android:id="@+id/createBudgetConfirm_btn"
                 style="@style/long_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -120,8 +136,9 @@
                 app:backgroundTint="#5D5FEF"
                 app:cornerRadius="10dp" />
 
-
         </LinearLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

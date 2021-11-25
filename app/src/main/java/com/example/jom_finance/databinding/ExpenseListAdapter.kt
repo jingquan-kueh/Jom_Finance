@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.R
 import com.example.jom_finance.models.Expense
+import com.maltaisn.icondialog.pack.IconDrawableLoader
+import com.maltaisn.icondialog.pack.IconPackLoader
+import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 
 class ExpenseListAdapter(private val expenseList : ArrayList<Expense>) : RecyclerView.Adapter<ExpenseListAdapter.ListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
@@ -23,6 +26,7 @@ class ExpenseListAdapter(private val expenseList : ArrayList<Expense>) : Recycle
     override fun getItemCount(): Int {
         return expenseList.size
     }
+
 
     class ListViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         val title : TextView = itemView.findViewById(R.id.transaction_title)

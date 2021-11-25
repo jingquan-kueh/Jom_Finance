@@ -15,8 +15,8 @@
         android:title=""
         android:enabled="false"/>
     <item
-        android:id="@+id/navigation_Budget"
-        android:icon="@drawable/home_icon"
+        android:id="@+id/budget_fragment"
+        android:icon="@drawable/pie_chart_icon"
         android:title="Budget" />
     <item
         android:id="@+id/profile_fragment"

@@ -52,7 +52,7 @@ class AddNewIncome : AppCompatActivity() {
         }
 
         AddnewBtn.setOnClickListener {
-            var lastIncome by Delegates.notNull<Int>()
+/*            var lastIncome by Delegates.notNull<Int>()
             try {
                 fStore.collection("incomes/$userID/Income_detail")
                     .get()
@@ -92,7 +92,7 @@ class AddNewIncome : AppCompatActivity() {
                 //updateIncomeCounter(newIncome)
             } catch (e: Exception) {
                 Toast.makeText(this, " " + e.message, Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
     }
 
