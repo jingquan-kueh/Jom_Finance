@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.google.gms.google-services'
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -35,6 +36,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
 }
@@ -90,10 +92,13 @@ dependencies {
 
     // Dynamic Link
     implementation 'com.google.firebase:firebase-dynamic-links:19.0.0'
+
     // Preference
     implementation 'androidx.preference:preference-ktx:1.1.1'
+
     //algorithmia
     implementation 'com.algorithmia:algorithmia-android:1.0.1'
+
     //Text recognition tool kit
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
 

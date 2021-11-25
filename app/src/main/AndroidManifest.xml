@@ -14,6 +14,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jom_Finance">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.jom_finance.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+        <activity
+            android:name=".ExpenseDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewExpenseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".TransferActivity"
+            android:exported="true" />
+        <activity
+            android:name=".CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CategoryListActivity"
+            android:exported="false" />
         <activity
             android:name=".setting.CurrencyActivity"
             android:exported="false" />

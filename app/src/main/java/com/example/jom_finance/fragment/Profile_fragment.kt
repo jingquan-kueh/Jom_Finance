@@ -15,6 +15,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.preference.PreferenceManager
+import com.example.jom_finance.AccountsListActivity
+import com.example.jom_finance.CategoryListActivity
 import com.example.jom_finance.LoginActivity
 import com.example.jom_finance.R
 import com.example.jom_finance.setting.SettingActivity
@@ -65,6 +67,22 @@ class Profile_fragment : Fragment() {
             val openGalleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(openGalleryIntent, 100)
+        }
+
+        view.accountBtn.setOnClickListener{
+            requireActivity().run {
+                val intent = Intent(this, AccountsListActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        }
+
+        view.categoryBtn.setOnClickListener {
+            requireActivity().run {
+                val intent = Intent(this, CategoryListActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
         }
 
         view.logoutBtn.setOnClickListener {

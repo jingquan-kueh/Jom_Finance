@@ -9,10 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.jom_finance.ExpenseDetailActivity
 
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
@@ -24,7 +22,7 @@ import com.google.firebase.firestore.*
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
-import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 
 
 class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
@@ -128,14 +126,24 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         val item = transactionArrayList[position]
         requireActivity().run {
             val type = item.transactionType
+            val dateFormat = SimpleDateFormat("dd MMMM yyyy")
+            val timeFormat = SimpleDateFormat("hh:mm")
+            val date = item.transactionTime?.toDate()
             if(type == "income"){
                 val intent = Intent(this, DetailIncome::class.java)
                 intent.putExtra("transactionName",item.transactionName)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }else{
-                val intent = Intent(this, DetailIncome::class.java)
+                val intent = Intent(this, ExpenseDetailActivity::class.java)
                 intent.putExtra("transactionName",item.transactionName)
+                intent.putExtra("transactionAmount",item.transactionAmount)
+                intent.putExtra("transactionCategory",item.transactionCategory)
+                intent.putExtra("transactionAccount",item.transactionAccount)
+                intent.putExtra("transactionDescription",item.transactionDescription)
+                intent.putExtra("transactionAttachment",item.transactionAttachment)
+                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
