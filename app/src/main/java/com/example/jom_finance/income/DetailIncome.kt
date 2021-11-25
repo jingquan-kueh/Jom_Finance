@@ -79,6 +79,9 @@ class DetailIncome : AppCompatActivity() {
             intent.putExtra("incomeDescription", description)
             intent.putExtra("incomeAccount", account)
             intent.putExtra("incomeAttachment", attachment)
+
+            // TODO : intent pass Time(Seperate) as string
+            //intent.putExtra("incomeTime", date)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }

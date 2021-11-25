@@ -19,6 +19,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.fragment_profile_fragment.*
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -58,6 +59,16 @@ class SignUpActivity : AppCompatActivity(){
                                 // TODO : Add Default Category to db
                                 //Name,icon,Color
                                 //food,transport,shopping
+                                //documentReference = fStore.collection("transaction/$userID")
+                                val a = fStore.collection("transaction").document(userID)
+                                val initialData = hashMapOf(
+                                    "Income" to 0,
+                                    "Expense" to 0,
+                                    "Transaction_counter" to 0,
+                                )
+                                a.set(initialData).addOnFailureListener{
+                                    Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                                }
 
                                 var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
                                 var categoryIconArray = arrayOf(1,2,3)

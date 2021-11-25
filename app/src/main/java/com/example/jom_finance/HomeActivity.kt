@@ -30,6 +30,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var userID : String
     private lateinit var currentUser : FirebaseUser
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)

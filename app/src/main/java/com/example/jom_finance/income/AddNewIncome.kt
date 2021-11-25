@@ -96,6 +96,10 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
             val description = intent.getStringExtra("incomeDescription")
             val account = intent.getStringExtra("incomeAccount")
             val attachment = intent.getBooleanExtra("incomeAttachment", false)
+
+            // TODO : get intent pass Time(Seperate) as string
+            //val time = intent.getStringExtra("incomeTime")
+
             incomeID = intent.getStringExtra("incomeID").toString()
             AddnewBtn.text = "Done"
             amountField.setText(amount.toString())
@@ -261,6 +265,7 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
             //Set Transaction Pathway
             var documentReference =
                 fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+
             timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
             val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
             val date : Date = sdf.parse(timestampString)

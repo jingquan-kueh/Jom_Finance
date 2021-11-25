@@ -120,7 +120,6 @@ class ReportActivity : AppCompatActivity() {
             }
         }
 
-    //TODO : Chart unable to change value when icome and expense change btn.
 
  /*       val arguments = Bundle()
         arguments.putInt("VALUE1", 0)

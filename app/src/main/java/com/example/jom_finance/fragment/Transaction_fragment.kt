@@ -76,7 +76,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
     }
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
-        db.collection("transaction/$userID/Transaction_detail")
+        db.collection("transaction/$userID/Transaction_detail").orderBy("Transaction_timestamp",Query.Direction.DESCENDING)
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){
