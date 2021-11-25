@@ -55,7 +55,6 @@ class SignUpActivity : AppCompatActivity(){
                             var documentReference = fStore.collection("users").document(userID)
                             val user = User(email,name)
                             documentReference.set(user).addOnSuccessListener {
-                                // TODO : Add Default Category to db
                                 //Name,icon,Color
                                 //food,transport,shopping
 
