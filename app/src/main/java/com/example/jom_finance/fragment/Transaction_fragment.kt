@@ -93,7 +93,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
                 }
             })
 
-        db.collection("category/$userID/Category_detail")
+        db.collection("category/$userID/category_detail")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){

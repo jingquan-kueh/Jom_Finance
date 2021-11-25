@@ -88,7 +88,7 @@ class Pie_fragment : Fragment() {
                             transactionArrayList.add(dc.document.toObject(Transaction::class.java))
                         }
                     }
-                    fStore.collection("category/$userID/Category_detail")
+                    fStore.collection("category/$userID/category_detail")
                         .addSnapshotListener(object : EventListener<QuerySnapshot> {
                             override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                                 if(error!=null){

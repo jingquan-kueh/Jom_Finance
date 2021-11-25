@@ -115,7 +115,7 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
 
         //category drop down list
         val cat: MutableList<String> = mutableListOf()
-        fStore.collection("category/$userID/Category_detail")
+        fStore.collection("category/$userID/category_detail")
             .get()
             .addOnSuccessListener {
                 for (document in it.documents) {

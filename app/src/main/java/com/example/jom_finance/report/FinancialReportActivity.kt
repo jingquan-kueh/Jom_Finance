@@ -84,7 +84,7 @@ class FinancialReportActivity : AppCompatActivity() {
     private fun readDB() {
         db = FirebaseFirestore.getInstance()
         //get all category
-        db.collection("category/$userID/Category_detail")
+        db.collection("category/$userID/category_detail")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){

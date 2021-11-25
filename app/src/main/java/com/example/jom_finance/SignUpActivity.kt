@@ -59,20 +59,29 @@ class SignUpActivity : AppCompatActivity(){
                                 //Name,icon,Color
                                 //food,transport,shopping
 
-                                var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
-                                var categoryIconArray = arrayOf(1,2,3)
-                                var categoryColorArray = arrayOf(1,2,3)
-                                var defaultCategory : Category
-                                for(i in 0..2){
-                                    documentReference = fStore.collection("category/$userID/Category_detail").document(categoryNameArray[i])
-                                    defaultCategory = Category(categoryNameArray[i],categoryIconArray[i],categoryColorArray[i])
-                                    documentReference.set(defaultCategory)
+                                documentReference = fStore.collection("transaction").document(userID)
+                                var initialData = HashMap<String,Int>()
+                                initialData.put("Income",0)
+                                initialData.put("Expense",0)
+                                initialData.put("Transaction_counter",0)
+                                documentReference.set(initialData).addOnFailureListener{
+                                    Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                                }.addOnSuccessListener {
+                                    var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
+                                    var categoryIconArray = arrayOf(1,2,3)
+                                    var categoryColorArray = arrayOf(1,2,3)
+                                    var defaultCategory : Category
+                                    for(i in 0..2){
+                                        documentReference = fStore.collection("category/$userID/category_detail").document(categoryNameArray[i])
+                                        defaultCategory = Category(categoryNameArray[i],categoryIconArray[i],categoryColorArray[i])
+                                        documentReference.set(defaultCategory)
+                                    }
+                                    // TODO : Direct Login
+                                    val intent = Intent(this, LoginActivity::class.java)
+                                    startActivity(intent)
+                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                                    Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()
                                 }
-                                // TODO : Direct Login
-                                val intent = Intent(this, LoginActivity::class.java)
-                                startActivity(intent)
-                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                                Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()
                             }
                         }catch (e : Exception){
                             Toast.makeText(this," "+e.message, Toast.LENGTH_SHORT).show()
