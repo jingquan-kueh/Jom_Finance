@@ -32,7 +32,6 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
-import kotlinx.android.synthetic.main.activity_detail_income.*
 import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.bottomsheet_repeat.*
 import java.io.ByteArrayOutputStream
@@ -316,7 +315,10 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                         val documentReference = fStore.collection("transaction/$userID/Transaction_detail").document("transaction$transactionNum")
 
                         //transaction details
-                        val transactionDetails = Transaction("transaction$transactionNum", TRANSACTION_TYPE, transactionAmount, transactionCategory, transactionDescription, transactionAccount, transactionTimestamp, transactionAttachment)
+                        val transactionDetails = Transaction("transaction$transactionNum",
+                            transactionAmount, transactionAccount, transactionAttachment,
+                            transactionCategory, transactionDescription, TRANSACTION_TYPE,
+                            transactionTimestamp)
 
                         //Insert to database
                         documentReference.set(transactionDetails).addOnCompleteListener {

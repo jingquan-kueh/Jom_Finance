@@ -19,6 +19,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/bottomsheetDeleteTitle_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Remove this transaction?"
@@ -31,6 +32,7 @@
         </TextView>
 
         <TextView
+            android:id="@+id/bottomsheetDeleteDesc_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Are you sure do you wanna remove this transaction?"

@@ -4,12 +4,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.algorithmia.APIException;
-import com.algorithmia.AlgorithmException;
-import com.algorithmia.Algorithmia;
-import com.algorithmia.AlgorithmiaClient;
-import com.algorithmia.algo.AlgoResponse;
-import com.algorithmia.algo.Algorithm;
+import com.algorithmia.*;
+import com.algorithmia.algo.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;

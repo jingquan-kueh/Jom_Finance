@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
+
 apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 31
@@ -91,10 +92,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links:19.0.0'
     // Preference
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    // ML Kit : Entity-extraction
-    implementation 'com.google.mlkit:entity-extraction:16.0.0-beta2'
+    //algorithmia
+    implementation 'com.algorithmia:algorithmia-android:1.0.1'
     //Text recognition tool kit
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
+
     // Recycleview animator
     implementation "com.mlsdev.animatedrv:library:2.0.0"
 }
