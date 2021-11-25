@@ -27,6 +27,7 @@ import com.example.jom_finance.R
 import com.example.jom_finance.models.Income
 import com.example.jom_finance.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -39,6 +40,7 @@ import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Exception
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.properties.Delegates
 
@@ -49,6 +51,7 @@ private lateinit var incomeCategory: String
 private lateinit var incomeDescription: String
 private lateinit var incomeAccount: String
 private var incomeAttachment: Boolean = false
+private lateinit var transactionTimestamp : Timestamp
 
 private lateinit var fAuth: FirebaseAuth
 private lateinit var fStore: FirebaseFirestore
@@ -258,9 +261,14 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
             //Set Transaction Pathway
             var documentReference =
                 fStore.collection("transaction/$userID/Transaction_detail").document(incomeID)
+            timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+            val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+            val date : Date = sdf.parse(timestampString)
+
+            transactionTimestamp = Timestamp(date)
 
             var transaction = Transaction(incomeID, incomeAmount, incomeAccount,
-                incomeAttachment, incomeCategory, incomeDescription, TRANSACTION_TYPE)
+                incomeAttachment, incomeCategory, incomeDescription, TRANSACTION_TYPE,transactionTimestamp)
 
             documentReference.set(transaction).addOnCompleteListener {
                 //store attachment if necessary
@@ -329,6 +337,12 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
                                 incomeCategory = incomeCategory_autoCompleteTextView.text.toString()
                                 incomeAccount = incomeAccount_autoCompleteTextView.text.toString()
 
+                                timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+                                val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+                                val date : Date = sdf.parse(timestampString)
+
+                                transactionTimestamp = Timestamp(date)
+
                                 //Set Transaction Pathway
                                 var documentReference =
                                     fStore.collection("transaction/$userID/Transaction_detail")
@@ -341,7 +355,7 @@ class AddNewIncome : AppCompatActivity(),DatePickerDialog.OnDateSetListener, Tim
                                         incomeAttachment,
                                         incomeCategory,
                                         incomeDescription,
-                                        TRANSACTION_TYPE)
+                                        TRANSACTION_TYPE,transactionTimestamp)
 
                                 fStore.collection("transaction").document(userID)
                                     .get()

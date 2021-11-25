@@ -10,9 +10,11 @@ import androidx.core.view.isVisible
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detail_income.*
+import java.text.SimpleDateFormat
 import kotlin.properties.Delegates
 
 private lateinit var fAuth : FirebaseAuth
@@ -24,6 +26,7 @@ private lateinit var category : String
 private lateinit var description : String
 private lateinit var account : String
 private var attachment : Boolean = false
+private lateinit var date : Timestamp
 
 class DetailIncome : AppCompatActivity() {
 
@@ -41,6 +44,15 @@ class DetailIncome : AppCompatActivity() {
                     description =  document.getString("Transaction_description").toString()
                     account = document.getString("Transaction_account").toString()
                     attachment = document.getBoolean("Transaction_attachment") == true
+
+                    date = document.getTimestamp("Transaction_timestamp")!!
+                    var sdf = SimpleDateFormat("MMMM d yyyy")
+                    var dateString = sdf.format(date.toDate())
+                    dateIncome.text = dateString
+
+                    sdf = SimpleDateFormat("KK:mm a")
+                    dateString = sdf.format(date.toDate())
+                    timeIncome.text = dateString
 
                     amountIncome.text = "RM "+ amount
                     incomeCategoryDetail_text.text = category
