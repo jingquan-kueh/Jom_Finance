@@ -17,7 +17,7 @@ import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.Exception
 
-
+//master_backup
 class MainActivity :AppCompatActivity(){
     private var x1 = 0f
     private var x2 = 0f
