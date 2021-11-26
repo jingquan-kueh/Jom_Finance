@@ -32,6 +32,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
+import kotlinx.android.synthetic.main.activity_add_new_expense.attachmentDocument_txt
+import kotlinx.android.synthetic.main.activity_add_new_expense.attachment_img
+import kotlinx.android.synthetic.main.activity_add_new_expense.repeat_constraintLayout
 import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.bottomsheet_repeat.*
 import java.io.ByteArrayOutputStream
@@ -46,7 +49,7 @@ private lateinit var fAuth: FirebaseAuth
 private lateinit var fStore: FirebaseFirestore
 private lateinit var userID: String
 
-private lateinit var transactionID : String
+private lateinit var transactionID: String
 private var transactionNum by Delegates.notNull<Int>()
 
 private const val TRANSACTION_TYPE = "expense"
@@ -54,8 +57,8 @@ private var transactionAmount: Double = 0.0
 private lateinit var transactionCategory: String
 private lateinit var transactionDescription: String
 private lateinit var transactionAccount: String
-private lateinit var transactionTimestamp : Timestamp
-private  var transactionAttachment: Boolean = false
+private lateinit var transactionTimestamp: Timestamp
+private var transactionAttachment: Boolean = false
 
 private const val IMAGE_REQUEST_CODE = 100
 private const val CAMERA_REQUEST_CODE = 42
@@ -64,9 +67,9 @@ private const val DOCUMENT_REQUEST_CODE = 111
 private lateinit var attachmentType: String
 private const val FILE_NAME = "photo.jpg" //temporary file name
 private lateinit var photoFile: File
-private lateinit var imageUri : Uri
+private lateinit var imageUri: Uri
 private lateinit var imageBitmap: Bitmap
-private lateinit var documentUri : Uri
+private lateinit var documentUri: Uri
 
 private var day = 0
 private var month = 0
@@ -74,15 +77,16 @@ private var year = 0
 private var hour = 0
 private var minute = 0
 
-private lateinit var savedDay : String
-private lateinit var savedMonth : String
-private lateinit var savedYear : String
-private lateinit var savedHour : String
-private lateinit var savedMinute : String
-private lateinit var timestampString : String
+private lateinit var savedDay: String
+private lateinit var savedMonth: String
+private lateinit var savedYear: String
+private lateinit var savedHour: String
+private lateinit var savedMinute: String
+private lateinit var timestampString: String
 
 
-class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
+    TimePickerDialog.OnTimeSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_expense)
@@ -95,8 +99,10 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         attachment_img.visibility = View.GONE
         attachmentDocument_txt.visibility = View.GONE
 
+        val voiceExpenseIntent = intent.getBooleanExtra("voiceExpense", false)
+
         transactionID = intent?.extras?.getString("transactionName").toString()
-        if(transactionID != "null"){
+        if (transactionID != "null") {
             //UPDATE TRANSACTION
             transactionAmount = intent?.extras?.getDouble("transactionAmount")!!
             transactionCategory = intent?.extras?.getString("transactionCategory").toString()
@@ -104,21 +110,33 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             transactionDescription = intent?.extras?.getString("transactionDescription").toString()
             transactionAttachment = intent?.extras?.getBoolean("transactionAttachment")!!
 
-            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(transactionAmount.toString())
-            expenseCategory_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionCategory)
-            expenseAccount_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionAccount)
-            expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(transactionDescription)
+            expenseAmount_edit.text =
+                Editable.Factory.getInstance().newEditable(transactionAmount.toString())
+            expenseCategory_ddl.editText?.text =
+                Editable.Factory.getInstance().newEditable(transactionCategory)
+            expenseAccount_ddl.editText?.text =
+                Editable.Factory.getInstance().newEditable(transactionAccount)
+            expenseDescription_outlinedTextField.editText?.text =
+                Editable.Factory.getInstance().newEditable(transactionDescription)
 
-            if(transactionAttachment){
-                expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+            if (transactionAttachment) {
+                expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
+                    0,
+                    0,
+                    0)
                 expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
                 expenseAddAttachment_btn.text = "Remove Attachment"
                 attachment_img.visibility = View.VISIBLE
             }
 
 
-
-        }else{
+        } else if (voiceExpenseIntent) {
+            val amount = intent.getDoubleExtra("expenseAmount", 0.0)
+            val description = intent.getStringExtra("expenseDescription")
+            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(amount.toString())
+            expenseDescription_outlinedTextField.editText?.text =
+                Editable.Factory.getInstance().newEditable(description)
+        } else {
             //ADD TRANSACTION
             //current date & time
             val cal = Calendar.getInstance()
@@ -133,25 +151,31 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             savedYear = year.toString()
             savedHour = String.format("%02d", hour)
             savedMinute = String.format("%02d", minute)
-            expenseDate_edit.text = Editable.Factory.getInstance().newEditable( "$savedDay-$savedMonth-$savedYear" )
-            expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
-            timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+            expenseDate_edit.text =
+                Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+            expenseTime_edit.text =
+                Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+            timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
 
             expenseConfirm_btn.setOnClickListener {
                 // TODO: 5/11/2021 make sure all inputs are not NULL
-                addExpenseToDatabase()
-                updateBudget()
-                updateAccount()
+                // Added Validation
+                if (expenseValidate()) {
+                    addExpenseToDatabase()
+                    updateBudget()
+                    updateAccount()
+                    updateExpenseValue()
+                }
             }
 
         }
 
         //category drop down list
-        val cat : MutableList<String> = mutableListOf()
+        val cat: MutableList<String> = mutableListOf()
         fStore.collection("category/$userID/category_detail")
             .get()
             .addOnSuccessListener {
-                for (document in it.documents){
+                for (document in it.documents) {
                     cat.add(document.getString("category_name")!!)
                 }
             }
@@ -159,11 +183,11 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         expenseCategory_autoCompleteTextView.setAdapter(catAdapter)
 
         //accounts drop down list
-        val acc : MutableList<String> = mutableListOf()
+        val acc: MutableList<String> = mutableListOf()
         fStore.collection("accounts/$userID/account_detail")
             .get()
             .addOnSuccessListener {
-                for (document in it.documents){
+                for (document in it.documents) {
                     acc.add(document.getString("account_name")!!)
                 }
             }
@@ -172,8 +196,11 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
         //set attachment if come from receipt scanner
         val imagePath = intent?.extras?.getString("image_path").toString()
-        if (imagePath != "null"){
-            expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+        if (imagePath != "null") {
+            expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
+                0,
+                0,
+                0)
             expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
             expenseAddAttachment_btn.text = "Remove Attachment"
             attachment_img.visibility = View.VISIBLE
@@ -191,9 +218,9 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
             //create InputImage object from Bitmap
-            val inputImage = InputImage.fromBitmap(image, 90)
+            val inputImage = InputImage.fromBitmap(image, 0)
 
-            var elementArr :ArrayList<String> = arrayListOf()
+            var elementArr: ArrayList<String> = arrayListOf()
             //process the image
             //store all elements in an array
             val result = recognizer.process(inputImage)
@@ -201,25 +228,27 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
                     //loop through all elements and find "total"
                     var foundTotal = false
-                    var temp : String = ""
-                    for (block in visionText.textBlocks){
+                    var temp: String = ""
+                    for (block in visionText.textBlocks) {
                         //val blockText = block.text
-                        for (line in block.lines){
+                        for (line in block.lines) {
                             //val lineText = line.text
-                            for (element in line.elements){
+                            for (element in line.elements) {
                                 val elementText = element.text
                                 //elementArr.add(element.text)
                                 if (elementText.equals("total", true))
                                     foundTotal = true
 
-                                if(foundTotal){
+                                if (foundTotal) {
                                     try {
-                                        if (elementText.contains(".")){
+                                        if (elementText.contains(".")) {
                                             val total = elementText.toDouble()
                                             if (total > 1.0)
-                                                expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(total.toString())
+                                                expenseAmount_edit.text =
+                                                    Editable.Factory.getInstance()
+                                                        .newEditable(total.toString())
                                         }
-                                    }catch (e : Exception){
+                                    } catch (e: Exception) {
 
                                     }
                                 }
@@ -228,9 +257,10 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                         }
                     }
 
-                    val b =visionText.textBlocks
+                    val b = visionText.textBlocks
                     val l = b[0].lines
-                    expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(l[0].text)
+                    expenseDescription_outlinedTextField.editText?.text =
+                        Editable.Factory.getInstance().newEditable(l[0].text)
 
                 }
                 .addOnFailureListener { e ->
@@ -238,8 +268,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 }
         }
 
-        expenseDate_edit.setOnClickListener{
-            DatePickerDialog(this,  this, year, month, day).show()
+        expenseDate_edit.setOnClickListener {
+            DatePickerDialog(this, this, year, month, day).show()
         }
 
         expenseTime_edit.setOnClickListener {
@@ -247,13 +277,15 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         }
 
         expenseAddAttachment_btn.setOnClickListener {
-            if(attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE){
+            if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
                 openAttachmentBottomSheetDialog()
-            }
-            else{
+            } else {
                 attachmentDocument_txt.visibility = View.GONE
                 attachment_img.visibility = View.GONE
-                expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24, 0, 0, 0)
+                expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                    0,
+                    0,
+                    0)
                 expenseAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
                 expenseAddAttachment_btn.text = "Add Attachment"
                 transactionAttachment = false
@@ -264,7 +296,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             openRepeatBottomSheetDialog()
         }
 
-        expenseRepeat_switch.setOnCheckedChangeListener{ _, isChecked ->
+        expenseRepeat_switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 repeat_constraintLayout.visibility = View.VISIBLE
             else
@@ -278,88 +310,146 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         savedDay = String.format("%02d", dayOfMonth)
-        savedMonth =String.format("%02d", month + 1)
+        savedMonth = String.format("%02d", month + 1)
         savedYear = year.toString()
 
-        expenseDate_edit.text = Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+        expenseDate_edit.text =
+            Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
     }
 
     override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
         savedHour = String.format("%02d", hour)
         savedMinute = String.format("%02d", minute)
 
-        expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+        expenseTime_edit.text =
+            Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
     }
 
-    private fun addExpenseToDatabase(){
+    private fun expenseValidate(): Boolean {
+        if (expenseAmount_edit.text.equals(0) || expenseAmount_edit.text.isNullOrBlank()) {
+            expenseAmount_edit.requestFocus()
+            return false
+        }
+        if (expenseDescription_outlinedTextField.editText?.text.isNullOrEmpty() || expenseDescription_outlinedTextField.editText?.text.isNullOrEmpty()) {
+            expenseDescription_outlinedTextField.editText?.requestFocus()
+            return false
+        }
+        if (expenseCategory_autoCompleteTextView.text.isNullOrEmpty() || expenseCategory_autoCompleteTextView.text.isNullOrBlank()) {
+            expenseCategory_autoCompleteTextView.requestFocus()
+            return false
+        }
+        if (expenseAccount_autoCompleteTextView.text.isNullOrEmpty() || expenseAccount_autoCompleteTextView.text.isNullOrBlank()) {
+            expenseAccount_autoCompleteTextView.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun addExpenseToDatabase() {
         transactionAmount = expenseAmount_edit.text.toString().toDouble()
         transactionCategory = expenseCategory_ddl.editText?.text.toString()
         transactionDescription = expenseDescription_outlinedTextField.editText?.text.toString()
         transactionAccount = expenseAccount_ddl.editText?.text.toString()
 
-        timestampString= "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+        timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
         val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
-        val date : Date = sdf.parse(timestampString)
+        val date: Date = sdf.parse(timestampString)
 
         transactionTimestamp = Timestamp(date)
 
 
-        try{
-            fStore.collection("transaction/$userID/Transaction_detail")
+        try {
+            var lastExpense by Delegates.notNull<Int>()
+            fStore.collection("transaction").document(userID)
                 .get()
                 .addOnCompleteListener {
-                    if(it.isSuccessful){
+                    lastExpense =
+                        it.result["Transaction_counter"].toString().toInt() // Get lastExpense Index
+                    fStore.collection("transaction/$userID/Transaction_detail")
+                        .whereEqualTo("Transaction_type", "expense")
+                        .get()
+                        .addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                var newExpense = lastExpense.inc() // lastExpense Increment
+                                //Set Transaction Pathway
+                                var documentReference =
+                                    fStore.collection("transaction/$userID/Transaction_detail")
+                                        .document("transaction$newExpense")
 
-                        transactionNum = it.result.size().inc()
+                                //transaction details
+                                val transactionDetails = Transaction("transaction$newExpense",
+                                    transactionAmount, transactionAccount, transactionAttachment,
+                                    transactionCategory, transactionDescription, TRANSACTION_TYPE,
+                                    transactionTimestamp)
 
-                        val documentReference = fStore.collection("transaction/$userID/Transaction_detail").document("transaction$transactionNum")
+                                documentReference.set(transactionDetails).addOnSuccessListener {
+                                    //store attachment if necessary
+                                    if (transactionAttachment) {
 
-                        //transaction details
-                        val transactionDetails = Transaction("transaction$transactionNum",
-                            transactionAmount, transactionAccount, transactionAttachment,
-                            transactionCategory, transactionDescription, TRANSACTION_TYPE,
-                            transactionTimestamp)
+                                        val storageReference = FirebaseStorage.getInstance()
+                                            .getReference("transaction_images/$userID/transaction$transactionNum")
+                                        lateinit var uploadTask: UploadTask
 
-                        //Insert to database
-                        documentReference.set(transactionDetails).addOnCompleteListener {
-                            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                                        when (attachmentType) {
+                                            "camera" -> {
+                                                val baos = ByteArrayOutputStream()
+                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG,
+                                                    100,
+                                                    baos)
+                                                val data = baos.toByteArray()
+                                                uploadTask = storageReference.putBytes(data)
+                                            }
+                                            "image" -> uploadTask =
+                                                storageReference.putFile(imageUri)
+                                            "document" -> uploadTask =
+                                                storageReference.putFile(documentUri)
+                                        }
+
+                                        uploadTask
+                                            .addOnSuccessListener {
+                                                Toast.makeText(this,
+                                                    "Successfully uploaded",
+                                                    Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener {
+                                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                                                    .show()
+                                            }
+                                    }
+
+                                    //Update Transaction counter
+                                    fStore.collection("transaction").document(userID)
+                                        .update("Transaction_counter", lastExpense.inc())
+
+                                    // Popout Msg
+                                    /*val resetView =
+                                        LayoutInflater.from(this)
+                                            .inflate(R.layout.activity_popup, null)
+                                    val resetViewBuilder =
+                                        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                            .setView(resetView)
+                                    val displayDialog = resetViewBuilder.show()
+                                    displayDialog.setOnDismissListener {
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        startActivity(intent)
+                                        overridePendingTransition(R.anim.slide_in_right,
+                                            R.anim.slide_out_left)
+                                        finishAffinity()
+                                    }*/
+
+                                }
+
+                            }
                         }
 
-                    }
-
-                    //store attachment if necessary
-                    if(transactionAttachment){
-
-                        val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/transaction$transactionNum")
-                        lateinit var uploadTask: UploadTask
-
-                        when (attachmentType){
-                            "camera" -> {
-                                val baos = ByteArrayOutputStream()
-                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                                val data = baos.toByteArray()
-                                uploadTask = storageReference.putBytes(data)
-                            }
-                            "image" -> uploadTask = storageReference.putFile(imageUri)
-                            "document" -> uploadTask = storageReference.putFile(documentUri)
-                        }
-
-                        uploadTask
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-                            }
-                    }
                 }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Log.w(ContentValues.TAG, "Error adding document", e)
         }
     }
 
-    private fun updateBudget(){
-        val monthHashMap : HashMap<Int, String> = hashMapOf(
+    private fun updateBudget() {
+        val monthHashMap: HashMap<Int, String> = hashMapOf(
             1 to "January",
             2 to "February",
             3 to "March",
@@ -375,39 +465,44 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         )
 
         val budgetMonth = savedMonth.toInt()
-        val budgetDate = monthHashMap[budgetMonth]  + " $savedYear"
+        val budgetDate = monthHashMap[budgetMonth] + " $savedYear"
         val budgetRef = fStore.collection("budget/$userID/budget_detail")
 
-        budgetRef.whereEqualTo("budget_date", budgetDate).whereEqualTo("budget_category", transactionCategory)
+        budgetRef.whereEqualTo("budget_date", budgetDate)
+            .whereEqualTo("budget_category", transactionCategory)
             .get()
             .addOnSuccessListener {
                 for (document in it.documents)
-                if(document.exists()){
-                    val budgetID = document.getString("budget_id")!!
-                    var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
-                    budgetSpent += transactionAmount
-                    budgetRef.document(budgetID)
-                        .update("budget_spent", budgetSpent)
-                        .addOnSuccessListener {
-                            Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                else
-                    Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
+                    if (document.exists()) {
+                        val budgetID = document.getString("budget_id")!!
+                        var budgetSpent =
+                            document.data?.getValue("budget_spent").toString().toDouble()
+                        budgetSpent += transactionAmount
+                        budgetRef.document(budgetID)
+                            .update("budget_spent", budgetSpent)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
+                            }
+                    } else
+                        Toast.makeText(this,
+                            "There is no budget for this category",
+                            Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Log.w(ContentValues.TAG, "Error updating budget", it)
             }
     }
 
-    private fun updateAccount(){
-        val accountRef = fStore.collection("accounts/$userID/account_detail").document(transactionAccount)
+    private fun updateAccount() {
+        val accountRef =
+            fStore.collection("accounts/$userID/account_detail").document(transactionAccount)
 
         accountRef
             .get()
             .addOnSuccessListener { document ->
-                if(document.exists()){
-                    var accountAmount = document.data?.getValue("account_amount").toString().toDouble()
+                if (document.exists()) {
+                    var accountAmount =
+                        document.data?.getValue("account_amount").toString().toDouble()
                     accountAmount -= transactionAmount
                     accountRef
                         .update("account_amount", accountAmount)
@@ -421,6 +516,20 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             }
     }
 
+    private fun updateExpenseValue() {
+        fStore.collection("transaction").document(userID)
+            .get()
+            .addOnCompleteListener { value ->
+                val expense_amount: Double =
+                    value.result["Expense"].toString().toDouble()
+                val newExpenseAmount: Double = expense_amount + transactionAmount
+
+                //Update Expense Amount
+                fStore.collection("transaction").document(userID)
+                    .update("Expense", newExpenseAmount)
+            }
+    }
+
     private fun setupDataBase() {
         fAuth = FirebaseAuth.getInstance()
         fStore = FirebaseFirestore.getInstance()
@@ -431,14 +540,17 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
     }
 
     //After get attachment
-    override fun onActivityResult(requestCode:Int, resultCode: Int, data:Intent?){
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24, 0, 0, 0)
+        expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
+            0,
+            0,
+            0)
         expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
         expenseAddAttachment_btn.text = "Remove Attachment"
 
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             imageBitmap = takenImage
@@ -450,16 +562,14 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             transactionAttachment = true
             attachmentType = "camera"
 
-        }
-        else if(requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             imageUri = data?.data!!
             attachment_img.setImageURI(imageUri)
 
             transactionAttachment = true
             attachmentType = "image"
-        }
-        else if(requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachmentDocument_txt.visibility = View.VISIBLE
             documentUri = data?.data!!
             attachmentDocument_txt.text = getFileName(documentUri)
@@ -467,18 +577,20 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             transactionAttachment = true
             attachmentType = "document"
 
-        }
-        else{
+        } else {
             attachmentDocument_txt.visibility = View.GONE
             attachment_img.visibility = View.GONE
-            expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24, 0, 0, 0)
+            expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24,
+                0,
+                0,
+                0)
             expenseAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
             expenseAddAttachment_btn.text = "Add Attachment"
         }
 
     }
 
-    private fun openAttachmentBottomSheetDialog(){
+    private fun openAttachmentBottomSheetDialog() {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_attachment)
 
@@ -492,11 +604,12 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
             photoFile = getPhotoFile(FILE_NAME)
 
-            val fileProvider = FileProvider.getUriForFile(this,"com.example.jom_finance.fileprovider", photoFile)
+            val fileProvider =
+                FileProvider.getUriForFile(this, "com.example.jom_finance.fileprovider", photoFile)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
 
 
-            if(takePictureIntent.resolveActivity(this.packageManager) != null)
+            if (takePictureIntent.resolveActivity(this.packageManager) != null)
                 startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
             else
                 Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show()
@@ -518,7 +631,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             //open document picker
             val pickDocumentIntent = Intent(Intent.ACTION_GET_CONTENT)
             pickDocumentIntent.type = "application/pdf"
-            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"), DOCUMENT_REQUEST_CODE)
+            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"),
+                DOCUMENT_REQUEST_CODE)
 
             bottomSheet.dismiss()
         }
@@ -526,13 +640,13 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         bottomSheet.show()
     }
 
-    private fun getPhotoFile(fileName: String): File{
+    private fun getPhotoFile(fileName: String): File {
         val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(fileName, "jpg", storageDirectory)
     }
 
     //get PDF file name
-    private fun Context.getFileName(uri: Uri): String? = when(uri.scheme) {
+    private fun Context.getFileName(uri: Uri): String? = when (uri.scheme) {
         ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
         else -> uri.path?.let(::File)?.name
     }
@@ -540,18 +654,21 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
     private fun Context.getContentFileName(uri: Uri): String? = runCatching {
         contentResolver.query(uri, null, null, null, null)?.use { cursor ->
             cursor.moveToFirst()
-            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME).let(cursor::getString)
+            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                .let(cursor::getString)
         }
     }.getOrNull()
 
     //REPEAT TRANSACTION
-    private fun openRepeatBottomSheetDialog(){
+    private fun openRepeatBottomSheetDialog() {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_repeat)
 
         val confirmBtn = bottomSheet.findViewById<Button>(R.id.repeatConfirm_btn) as Button
-        val freqRadioGroup = bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
-        val datePicker = bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
+        val freqRadioGroup =
+            bottomSheet.findViewById<RadioGroup>(R.id.repeatFrequency_radioBtn) as RadioGroup
+        val datePicker =
+            bottomSheet.findViewById<DatePicker>(R.id.repeatEnd_datePicker) as DatePicker
 
 
         confirmBtn.setOnClickListener {

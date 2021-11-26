@@ -85,7 +85,7 @@ class VoiceActivity : AppCompatActivity() {
                             finish()
                         }
                         "Expense" -> {
-                            val intent = Intent(this, AddNewIncome::class.java)
+                            val intent = Intent(this, AddNewExpenseActivity::class.java)
                             intent.putExtra("voiceExpense",true)
                             intent.putExtra("expenseAmount",moneyAmount)
                             intent.putExtra("expenseDescription",moneyName)
@@ -110,7 +110,7 @@ class VoiceActivity : AppCompatActivity() {
                             }
                             // Expense btn Click
                             resetView.voicePopupExpenseBtn.setOnClickListener{
-                                val intent = Intent(this, AddNewIncome::class.java)
+                                val intent = Intent(this, AddNewExpenseActivity::class.java)
                                 intent.putExtra("voiceExpense",true)
                                 intent.putExtra("expenseAmount",moneyAmount)
                                 intent.putExtra("expenseDescription",moneyName)

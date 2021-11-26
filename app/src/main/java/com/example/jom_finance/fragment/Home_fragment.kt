@@ -67,13 +67,24 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         db.collection("transaction").document(userID).get().addOnCompleteListener{
             val income_amount : Double = it.result["Income"].toString().toDouble()
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
-            val balance_amount : Double = income_amount - expense_amount
-            if(balance_amount<0.0){
-                home_balance.setTextColor(Color.RED)
-            }
             home_income_amount.text = String.format("RM %.2f",income_amount)
             home_expenses_amount.text =String.format("RM %.2f",expense_amount)
-            home_balance.text = String.format("RM %.2f",balance_amount)
+            /*db.collection("accounts").document(userID)
+                .get()
+                .addOnCompleteListener{ value ->
+                    val accountTotal : Double = value.result["Total"].toString().toDouble()
+                    val balance_amount : Double = accountTotal
+                    if(balance_amount<0.0){
+                        home_balance.setTextColor(Color.RED)
+                    }
+                    home_income_amount.text = String.format("RM %.2f",income_amount)
+                    home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+                    home_balance.text = String.format("RM %.2f",balance_amount)
+                }.addOnFailureListener{
+
+                }*/
+        }.addOnFailureListener{
+
         }
     }
 
