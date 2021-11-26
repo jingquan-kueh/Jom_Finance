@@ -91,10 +91,7 @@ class BudgetDetailActivity : AppCompatActivity() {
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
-
         }
-
-
     }
 
     private fun openDeleteBottomSheetDialog(){
@@ -113,9 +110,7 @@ class BudgetDetailActivity : AppCompatActivity() {
                 .delete()
                 .addOnSuccessListener {
                     Toast.makeText(this, "Deleted Budget Successfully", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, HomeActivity::class.java)
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                    finish()
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Could not delete account : $it", Toast.LENGTH_SHORT).show()

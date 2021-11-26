@@ -132,8 +132,8 @@
                 <data android:host="jomfinance.page.link" android:scheme="https"
                     android:pathPrefix="/resetPass"/>
             </intent-filter>
-
         </activity>
+
     </application>
 
 </manifest>

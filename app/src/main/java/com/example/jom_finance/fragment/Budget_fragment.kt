@@ -117,6 +117,9 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
                         if (dc.type == DocumentChange.Type.ADDED) {
                             budgetArrayList.add(dc.document.toObject(Budget::class.java))
                         }
+                        else if (dc.type == DocumentChange.Type.REMOVED){
+                            budgetArrayList.remove(dc.document.toObject(Budget::class.java))
+                        }
                         budgetListAdapter.notifyDataSetChanged()
                     }
                 }

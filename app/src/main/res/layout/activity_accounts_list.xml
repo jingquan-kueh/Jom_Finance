@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            android:text="RM 12,268.50"
+            android:text="RM --"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="40sp" />

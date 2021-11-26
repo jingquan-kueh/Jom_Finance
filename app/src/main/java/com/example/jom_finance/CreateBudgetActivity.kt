@@ -2,6 +2,7 @@ package com.example.jom_finance
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color.BLACK
@@ -103,6 +104,7 @@ class CreateBudgetActivity : AppCompatActivity() {
         }else{
             createBudgetConfirm_btn.setOnClickListener {
                 addBudget()
+                finish()
             }
         }
 
@@ -178,8 +180,51 @@ class CreateBudgetActivity : AppCompatActivity() {
     private fun updateBudget(){
         val newCategory = budgetCategory_ddl.editText?.text.toString()
 
-        if(budgetCategory == newCategory)
-            addBudget()
+        if(budgetCategory == newCategory){
+            budgetCategory = budgetCategory_ddl.editText?.text.toString()
+            budgetAmount = budgetAmount_edit.text.toString().toDouble()
+            budgetAlertPercentage = seekBar.progress
+
+            budgetSpent = 0.0
+            fStore.collection("transaction/$userID/Transaction_detail")
+                .whereEqualTo("Transaction_category", budgetCategory)
+                .get()
+                .addOnSuccessListener {
+                    for (document in it.documents){
+                        val timestamp = document.getTimestamp("Transaction_timestamp")
+                        val sdf = SimpleDateFormat("MMMM yyyy")
+                        val date = timestamp?.toDate()
+                        if (sdf.format(date) == budgetDate){
+                            val transAmount = document.getDouble("Transaction_amount")!!
+                            budgetSpent += transAmount
+                        }
+                    }
+                }
+
+            try{
+                fStore.collection("budget").document(userID)
+                    .get()
+                    .addOnCompleteListener { doc ->
+
+                        fStore.collection("budget/$userID/budget_detail")
+                            .get()
+                            .addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    val documentReference = fStore.collection("budget/$userID/budget_detail").document(budgetID)
+                                    val budgetDetail = Budget(budgetID, budgetAmount, budgetDate, budgetCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
+
+                                    documentReference.set(budgetDetail).addOnCompleteListener {
+                                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                }
+                            }
+                    }
+
+            }catch (e: Exception) {
+                Log.w(ContentValues.TAG, "Error adding document", e)
+            }
+        }
         else{
             budgetSpent = 0.0
             fStore.collection("transaction/$userID/Transaction_detail")
@@ -212,6 +257,7 @@ class CreateBudgetActivity : AppCompatActivity() {
 
                             documentReference.set(budgetDetail).addOnCompleteListener {
                                 Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+
                             }
                         }
                     }
