@@ -1,7 +1,9 @@
 package com.example.jom_finance.income
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_detail_income.*
+import kotlinx.android.synthetic.main.activity_expense_detail.*
+import java.io.File
 import java.text.SimpleDateFormat
 import kotlin.properties.Delegates
 
@@ -26,7 +31,8 @@ private lateinit var category : String
 private lateinit var description : String
 private lateinit var account : String
 private var attachment : Boolean = false
-private lateinit var date : Timestamp
+private lateinit var date : String
+private lateinit var time : String
 
 class DetailIncome : AppCompatActivity() {
 
@@ -36,40 +42,49 @@ class DetailIncome : AppCompatActivity() {
         setUpdb()
         // Get intent string from recycleview
         val transactionID = intent.getStringExtra("transactionName")
-        if(transactionID != null){
-            db.collection("transaction/$userID/Transaction_detail").document(transactionID)
-                .get().addOnSuccessListener { document ->
-                    amount = document.getDouble("Transaction_amount")!!
-                    category = document.getString("Transaction_category").toString()
-                    description =  document.getString("Transaction_description").toString()
-                    account = document.getString("Transaction_account").toString()
-                    attachment = document.getBoolean("Transaction_attachment") == true
+        if(transactionID != null) {
+            amount = intent.extras?.getDouble("transactionAmount")!!
+            category = intent.extras?.getString("transactionCategory").toString()
+            description = intent.extras?.getString("transactionDescription").toString()
+            account = intent.extras?.getString("transactionAccount").toString()
+            attachment = intent.extras?.getBoolean("transactionAttachment")!!
+            date = intent.extras?.getString("transactionDate").toString()
+            time = intent.extras?.getString("transactionTime").toString()
 
-                    date = document.getTimestamp("Transaction_timestamp")!!
-                    var sdf = SimpleDateFormat("MMMM d yyyy")
-                    var dateString = sdf.format(date.toDate())
-                    dateIncome.text = dateString
+            /*var sdf = SimpleDateFormat("MMMM d yyyy")
+                    var dateString = sdf.format(date.toDate())*/
+            dateIncome.text = date
 
-                    sdf = SimpleDateFormat("KK:mm a")
-                    dateString = sdf.format(date.toDate())
-                    timeIncome.text = dateString
+            /* sdf = SimpleDateFormat("KK:mm a")
+                    dateString = sdf.format(date.toDate())*/
+            timeIncome.text = time
 
-                    amountIncome.text = "RM "+ amount
-                    incomeCategoryDetail_text.text = category
-                    incomeAccountDetail_text.text = account
-                    incomeDescriptionDetail_text.text = description
+            amountIncome.text = "RM " + amount
+            incomeCategoryDetail_text.text = category
+            incomeAccountDetail_text.text = account
+            incomeDescriptionDetail_text.text = description
+            incomeAttachmentLabel_text.isVisible = attachment
+            attachment_img.isVisible = attachment
 
-                    if(attachment){
-                        incomeAttachmentLabel_text.isVisible = true
-                        attachment_img.isVisible = true
-                        // TODO : Add Image from Firebase
-                        // attachment_img.setImageURI()
-                    }else{
-                        incomeAttachmentLabel_text.isVisible = false
-                        attachment_img.isVisible = false
-                    }
+            if (attachment) {
+                val progressDialog = ProgressDialog(this)
+                progressDialog.setMessage("Fetching image...")
+                progressDialog.setCancelable(false)
+                progressDialog.show()
+
+                val storageReference = FirebaseStorage.getInstance()
+                    .getReference("transaction_images/$userID/$transactionID")
+                val localFile = File.createTempFile("tempImage", "jpg")
+                storageReference.getFile(localFile).addOnSuccessListener {
+                    if (progressDialog.isShowing)
+                        progressDialog.dismiss()
+
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                    attachment_img.setImageBitmap(bitmap)
                 }
+            }
         }
+
         editIncome_btn.setOnClickListener{
             val intent = Intent(this, AddNewIncome::class.java)
             intent.putExtra("editIncome",true)

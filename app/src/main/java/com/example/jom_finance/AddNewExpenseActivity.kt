@@ -36,7 +36,9 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_expense.*
 import kotlinx.android.synthetic.main.activity_add_new_expense.attachmentDocument_txt
 import kotlinx.android.synthetic.main.activity_add_new_expense.attachment_img
+import kotlinx.android.synthetic.main.activity_add_new_expense.progressLayout
 import kotlinx.android.synthetic.main.activity_add_new_expense.repeat_constraintLayout
+import kotlinx.android.synthetic.main.activity_add_new_income.*
 import kotlinx.android.synthetic.main.bottomsheet_attachment.*
 import kotlinx.android.synthetic.main.bottomsheet_repeat.*
 import java.io.ByteArrayOutputStream
@@ -160,8 +162,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 if (expenseValidate()) {
                     addExpenseToDatabase()
                     updateBudget()
-                    updateAccount()
-                    updateExpenseValue()
                 }
             }
 
@@ -390,7 +390,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                 documentReference.set(transactionDetails).addOnSuccessListener {
                                     //store attachment if necessary
                                     if (transactionAttachment) {
-
+                                        progressLayout.visibility = View.VISIBLE
                                         val storageReference = FirebaseStorage.getInstance()
                                             .getReference("transaction_images/$userID/transaction$transactionNum")
                                         lateinit var uploadTask: UploadTask
@@ -412,6 +412,12 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
                                         uploadTask
                                             .addOnSuccessListener {
+                                                progressLayout.visibility = View.GONE
+                                                updateAccount()
+                                                updateExpenseValue()
+                                                //Update Transaction counter
+                                                fStore.collection("transaction").document(userID)
+                                                    .update("Transaction_counter", lastExpense.inc())
                                                 Toast.makeText(this,
                                                     "Successfully uploaded",
                                                     Toast.LENGTH_SHORT).show()
@@ -420,11 +426,15 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
                                                     .show()
                                             }
+                                    }else{
+                                        updateAccount()
+                                        updateExpenseValue()
+                                        //Update Transaction counter
+                                        fStore.collection("transaction").document(userID)
+                                            .update("Transaction_counter", lastExpense.inc())
                                     }
 
-                                    //Update Transaction counter
-                                    fStore.collection("transaction").document(userID)
-                                        .update("Transaction_counter", lastExpense.inc())
+
 
                                     // Popout Msg
                                     /*val resetView =
