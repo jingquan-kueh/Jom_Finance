@@ -66,6 +66,13 @@ class SignUpActivity : AppCompatActivity(){
                                 documentReference.set(initialData).addOnFailureListener{
                                     Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
                                 }.addOnSuccessListener {
+                                    documentReference = fStore.collection("accounts").document(userID)
+                                    var initialAccount = HashMap<String,Int>()
+                                    initialAccount.put("Total",0)
+                                    documentReference.set(initialAccount).addOnFailureListener{
+                                        Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                                    }
+
                                     var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
                                     var categoryIconArray = arrayOf(452,384,258)
                                     var categoryColorArray = arrayOf(-278483,-10044566,-12627531)
