@@ -21,11 +21,13 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import com.example.jom_finance.models.Account
 import com.example.jom_finance.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.google.mlkit.vision.common.InputImage
@@ -84,6 +86,7 @@ private lateinit var savedHour: String
 private lateinit var savedMinute: String
 private lateinit var timestampString: String
 
+private lateinit var accountArrayList : java.util.ArrayList<Account>
 
 class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     TimePickerDialog.OnTimeSetListener {
@@ -91,7 +94,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_expense)
         setupDataBase()
-
+        accountArrayList = arrayListOf()
         //hide repeat section
         repeat_constraintLayout.visibility = View.GONE
 
@@ -130,13 +133,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             }
 
 
-        } else if (voiceExpenseIntent) {
-            val amount = intent.getDoubleExtra("expenseAmount", 0.0)
-            val description = intent.getStringExtra("expenseDescription")
-            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(amount.toString())
-            expenseDescription_outlinedTextField.editText?.text =
-                Editable.Factory.getInstance().newEditable(description)
-        } else {
+        }else {
             //ADD TRANSACTION
             //current date & time
             val cal = Calendar.getInstance()
@@ -169,6 +166,14 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             }
 
         }
+        if (voiceExpenseIntent) {
+            val amount = intent.getDoubleExtra("expenseAmount", 0.0)
+            val description = intent.getStringExtra("expenseDescription")
+            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(amount.toString())
+            expenseDescription_outlinedTextField.editText?.text =
+                Editable.Factory.getInstance().newEditable(description)
+        }
+
 
         //category drop down list
         val cat: MutableList<String> = mutableListOf()
@@ -508,6 +513,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                         .update("account_amount", accountAmount)
                         .addOnSuccessListener {
                             Toast.makeText(this, "Updated account", Toast.LENGTH_SHORT).show()
+                            updateTotalAccountAmount()
                         }
                 }
             }
@@ -515,6 +521,31 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 Log.w(ContentValues.TAG, "Error updating account amount", it)
             }
     }
+
+    private fun updateTotalAccountAmount(){
+        var totalAccountAmount = 0.0
+        fStore.collection("accounts/$userID/account_detail")
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if(error!=null){
+                        Log.e("FireStore Error",error.message.toString())
+                        return
+                    }
+                    for(dc : DocumentChange in value?.documentChanges!!){
+                        if(dc.type == DocumentChange.Type.ADDED){
+                            accountArrayList.add(dc.document.toObject(Account::class.java))
+                            totalAccountAmount += accountArrayList.last().accountAmount!!
+                        }
+                    }
+                    if(totalAccountAmount != 0.0){
+                        fStore.collection("accounts").document(userID)
+                            .update("Total",totalAccountAmount)
+                    }
+                }
+            })
+    }
+
+
 
     private fun updateExpenseValue() {
         fStore.collection("transaction").document(userID)
