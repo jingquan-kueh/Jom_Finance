@@ -54,7 +54,6 @@ private lateinit var fStore: FirebaseFirestore
 private lateinit var userID: String
 
 private lateinit var transactionID: String
-private var transactionNum by Delegates.notNull<Int>()
 
 private const val TRANSACTION_TYPE = "expense"
 private var transactionAmount: Double = 0.0
@@ -368,8 +367,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             fStore.collection("transaction").document(userID)
                 .get()
                 .addOnCompleteListener {
-                    lastExpense =
-                        it.result["Transaction_counter"].toString().toInt() // Get lastExpense Index
+                    lastExpense = it.result["Transaction_counter"].toString().toInt() // Get lastExpense Index
                     fStore.collection("transaction/$userID/Transaction_detail")
                         .whereEqualTo("Transaction_type", "expense")
                         .get()
@@ -390,16 +388,16 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                 documentReference.set(transactionDetails).addOnSuccessListener {
                                     //store attachment if necessary
                                     if (transactionAttachment) {
+
                                         progressLayout.visibility = View.VISIBLE
-                                        val storageReference = FirebaseStorage.getInstance()
-                                            .getReference("transaction_images/$userID/transaction$transactionNum")
+                                        val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/transaction$newExpense")
                                         lateinit var uploadTask: UploadTask
 
                                         when (attachmentType) {
                                             "camera" -> {
                                                 val baos = ByteArrayOutputStream()
                                                 imageBitmap.compress(Bitmap.CompressFormat.JPEG,
-                                                    100,
+                                                    50,
                                                     baos)
                                                 val data = baos.toByteArray()
                                                 uploadTask = storageReference.putBytes(data)
@@ -410,6 +408,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                                 storageReference.putFile(documentUri)
                                         }
 
+
                                         uploadTask
                                             .addOnSuccessListener {
                                                 progressLayout.visibility = View.GONE
@@ -418,9 +417,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                                 //Update Transaction counter
                                                 fStore.collection("transaction").document(userID)
                                                     .update("Transaction_counter", lastExpense.inc())
-                                                Toast.makeText(this,
-                                                    "Successfully uploaded",
-                                                    Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
                                             }
                                             .addOnFailureListener {
                                                 Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)

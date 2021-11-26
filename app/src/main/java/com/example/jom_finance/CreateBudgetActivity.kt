@@ -122,6 +122,8 @@ class CreateBudgetActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun addBudget(){
 
         var lastBudget by Delegates.notNull<Int>()
@@ -129,77 +131,72 @@ class CreateBudgetActivity : AppCompatActivity() {
         budgetAmount = budgetAmount_edit.text.toString().toDouble()
         budgetAlertPercentage = seekBar.progress
 
-        budgetSpent = 0.0
-        fStore.collection("transaction/$userID/Transaction_detail")
-            .whereEqualTo("Transaction_category", budgetCategory)
+        //check if budget exist
+        fStore.collection("budget/$userID/budget_detail")
+            .whereEqualTo("budget_date", budgetDate)
+            .whereEqualTo("budget_category", budgetCategory)
             .get()
             .addOnSuccessListener {
-                for (document in it.documents){
-                    val timestamp = document.getTimestamp("Transaction_timestamp")
-                    val sdf = SimpleDateFormat("MMMM yyyy")
-                    val date = timestamp?.toDate()
-                    if (sdf.format(date) == budgetDate){
-                        val transAmount = document.getDouble("Transaction_amount")!!
-                        budgetSpent += transAmount
+                if(it.documents.isNotEmpty())
+                    Toast.makeText(this, "This budget already exists!", Toast.LENGTH_SHORT).show()
+                else{
+                    //budget does not exist
+                    //get amount spent for this category and month
+                    budgetSpent = 0.0
+                    fStore.collection("transaction/$userID/Transaction_detail")
+                        .whereEqualTo("Transaction_category", budgetCategory)
+                        .get()
+                        .addOnSuccessListener {
+                            for (document in it.documents){
+                                val timestamp = document.getTimestamp("Transaction_timestamp")
+                                val sdf = SimpleDateFormat("MMMM yyyy")
+                                val date = timestamp?.toDate()
+                                if (sdf.format(date) == budgetDate){
+                                    val transAmount = document.getDouble("Transaction_amount")!!
+                                    budgetSpent += transAmount
+                                }
+                            }
+                        }
+                    //add into database
+                    try{
+                        fStore.collection("budget").document(userID)
+                            .get()
+                            .addOnCompleteListener { doc ->
+                                lastBudget = doc.result["Budget_counter"].toString().toInt()
+
+                                fStore.collection("budget/$userID/budget_detail")
+                                    .get()
+                                    .addOnCompleteListener {
+                                        if(it.isSuccessful){
+                                            val newBudget = lastBudget.inc()
+                                            val newBudgetRef = fStore.collection("budget/$userID/budget_detail").document("budget$newBudget")
+                                            val budgetDetail = Budget("budget$newBudget",budgetAmount, budgetDate, budgetCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
+
+                                            //add budget to database
+                                            newBudgetRef.set(budgetDetail)
+                                                .addOnCompleteListener {
+                                                    //update budget counter
+                                                    fStore.collection("budget").document(userID)
+                                                        .update("Budget_counter", newBudget)
+
+                                                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                    }
+                            }
+                    }catch (e: Exception) {
+                        Log.w(ContentValues.TAG, "Error adding document", e)
                     }
                 }
             }
-
-        try{
-            fStore.collection("budget").document(userID)
-                .get()
-                .addOnCompleteListener { doc ->
-                    lastBudget = doc.result["Budget_counter"].toString().toInt()
-
-                    fStore.collection("budget/$userID/budget_detail")
-                        .get()
-                        .addOnCompleteListener {
-                            if(it.isSuccessful){
-                                val newBudget = lastBudget.inc()
-                                val newBudgetRef = fStore.collection("budget/$userID/budget_detail").document("budget$newBudget")
-                                val budgetDetail = Budget("budget$newBudget",budgetAmount, budgetDate, budgetCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
-
-                                //add budget to database
-                                newBudgetRef.set(budgetDetail)
-                                    .addOnCompleteListener {
-                                        //update budget counter
-                                        fStore.collection("budget").document(userID)
-                                            .update("Budget_counter", newBudget)
-
-                                        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
-                        }
-                }
-
-        }catch (e: Exception) {
-            Log.w(ContentValues.TAG, "Error adding document", e)
-        }
     }
 
     private fun updateBudget(){
         val newCategory = budgetCategory_ddl.editText?.text.toString()
 
         if(budgetCategory == newCategory){
-            budgetCategory = budgetCategory_ddl.editText?.text.toString()
             budgetAmount = budgetAmount_edit.text.toString().toDouble()
             budgetAlertPercentage = seekBar.progress
-
-            budgetSpent = 0.0
-            fStore.collection("transaction/$userID/Transaction_detail")
-                .whereEqualTo("Transaction_category", budgetCategory)
-                .get()
-                .addOnSuccessListener {
-                    for (document in it.documents){
-                        val timestamp = document.getTimestamp("Transaction_timestamp")
-                        val sdf = SimpleDateFormat("MMMM yyyy")
-                        val date = timestamp?.toDate()
-                        if (sdf.format(date) == budgetDate){
-                            val transAmount = document.getDouble("Transaction_amount")!!
-                            budgetSpent += transAmount
-                        }
-                    }
-                }
 
             try{
                 fStore.collection("budget").document(userID)
@@ -226,45 +223,54 @@ class CreateBudgetActivity : AppCompatActivity() {
             }
         }
         else{
-            budgetSpent = 0.0
-            fStore.collection("transaction/$userID/Transaction_detail")
-                .whereEqualTo("Transaction_category", newCategory)
+            //check if budget exist
+            fStore.collection("budget/$userID/budget_detail")
+                .whereEqualTo("budget_date", budgetDate)
+                .whereEqualTo("budget_category", newCategory)
                 .get()
                 .addOnSuccessListener {
-                    for (document in it.documents){
-                        val timestamp = document.getTimestamp("Transaction_timestamp")
-                        val sdf = SimpleDateFormat("MMMM yyyy")
-                        val date = timestamp?.toDate()
-                        if (sdf.format(date) == budgetDate){
-                            val transAmount = document.getDouble("Transaction_amount")!!
-                            budgetSpent += transAmount
+                    if(it.documents.isNotEmpty())
+                        Toast.makeText(this, "This budget already exists!", Toast.LENGTH_SHORT).show()
+                    else{
+                        budgetSpent = 0.0
+                        fStore.collection("transaction/$userID/Transaction_detail")
+                            .whereEqualTo("Transaction_category", newCategory)
+                            .get()
+                            .addOnSuccessListener {
+                                for (document in it.documents){
+                                    val timestamp = document.getTimestamp("Transaction_timestamp")
+                                    val sdf = SimpleDateFormat("MMMM yyyy")
+                                    val date = timestamp?.toDate()
+                                    if (sdf.format(date) == budgetDate){
+                                        val transAmount = document.getDouble("Transaction_amount")!!
+                                        budgetSpent += transAmount
+                                    }
+                                }
+                            }
+
+                        budgetAmount = budgetAmount_edit.text.toString().toDouble()
+                        budgetAlertPercentage = seekBar.progress
+
+                        try{
+                            fStore.collection("budget/$userID/budget_detail")
+                                .get()
+                                .addOnCompleteListener {
+                                    if(it.isSuccessful){
+
+                                        val documentReference = fStore.collection("budget/$userID/budget_detail").document(budgetID)
+                                        val budgetDetail = Budget(budgetID, budgetAmount, budgetDate, newCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
+
+                                        documentReference.set(budgetDetail).addOnCompleteListener {
+                                            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+
+                                        }
+                                    }
+                                }
+                        }catch (e: Exception) {
+                            Log.w(ContentValues.TAG, "Error adding document", e)
                         }
                     }
                 }
-
-            budgetCategory = budgetCategory_ddl.editText?.text.toString()
-            budgetAmount = budgetAmount_edit.text.toString().toDouble()
-            budgetAlertPercentage = seekBar.progress
-
-            try{
-                fStore.collection("budget/$userID/budget_detail")
-                    .get()
-                    .addOnCompleteListener {
-                        if(it.isSuccessful){
-
-                            val documentReference = fStore.collection("budget/$userID/budget_detail").document(budgetID)
-                            val budgetDetail = Budget(budgetID, budgetAmount, budgetDate, budgetCategory, budgetAlert, budgetAlertPercentage, budgetSpent)
-
-                            documentReference.set(budgetDetail).addOnCompleteListener {
-                                Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
-
-                            }
-                        }
-                    }
-            }catch (e: Exception) {
-                Log.w(ContentValues.TAG, "Error adding document", e)
-            }
-
         }
     }
 
