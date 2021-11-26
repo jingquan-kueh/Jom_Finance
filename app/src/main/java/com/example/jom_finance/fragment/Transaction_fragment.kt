@@ -130,9 +130,16 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
             if(type == "income"){
                 val intent = Intent(this, DetailIncome::class.java)
                 intent.putExtra("transactionName",item.transactionName)
+                intent.putExtra("transactionName",item.transactionName)
+                intent.putExtra("transactionAmount",item.transactionAmount)
+                intent.putExtra("transactionCategory",item.transactionCategory)
+                intent.putExtra("transactionAccount",item.transactionAccount)
+                intent.putExtra("transactionDescription",item.transactionDescription)
+                intent.putExtra("transactionAttachment",item.transactionAttachment)
+                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                Toast.makeText(this, "income Clicked", Toast.LENGTH_SHORT).show()
             }else{
                 val intent = Intent(this,ExpenseDetailActivity::class.java)
                 intent.putExtra("transactionName",item.transactionName)

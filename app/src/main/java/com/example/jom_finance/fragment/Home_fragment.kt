@@ -38,14 +38,15 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpdb()
+        readDB()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setUpdb()
-        readDB()
+
         val view : View = inflater.inflate(R.layout.fragment_home_fragment, container, false)
         recyclerView = view.home_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -69,23 +70,19 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
             home_income_amount.text = String.format("RM %.2f",income_amount)
             home_expenses_amount.text =String.format("RM %.2f",expense_amount)
-            /*db.collection("accounts").document(userID)
-                .get()
-                .addOnCompleteListener{ value ->
-                    val accountTotal : Double = value.result["Total"].toString().toDouble()
-                    val balance_amount : Double = accountTotal
-                    if(balance_amount<0.0){
-                        home_balance.setTextColor(Color.RED)
-                    }
-                    home_income_amount.text = String.format("RM %.2f",income_amount)
-                    home_expenses_amount.text =String.format("RM %.2f",expense_amount)
-                    home_balance.text = String.format("RM %.2f",balance_amount)
-                }.addOnFailureListener{
-
-                }*/
-        }.addOnFailureListener{
-
         }
+        db.collection("accounts").document(userID)
+            .get()
+            .addOnCompleteListener{ value ->
+                val accountTotal : Double = value.result["Total"].toString().toDouble()
+                val balance_amount : Double = accountTotal
+                if(balance_amount<0.0){
+                    home_balance.setTextColor(Color.RED)
+                }
+                home_balance.text = String.format("RM %.2f",balance_amount)
+            }.addOnFailureListener{
+
+            }
     }
 
     private fun EventChangeListener() {
@@ -143,6 +140,14 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             if(type == "income"){
                 val intent = Intent(this, DetailIncome::class.java)
                 intent.putExtra("transactionName",item.transactionName)
+                intent.putExtra("transactionName",item.transactionName)
+                intent.putExtra("transactionAmount",item.transactionAmount)
+                intent.putExtra("transactionCategory",item.transactionCategory)
+                intent.putExtra("transactionAccount",item.transactionAccount)
+                intent.putExtra("transactionDescription",item.transactionDescription)
+                intent.putExtra("transactionAttachment",item.transactionAttachment)
+                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }else{

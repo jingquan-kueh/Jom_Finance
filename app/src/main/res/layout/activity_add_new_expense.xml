@@ -10,6 +10,38 @@
         android:background="@color/red_soft"
         tools:context=".AddNewExpenseActivity">
 
+        <LinearLayout
+            android:id="@+id/progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical"
+            android:translationZ="1dp"
+            android:background="#1A000000"
+            android:visibility="gone"
+            android:gravity="center_vertical">
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:progress="20"
+                android:indeterminate="true"
+                android:translationZ="1dp"/>
+            <TextView
+                android:id="@+id/pbText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="10dp"
+                android:text="Please wait ..."
+                android:translationZ="1dp"/>
+        </LinearLayout>
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_expense"
             android:layout_width="match_parent"
