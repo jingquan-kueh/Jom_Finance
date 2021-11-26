@@ -223,7 +223,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
             //create InputImage object from Bitmap
-            val inputImage = InputImage.fromBitmap(image, 0)
+            val inputImage = InputImage.fromBitmap(image, 90)
 
             var elementArr: ArrayList<String> = arrayListOf()
             //process the image
