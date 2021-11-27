@@ -31,6 +31,7 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storageMetadata
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -69,7 +70,7 @@ private const val CAMERA_REQUEST_CODE = 42
 private const val DOCUMENT_REQUEST_CODE = 111
 
 private const val CHANNEL_ID = "channel_id_budget"
-private const val notificatioID = 101
+private const val notificationID = 101
 
 private lateinit var attachmentType: String
 private const val FILE_NAME = "photo.jpg" //temporary file name
@@ -405,14 +406,20 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                                     50,
                                                     baos)
                                                 val data = baos.toByteArray()
-                                                uploadTask = storageReference.putBytes(data)
+                                                uploadTask = storageReference.putBytes(data, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                })
                                             }
                                             "image" -> uploadTask =
-                                                storageReference.putFile(imageUri)
+                                                storageReference.putFile(imageUri, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                })
                                             "document" -> uploadTask =
-                                                storageReference.putFile(documentUri)
+                                                storageReference.putFile(documentUri, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                    setCustomMetadata("file_name", getFileName(documentUri))
+                                                })
                                         }
-
 
                                         uploadTask
                                             .addOnSuccessListener {
@@ -552,7 +559,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(this)){
-            notify(notificatioID, builder.build())
+            notify(notificationID, builder.build())
         }
     }
 
@@ -668,6 +675,13 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
             transactionAttachment = true
             attachmentType = "document"
+
+            attachmentDocument_txt.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = documentUri
+                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                startActivity(intent)
+            }
 
         } else {
             attachmentDocument_txt.visibility = View.GONE

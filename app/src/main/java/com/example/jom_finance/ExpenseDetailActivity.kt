@@ -1,10 +1,17 @@
 package com.example.jom_finance
 
 import android.app.ProgressDialog
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.OpenableColumns
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,27 +49,58 @@ class ExpenseDetailActivity : AppCompatActivity() {
             time = intent.extras?.getString("transactionTime").toString()
 
             expenseTimeDetail_text.text = "$date | $time"
-            expenseAmountDetail_text.text = "RM " + amount
+            expenseAmountDetail_text.text = "RM $amount"
             expenseCategoryDetail_text.text = category
             expenseAccountDetail_text.text = account
             expenseDescriptionDetail_text.text = description
 
             expenseAttachmentLabel_text.isVisible = attachment
-            expenseAttachment_img.isVisible = attachment
+
+            expenseDetailAttachmentDocument_txt.isVisible = false
+            expenseDetailAttachmentImage_img.isVisible = false
+
+
             if (attachment){
                 val progressDialog = ProgressDialog(this)
-                progressDialog.setMessage("Fetching image...")
+                progressDialog.setMessage("Fetching attachment...")
                 progressDialog.setCancelable(false)
                 progressDialog.show()
 
                 val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/$transactionID")
-                val localFile = File.createTempFile("tempImage", "jpg")
-                storageReference.getFile(localFile).addOnSuccessListener {
-                    if(progressDialog.isShowing)
-                        progressDialog.dismiss()
+                lateinit var localFile : File
+                storageReference.metadata.addOnSuccessListener { metadata->
+                    val fileType = metadata.getCustomMetadata("file_type")
+                    if (fileType == "document"){
+                        expenseDetailAttachmentDocument_txt.isVisible = true
+                        localFile = File.createTempFile("tempDoc", ".pdf")
+                        storageReference.getFile(localFile).addOnSuccessListener {
+                            if(progressDialog.isShowing)
+                                progressDialog.dismiss()
 
-                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                    expenseAttachment_img.setImageBitmap(bitmap)
+                            val fileName = metadata.getCustomMetadata("file_name")
+                            expenseDetailAttachmentDocument_txt.text = fileName
+
+                            expenseDetailAttachmentDocument_txt.setOnClickListener {
+                                Toast.makeText(this, localFile.absolutePath, Toast.LENGTH_SHORT).show()
+                                val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", localFile)
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = uri
+                                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                startActivity(intent)
+                            }
+                        }
+                    }
+                    else{
+                        expenseDetailAttachmentImage_img.isVisible = true
+                        localFile = File.createTempFile("tempImage", "jpg")
+                        storageReference.getFile(localFile).addOnSuccessListener {
+                            if(progressDialog.isShowing)
+                                progressDialog.dismiss()
+
+                            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                            expenseDetailAttachmentImage_img.setImageBitmap(bitmap)
+                        }
+                    }
                 }
             }
         }
@@ -81,6 +119,20 @@ class ExpenseDetailActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
+
+    //get PDF file name
+    private fun Context.getFileName(uri: Uri): String? = when (uri.scheme) {
+        ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
+        else -> uri.path?.let(::File)?.name
+    }
+
+    private fun Context.getContentFileName(uri: Uri): String? = runCatching {
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME)
+                .let(cursor::getString)
+        }
+    }.getOrNull()
 
     private fun setUpdb() {
         fAuth = FirebaseAuth.getInstance()
