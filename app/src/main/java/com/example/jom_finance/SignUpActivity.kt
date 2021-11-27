@@ -72,6 +72,12 @@ class SignUpActivity : AppCompatActivity(){
                                     documentReference.set(initialAccount).addOnFailureListener{
                                         Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
                                     }
+                                    documentReference = fStore.collection("budget").document(userID)
+                                    var initialbudget = HashMap<String,Int>()
+                                    initialbudget.put("Budget_counter",0)
+                                    documentReference.set(initialbudget).addOnFailureListener{
+                                        Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                                    }
 
                                     var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
                                     var categoryIconArray = arrayOf(452,384,258)

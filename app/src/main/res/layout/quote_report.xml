@@ -16,7 +16,7 @@
         app:srcCompat="@drawable/report_icon_4" />
 
     <TextView
-        android:id="@+id/budgetTxt"
+        android:id="@+id/quote_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="“Financial freedom is freedom from fear.”"
@@ -32,7 +32,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/quote_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -44,7 +44,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/budgetTxt"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/quote_txt"></TextView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/fullReportDetailBtn"

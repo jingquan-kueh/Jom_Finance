@@ -38,15 +38,14 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpdb()
-        readDB()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        setUpdb()
+        readDB()
         val view : View = inflater.inflate(R.layout.fragment_home_fragment, container, false)
         recyclerView = view.home_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(view.context)

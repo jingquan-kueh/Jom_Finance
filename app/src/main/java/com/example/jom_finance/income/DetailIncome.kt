@@ -6,15 +6,17 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.core.view.isVisible
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
+import com.example.jom_finance.models.Account
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_detail_income.*
 import kotlinx.android.synthetic.main.activity_expense_detail.*
@@ -22,17 +24,17 @@ import java.io.File
 import java.text.SimpleDateFormat
 import kotlin.properties.Delegates
 
-private lateinit var fAuth : FirebaseAuth
-private lateinit var userID : String
-private lateinit var db : FirebaseFirestore
+private lateinit var fAuth: FirebaseAuth
+private lateinit var userID: String
+private lateinit var db: FirebaseFirestore
 
 private var amount by Delegates.notNull<Double>()
-private lateinit var category : String
-private lateinit var description : String
-private lateinit var account : String
-private var attachment : Boolean = false
-private lateinit var date : String
-private lateinit var time : String
+private lateinit var category: String
+private lateinit var description: String
+private lateinit var account: String
+private var attachment: Boolean = false
+private lateinit var date: String
+private lateinit var time: String
 
 class DetailIncome : AppCompatActivity() {
 
@@ -42,7 +44,7 @@ class DetailIncome : AppCompatActivity() {
         setUpdb()
         // Get intent string from recycleview
         val transactionID = intent.getStringExtra("transactionName")
-        if(transactionID != null) {
+        if (transactionID != null) {
             amount = intent.extras?.getDouble("transactionAmount")!!
             category = intent.extras?.getString("transactionCategory").toString()
             description = intent.extras?.getString("transactionDescription").toString()
@@ -85,11 +87,11 @@ class DetailIncome : AppCompatActivity() {
             }
         }
 
-        editIncome_btn.setOnClickListener{
+        editIncome_btn.setOnClickListener {
             val intent = Intent(this, AddNewIncome::class.java)
-            intent.putExtra("editIncome",true)
-            intent.putExtra("incomeID",transactionID)
-            intent.putExtra("incomeAmount",amount)
+            intent.putExtra("editIncome", true)
+            intent.putExtra("incomeID", transactionID)
+            intent.putExtra("incomeAmount", amount)
             intent.putExtra("incomeCategory", category)
             intent.putExtra("incomeDescription", description)
             intent.putExtra("incomeAccount", account)
@@ -98,7 +100,7 @@ class DetailIncome : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
-        deleteIncomeBtn.setOnClickListener{
+        deleteIncomeBtn.setOnClickListener {
             if (transactionID != null) {
                 openDeleteBottomSheetDialog(transactionID)
             }
@@ -106,7 +108,8 @@ class DetailIncome : AppCompatActivity() {
         }
 
     }
-    private fun setUpdb(){
+
+    private fun setUpdb() {
         fAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         val currentUser = fAuth.currentUser
@@ -114,53 +117,99 @@ class DetailIncome : AppCompatActivity() {
             userID = currentUser.uid
         }
     }
-    private fun openDeleteBottomSheetDialog(transactionID : String) {
+
+    private fun openDeleteBottomSheetDialog(transactionID: String) {
         val bottomSheet = BottomSheetDialog(this)
         bottomSheet.setContentView(R.layout.bottomsheet_delete)
         val yesBtn = bottomSheet.findViewById<Button>(R.id.removeYesbtn) as Button
         val noBtn = bottomSheet.findViewById<Button>(R.id.removeNobtn) as Button
 
-        yesBtn.setOnClickListener{
+        yesBtn.setOnClickListener {
             if (transactionID != null) {
                 bottomSheet.dismiss()
                 db.collection("transaction/$userID/Transaction_detail").document(transactionID)
                     .delete()
-                    .addOnCompleteListener{
-                        db.collection("transaction").document(userID)
-                            .get()
-                            .addOnCompleteListener{ value ->
-                                val income_amount : Double = value.result["Income"].toString().toDouble()
-                                val newIncomeAmount : Double = income_amount - amount
+                    .addOnCompleteListener {
+                        updateIncomeValue()
+                        updateAccount()
 
-                                //Update Income Amount
-                                db.collection("transaction").document(userID)
-                                    .update("Income",newIncomeAmount)
-                                    .addOnCompleteListener{
-                                        val resetView =
-                                            LayoutInflater.from(this).inflate(R.layout.popup_remove_success, null)
-                                        val resetViewBuilder =
-                                            AlertDialog.Builder(this, R.style.CustomAlertDialog)
-                                                .setView(resetView)
-                                        val displayDialog = resetViewBuilder.show()
-                                        displayDialog.setOnDismissListener {
-                                            val intent = Intent(this, HomeActivity::class.java)
-                                            startActivity(intent)
-                                            overridePendingTransition(R.anim.slide_in_right,
-                                                R.anim.slide_out_left)
-                                            finishAffinity()
-                                        }
-                                }
-                            }
+                        val resetView =
+                            LayoutInflater.from(this).inflate(R.layout.popup_remove_success, null)
+                        val resetViewBuilder =
+                            AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                                .setView(resetView)
+                        val displayDialog = resetViewBuilder.show()
+                        displayDialog.setOnDismissListener {
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_right,
+                                R.anim.slide_out_left)
+                            finishAffinity()
+                        }
+
 
                     }
 
             }
         }
 
-        noBtn.setOnClickListener{
+        noBtn.setOnClickListener {
             bottomSheet.dismiss()
         }
         bottomSheet.show()
     }
 
+    private fun updateAccount() {
+        db.collection("accounts/$userID/account_detail").document(account)
+            .get()
+            .addOnCompleteListener { value ->
+                val account_amount: Double =
+                    value.result["account_amount"].toString().toDouble()
+                val newAccountAmount: Double = account_amount - amount
+
+                //Update Income Amount
+                db.collection("accounts/$userID/account_detail").document(account)
+                    .update("account_amount", newAccountAmount)
+                updateTotalAccountAmount()
+            }
+
+    }
+
+    private fun updateTotalAccountAmount() {
+        var totalAccountAmount = 0.0
+        db.collection("accounts/$userID/account_detail")
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if (error != null) {
+                        Log.e("FireStore Error", error.message.toString())
+                        return
+                    }
+                    for (dc: DocumentChange in value?.documentChanges!!) {
+                        if (dc.type == DocumentChange.Type.ADDED) {
+                            totalAccountAmount += dc.document.toObject(Account::class.java).accountAmount!!
+                        }
+                    }
+                    if (totalAccountAmount != 0.0) {
+                        db.collection("accounts").document(userID)
+                            .update("Total", totalAccountAmount)
+                    }
+                }
+            })
+
+    }
+
+    private fun updateIncomeValue() {
+        db.collection("transaction").document(userID)
+            .get()
+            .addOnCompleteListener { value ->
+                val income_amount: Double =
+                    value.result["Income"].toString().toDouble()
+                val newIncomeAmount: Double = income_amount - amount
+
+                //Update Income Amount
+                db.collection("transaction").document(userID)
+                    .update("Income", newIncomeAmount)
+            }
+
+    }
 }

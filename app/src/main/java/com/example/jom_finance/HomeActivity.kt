@@ -76,7 +76,6 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
-
         bottomNav.setOnNavigationItemReselectedListener { item ->
             return@setOnNavigationItemReselectedListener}
 

@@ -14,8 +14,10 @@ import androidx.viewpager.widget.PagerAdapter
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
 import com.example.jom_finance.income.AddNewIncome
+import com.example.jom_finance.models.Budget
 import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.maltaisn.icondialog.pack.IconDrawableLoader
@@ -23,9 +25,11 @@ import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.activity_financial_report.*
+import kotlinx.android.synthetic.main.budget_report.*
 import kotlinx.android.synthetic.main.expenses_report.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.income_report.*
+import java.text.SimpleDateFormat
 
 class FinancialReportActivity : AppCompatActivity() {
 
@@ -177,7 +181,32 @@ class FinancialReportActivity : AppCompatActivity() {
             }.addOnFailureListener{
 
             }
+        val current = Timestamp.now().toDate()
+        val sdf = SimpleDateFormat("MMMM yyyy")
+        val dateString = sdf.format(current)
         // Budget limit
+        db.collection("budget/$userID/budget_detail").whereEqualTo("budget_date",dateString)
+            .get()
+            .addOnCompleteListener{
+                if(it.result.size()!=0){
+                    val budgetSize = it.result.size()
+                    var budgetOverSize = 0
+                    val budgetList : HashMap<String,Budget> = hashMapOf()
+                    val overBudgetList : HashMap<String,Budget> = hashMapOf()
+                    for(index in it.result){
+                        var currentBudget = index.toObject(Budget::class.java)
+                        budgetList[currentBudget.budgetCategory.toString()] = currentBudget
+                    }
+                    for(i in budgetList){
+                        if(i.value.budgetSpent!!.toDouble() > i.value.budgetAmount!!.toDouble()){
+                            overBudgetList[i.key] = i.value
+                        }
+                    }
+                    budgetOverSize = overBudgetList.size
+
+                    budgetTxt.text = "$budgetOverSize of $budgetSize Budget is exceeds the limit"
+                }
+            }
 
     }
     private fun setUpdb(){

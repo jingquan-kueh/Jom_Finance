@@ -15,7 +15,6 @@
         android:layout_marginTop="10dp"
         app:srcCompat="@drawable/bar" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,10 +60,10 @@
             android:id="@+id/filter_income"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Income"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
@@ -74,10 +73,10 @@
             android:id="@+id/filter_expense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Expense"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
@@ -111,10 +110,10 @@
             android:id="@+id/filter_highest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Highest"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
@@ -124,10 +123,10 @@
             android:id="@+id/filter_lowest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Lowest"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
@@ -136,10 +135,10 @@
             android:id="@+id/filter_newest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Newest"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_weight="1"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
@@ -156,10 +155,10 @@
             android:id="@+id/filter_oldest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/iris"
+            android:textColor="@color/black"
             android:text="Oldest"
             app:cornerRadius="20dp"
-            android:backgroundTint="#EEE5FF"
+            android:backgroundTint="@color/white"
             android:layout_marginHorizontal="20dp"
             android:paddingHorizontal="5dp"
             android:paddingVertical="10dp"/>
@@ -178,8 +177,17 @@
         android:layout_marginLeft="20dp"
         android:textStyle="bold"/>
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chips_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:singleSelection="false">
+
+    </com.google.android.material.chip.ChipGroup>
 
     <Button
+        android:id="@+id/applyFilterBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/long_button"
