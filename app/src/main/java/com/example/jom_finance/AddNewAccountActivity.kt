@@ -310,6 +310,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         } catch (e: Exception) {
             Log.w(TAG, "Error adding document", e)
         }
+
     }
 
     private fun updateAccount(){
