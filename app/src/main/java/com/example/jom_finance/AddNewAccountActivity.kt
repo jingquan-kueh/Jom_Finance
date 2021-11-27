@@ -23,7 +23,7 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.example.jom_finance.models.Account
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import java.lang.Exception
 
 
@@ -38,12 +38,14 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
     private var accountIcon: Int = 278
     private var accountColor: Int = BLACK
 
+    private lateinit var accountArrayList : java.util.ArrayList<Account>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_account)
         setupDataBase()
-
+        accountArrayList = arrayListOf()
         //setup ICON PICKER
         // If dialog is already added to fragment manager, get it. If not, create a new instance.
         val iconDialog = supportFragmentManager.findFragmentByTag(ICON_DIALOG_TAG) as IconDialog?
@@ -304,6 +306,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                         //Insert to database
                         documentReference.set(accountDetail).addOnCompleteListener {
                             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                            updateTotalAccountAmount()
                         }
                     }
                 }
@@ -339,6 +342,29 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             addAccount()
 
         }
+    }
+
+    private fun updateTotalAccountAmount(){
+        var totalAccountAmount = 0.0
+        fStore.collection("accounts/$userID/account_detail")
+            .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if(error!=null){
+                        Log.e("FireStore Error",error.message.toString())
+                        return
+                    }
+                    for(dc : DocumentChange in value?.documentChanges!!){
+                        if(dc.type == DocumentChange.Type.ADDED){
+                            accountArrayList.add(dc.document.toObject(Account::class.java))
+                            totalAccountAmount += accountArrayList.last().accountAmount!!
+                        }
+                    }
+                    if(totalAccountAmount != 0.0){
+                        fStore.collection("accounts").document(userID)
+                            .update("Total",totalAccountAmount)
+                    }
+                }
+            })
     }
 
     private fun setColor(color: Int){

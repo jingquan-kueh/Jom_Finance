@@ -1,8 +1,6 @@
 package com.example.jom_finance
 
-import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -11,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
@@ -20,6 +19,8 @@ import android.text.Editable
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
 import com.example.jom_finance.models.Account
 import com.example.jom_finance.models.Transaction
@@ -66,6 +67,9 @@ private var transactionAttachment: Boolean = false
 private const val IMAGE_REQUEST_CODE = 100
 private const val CAMERA_REQUEST_CODE = 42
 private const val DOCUMENT_REQUEST_CODE = 111
+
+private const val CHANNEL_ID = "channel_id_budget"
+private const val notificatioID = 101
 
 private lateinit var attachmentType: String
 private const val FILE_NAME = "photo.jpg" //temporary file name
@@ -155,6 +159,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
             timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
 
+            createNotificationChannel()
             expenseConfirm_btn.setOnClickListener {
                 // TODO: 5/11/2021 make sure all inputs are not NULL
                 // Added Validation
@@ -431,8 +436,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                             .update("Transaction_counter", lastExpense.inc())
                                     }
 
-
-
                                     // Popout Msg
                                     /*val resetView =
                                         LayoutInflater.from(this)
@@ -480,30 +483,81 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         val budgetDate = monthHashMap[budgetMonth] + " $savedYear"
         val budgetRef = fStore.collection("budget/$userID/budget_detail")
 
-        budgetRef.whereEqualTo("budget_date", budgetDate)
+        budgetRef
+            .whereEqualTo("budget_date", budgetDate)
             .whereEqualTo("budget_category", transactionCategory)
             .get()
             .addOnSuccessListener {
                 for (document in it.documents)
                     if (document.exists()) {
                         val budgetID = document.getString("budget_id")!!
-                        var budgetSpent =
-                            document.data?.getValue("budget_spent").toString().toDouble()
+                        var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
                         budgetSpent += transactionAmount
                         budgetRef.document(budgetID)
                             .update("budget_spent", budgetSpent)
                             .addOnSuccessListener {
                                 Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
                             }
+
+                        val budgetAlert = document.data?.getValue("budget_alert").toString().toBoolean()
+                        if(budgetAlert){
+                            Toast.makeText(this, "has alert", Toast.LENGTH_SHORT).show()
+                            val budgetAmount = document.data?.getValue("budget_amount").toString().toDouble()
+                            val budgetAlertPercentage = document.data?.getValue("budget_alert_percentage").toString().toInt()
+                            val budgetAlertAmount = budgetAmount * budgetAlertPercentage/100
+                            if(budgetSpent > budgetAlertAmount){
+                                Toast.makeText(this, "exceeded alert amount", Toast.LENGTH_SHORT).show()
+                                sendBudgetExceededNotification(budgetAlertPercentage, transactionCategory, budgetDate)
+                            }
+
+                        }
+
                     } else
-                        Toast.makeText(this,
-                            "There is no budget for this category",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Log.w(ContentValues.TAG, "Error updating budget", it)
             }
     }
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "Budget Exceeded!"
+            val descriptionText = "You have exceeded the budget for Transport, November 2021."
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+
+            val notificationManager : NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun sendBudgetExceededNotification(percentage: Int, category: String, date: String){
+
+        val intent = Intent(this, HomeActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        intent.putExtra("fragment_to_load", "budget")
+
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Budget Alert!")
+            .setContentText("You've exceeded $percentage% of your budget for $category, $date")
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(this)){
+            notify(notificatioID, builder.build())
+        }
+    }
+
+
+
 
     private fun updateAccount() {
         val accountRef =

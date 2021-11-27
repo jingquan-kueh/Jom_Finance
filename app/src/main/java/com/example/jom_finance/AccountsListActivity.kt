@@ -1,6 +1,7 @@
 package com.example.jom_finance
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import com.example.jom_finance.models.Account
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.activity_accounts_list.*
+import kotlinx.android.synthetic.main.fragment_home_fragment.*
 
 
 class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClickListener {
@@ -32,6 +34,24 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
         }
 
         setUpdb()
+
+
+        db.collection("accounts").document(userID)
+            .get()
+            .addOnCompleteListener{ value ->
+                val accountTotal= value.result["Total"].toString().toDouble()
+                if(accountTotal != null){
+                    if(accountTotal < 0.0){
+                        totalBalanceAmount_text.setTextColor(Color.RED)
+                    }
+
+                    totalBalanceAmount_text.text = String.format("RM %.2f",accountTotal)
+                }
+
+            }.addOnFailureListener{
+
+            }
+
         recyclerView = accounts_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.isNestedScrollingEnabled = true
@@ -56,7 +76,6 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
     }
 
     private fun EventChangeListener() {
-        db = FirebaseFirestore.getInstance()
         db.collection("accounts/$userID/account_detail")
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
@@ -76,6 +95,7 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
 
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
         val currentUser = fAuth.currentUser
         if (currentUser != null) {
             userID = currentUser.uid

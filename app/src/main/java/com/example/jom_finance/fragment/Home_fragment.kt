@@ -38,14 +38,14 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpdb()
-        readDB()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setUpdb()
+        readDB()
 
         val view : View = inflater.inflate(R.layout.fragment_home_fragment, container, false)
         recyclerView = view.home_recyclerView
@@ -68,18 +68,25 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         db.collection("transaction").document(userID).get().addOnCompleteListener{
             val income_amount : Double = it.result["Income"].toString().toDouble()
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
-            home_income_amount.text = String.format("RM %.2f",income_amount)
-            home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+            if(home_income_amount!= null && home_expenses_amount != null){
+                home_income_amount.text = String.format("RM %.2f",income_amount)
+                home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+            }
+
         }
         db.collection("accounts").document(userID)
             .get()
             .addOnCompleteListener{ value ->
-                val accountTotal : Double = value.result["Total"].toString().toDouble()
-                val balance_amount : Double = accountTotal
-                if(balance_amount<0.0){
-                    home_balance.setTextColor(Color.RED)
+                val accountTotal= value.result["Total"].toString().toDouble()
+                if(accountTotal != null){
+                    if(accountTotal < 0.0){
+                        home_balance.setTextColor(Color.RED)
+                    }
+
+                    if(home_balance != null)
+                        home_balance.text = String.format("RM %.2f",accountTotal)
                 }
-                home_balance.text = String.format("RM %.2f",balance_amount)
+
             }.addOnFailureListener{
 
             }
@@ -120,8 +127,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                     recyclerView.scheduleLayoutAnimation()
                 }
             })
-
     }
+
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()
         val currentUser = fAuth.currentUser
