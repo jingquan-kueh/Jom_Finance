@@ -40,6 +40,7 @@ private lateinit var account: String
 private var attachment: Boolean = false
 private lateinit var fileType: String
 private lateinit var localFile : File
+private lateinit var fileName: String
 private lateinit var dateName: String
 private lateinit var dateNum: String
 private lateinit var time: String
@@ -79,8 +80,8 @@ class ExpenseDetailActivity : AppCompatActivity() {
                 progressDialog.setMessage("Fetching attachment...")
                 progressDialog.setCancelable(false)
                 progressDialog.show()
-
                 val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/$transactionID")
+
 
                 storageReference.metadata.addOnSuccessListener { metadata->
                     fileType = metadata.getCustomMetadata("file_type")!!
@@ -91,7 +92,7 @@ class ExpenseDetailActivity : AppCompatActivity() {
                             if(progressDialog.isShowing)
                                 progressDialog.dismiss()
 
-                            val fileName = metadata.getCustomMetadata("file_name")
+                            fileName = metadata.getCustomMetadata("file_name")!!
                             expenseDetailAttachmentDocument_txt.text = fileName
 
                             expenseDetailAttachmentDocument_txt.setOnClickListener {
@@ -131,6 +132,8 @@ class ExpenseDetailActivity : AppCompatActivity() {
             if (attachment){
                 intent.putExtra("attachmentType", fileType)
                 intent.putExtra("attachmentPath", localFile.absolutePath)
+                if (fileType == "document")
+                    intent.putExtra("attachmentName", fileName)
             }
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

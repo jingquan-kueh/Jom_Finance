@@ -8,30 +8,33 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_detail_income.*
-import kotlinx.android.synthetic.main.activity_expense_detail.*
 import java.io.File
-import java.text.SimpleDateFormat
 import kotlin.properties.Delegates
 
 private lateinit var fAuth : FirebaseAuth
 private lateinit var userID : String
 private lateinit var db : FirebaseFirestore
 
+private lateinit var transactionID: String
 private var amount by Delegates.notNull<Double>()
 private lateinit var category : String
 private lateinit var description : String
 private lateinit var account : String
 private var attachment : Boolean = false
-private lateinit var date : String
+private lateinit var fileType: String
+private lateinit var localFile : File
+private lateinit var fileName: String
+private lateinit var dateName: String
+private lateinit var dateNum: String
 private lateinit var time : String
 
 class DetailIncome : AppCompatActivity() {
@@ -41,46 +44,70 @@ class DetailIncome : AppCompatActivity() {
         setContentView(R.layout.activity_detail_income)
         setUpdb()
         // Get intent string from recycleview
-        val transactionID = intent.getStringExtra("transactionName")
-        if(transactionID != null) {
+        transactionID = intent.getStringExtra("transactionName").toString()
+        if(transactionID != "null") {
             amount = intent.extras?.getDouble("transactionAmount")!!
             category = intent.extras?.getString("transactionCategory").toString()
             description = intent.extras?.getString("transactionDescription").toString()
             account = intent.extras?.getString("transactionAccount").toString()
             attachment = intent.extras?.getBoolean("transactionAttachment")!!
-            date = intent.extras?.getString("transactionDate").toString()
+            dateName = intent.extras?.getString("transactionDateName").toString()
+            dateNum = intent.extras?.getString("transactionDateNum").toString()
             time = intent.extras?.getString("transactionTime").toString()
 
-            /*var sdf = SimpleDateFormat("MMMM d yyyy")
-                    var dateString = sdf.format(date.toDate())*/
-            dateIncome.text = date
 
-            /* sdf = SimpleDateFormat("KK:mm a")
-                    dateString = sdf.format(date.toDate())*/
-            timeIncome.text = time
-
+            dateIncome.text = "$dateName | "
+            timeIncome.text = "$time"
             amountIncome.text = "RM " + amount
             incomeCategoryDetail_text.text = category
             incomeAccountDetail_text.text = account
             incomeDescriptionDetail_text.text = description
+
             incomeAttachmentLabel_text.isVisible = attachment
-            attachment_img.isVisible = attachment
+
+            incomeDetailAttachmentDocument_txt.isVisible = false
+            attachment_img.isVisible = false
 
             if (attachment) {
                 val progressDialog = ProgressDialog(this)
-                progressDialog.setMessage("Fetching image...")
+                progressDialog.setMessage("Fetching attachment...")
                 progressDialog.setCancelable(false)
                 progressDialog.show()
 
-                val storageReference = FirebaseStorage.getInstance()
-                    .getReference("transaction_images/$userID/$transactionID")
-                val localFile = File.createTempFile("tempImage", "jpg")
-                storageReference.getFile(localFile).addOnSuccessListener {
-                    if (progressDialog.isShowing)
-                        progressDialog.dismiss()
+                val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/$transactionID")
 
-                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                    attachment_img.setImageBitmap(bitmap)
+                storageReference.metadata.addOnSuccessListener { metadata->
+                   fileType = metadata.getCustomMetadata("file_type")!!
+                    if (fileType == "document"){
+                        incomeDetailAttachmentDocument_txt.isVisible = true
+                        localFile = File.createTempFile("tempDoc", ".pdf")
+                        storageReference.getFile(localFile).addOnSuccessListener {
+                            if(progressDialog.isShowing)
+                                progressDialog.dismiss()
+
+                            fileName = metadata.getCustomMetadata("file_name")!!
+                            incomeDetailAttachmentDocument_txt.text = fileName
+
+                            incomeDetailAttachmentDocument_txt.setOnClickListener {
+                                val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", localFile)
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = uri
+                                intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                startActivity(intent)
+                            }
+                        }
+                    }
+                    else{
+                        attachment_img.isVisible = true
+                        localFile = File.createTempFile("tempImage", "jpg")
+                        storageReference.getFile(localFile).addOnSuccessListener {
+                            if(progressDialog.isShowing)
+                                progressDialog.dismiss()
+
+                            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                            attachment_img.setImageBitmap(bitmap)
+                        }
+                    }
                 }
             }
         }
@@ -88,12 +115,20 @@ class DetailIncome : AppCompatActivity() {
         editIncome_btn.setOnClickListener{
             val intent = Intent(this, AddNewIncome::class.java)
             intent.putExtra("editIncome",true)
-            intent.putExtra("incomeID",transactionID)
-            intent.putExtra("incomeAmount",amount)
+            intent.putExtra("incomeID", transactionID)
+            intent.putExtra("incomeAmount", amount)
             intent.putExtra("incomeCategory", category)
             intent.putExtra("incomeDescription", description)
             intent.putExtra("incomeAccount", account)
             intent.putExtra("incomeAttachment", attachment)
+            intent.putExtra("transactionDateNum", dateNum)
+            intent.putExtra("transactionTime", time)
+            if (attachment){
+                intent.putExtra("attachmentType", fileType)
+                intent.putExtra("attachmentPath", localFile.absolutePath)
+                if (fileType == "document")
+                    intent.putExtra("attachmentName", fileName)
+            }
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }

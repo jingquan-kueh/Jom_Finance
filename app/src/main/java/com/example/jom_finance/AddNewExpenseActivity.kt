@@ -159,6 +159,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
                 if(fileType == "document"){
                     attachmentDocument_txt.isVisible = true
+                    val fileName = intent?.extras?.getString("attachmentName").toString()
+                    attachmentDocument_txt.text = fileName
                     attachmentDocument_txt.setOnClickListener {
                         val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", File(filePath))
                         val intent = Intent(Intent.ACTION_VIEW)
@@ -174,7 +176,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                     val bitmap = BitmapFactory.decodeFile(filePath)
                     attachment_img.setImageBitmap(bitmap)
                 }
-
             }
 
 
@@ -434,9 +435,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                         when (attachmentType) {
                                             "camera" -> {
                                                 val baos = ByteArrayOutputStream()
-                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG,
-                                                    50,
-                                                    baos)
+                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
                                                 val data = baos.toByteArray()
                                                 uploadTask = storageReference.putBytes(data, storageMetadata {
                                                     setCustomMetadata("file_type", attachmentType)
