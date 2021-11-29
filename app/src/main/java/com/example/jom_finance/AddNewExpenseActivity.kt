@@ -22,6 +22,7 @@ import android.widget.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import com.example.jom_finance.models.Account
 import com.example.jom_finance.models.Transaction
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -119,14 +120,31 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             transactionDescription = intent?.extras?.getString("transactionDescription").toString()
             transactionAttachment = intent?.extras?.getBoolean("transactionAttachment")!!
 
-            expenseAmount_edit.text =
-                Editable.Factory.getInstance().newEditable(transactionAmount.toString())
-            expenseCategory_ddl.editText?.text =
-                Editable.Factory.getInstance().newEditable(transactionCategory)
-            expenseAccount_ddl.editText?.text =
-                Editable.Factory.getInstance().newEditable(transactionAccount)
-            expenseDescription_outlinedTextField.editText?.text =
-                Editable.Factory.getInstance().newEditable(transactionDescription)
+            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(transactionAmount.toString())
+            expenseCategory_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionCategory)
+            expenseAccount_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionAccount)
+            expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(transactionDescription)
+
+            //Date and Time
+            val date = intent?.extras?.getString("transactionDateNum").toString()
+            val dateArray = date.split("-").toTypedArray()
+            day = dateArray[0].toInt()
+            month = dateArray[1].toInt()
+            year = dateArray[2].toInt()
+
+            val time = intent?.extras?.getString("transactionTime").toString()
+            val timeArray = time.split(":").toTypedArray()
+            hour = timeArray[0].toInt()
+            minute = timeArray[1].toInt()
+
+            savedDay = String.format("%02d", day)
+            savedMonth = String.format("%02d", month + 1)
+            savedYear = year.toString()
+            savedHour = String.format("%02d", hour)
+            savedMinute = String.format("%02d", minute)
+            expenseDate_edit.text = Editable.Factory.getInstance().newEditable("$date")
+            expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+            timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
 
             if (transactionAttachment) {
                 expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
@@ -135,7 +153,28 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                     0)
                 expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
                 expenseAddAttachment_btn.text = "Remove Attachment"
-                attachment_img.visibility = View.VISIBLE
+
+                val fileType = intent?.extras?.getString("attachmentType").toString()
+                val filePath = intent?.extras?.getString("attachmentPath").toString()
+
+                if(fileType == "document"){
+                    attachmentDocument_txt.isVisible = true
+                    attachmentDocument_txt.setOnClickListener {
+                        val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", File(filePath))
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = uri
+                        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        startActivity(intent)
+                    }
+
+
+                }
+                else{
+                    attachment_img.isVisible = true
+                    val bitmap = BitmapFactory.decodeFile(filePath)
+                    attachment_img.setImageBitmap(bitmap)
+                }
+
             }
 
 
@@ -154,16 +193,12 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             savedYear = year.toString()
             savedHour = String.format("%02d", hour)
             savedMinute = String.format("%02d", minute)
-            expenseDate_edit.text =
-                Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
-            expenseTime_edit.text =
-                Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+            expenseDate_edit.text = Editable.Factory.getInstance().newEditable("$savedDay-$savedMonth-$savedYear")
+            expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
             timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
 
             createNotificationChannel()
             expenseConfirm_btn.setOnClickListener {
-                // TODO: 5/11/2021 make sure all inputs are not NULL
-                // Added Validation
                 if (expenseValidate()) {
                     addExpenseToDatabase()
                     updateBudget()
@@ -313,9 +348,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 repeat_constraintLayout.visibility = View.GONE
         }
 
-        attachmentDocument_txt.setOnClickListener {
-            // TODO: 6/11/2021 display pdf when clicked 
-        }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -567,15 +599,13 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
 
     private fun updateAccount() {
-        val accountRef =
-            fStore.collection("accounts/$userID/account_detail").document(transactionAccount)
+        val accountRef = fStore.collection("accounts/$userID/account_detail").document(transactionAccount)
 
         accountRef
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    var accountAmount =
-                        document.data?.getValue("account_amount").toString().toDouble()
+                    var accountAmount = document.data?.getValue("account_amount").toString().toDouble()
                     accountAmount -= transactionAmount
                     accountRef
                         .update("account_amount", accountAmount)

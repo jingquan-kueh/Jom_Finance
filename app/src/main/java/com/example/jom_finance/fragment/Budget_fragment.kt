@@ -114,12 +114,11 @@ class Budget_fragment : Fragment(), BudgetListAdapter.OnItemClickListener {
                         return
                     }
                     for (dc: DocumentChange in value?.documentChanges!!) {
-                        if (dc.type == DocumentChange.Type.ADDED) {
+                        if (dc.type == DocumentChange.Type.ADDED)
                             budgetArrayList.add(dc.document.toObject(Budget::class.java))
-                        }
-                        else if (dc.type == DocumentChange.Type.REMOVED){
+                        else if (dc.type == DocumentChange.Type.REMOVED)
                             budgetArrayList.remove(dc.document.toObject(Budget::class.java))
-                        }
+
                         budgetListAdapter.notifyDataSetChanged()
                     }
                 }

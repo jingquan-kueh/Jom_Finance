@@ -141,7 +141,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         val item = transactionArrayList[position]
         requireActivity().run {
             val type = item.transactionType
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatName = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatNum = SimpleDateFormat("dd-MM-yyyy")
             val timeFormat = SimpleDateFormat("hh:mm")
             val date = item.transactionTime?.toDate()
             if(type == "income"){
@@ -153,7 +154,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDate", dateFormatName.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -165,7 +166,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDateName", dateFormatName.format(date))
+                intent.putExtra("transactionDateNum", dateFormatNum.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

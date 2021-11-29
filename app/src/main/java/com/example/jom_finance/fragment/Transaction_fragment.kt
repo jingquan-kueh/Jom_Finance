@@ -86,9 +86,8 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
                         return
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
-                        if(dc.type == DocumentChange.Type.ADDED){
+                        if(dc.type == DocumentChange.Type.ADDED)
                             transactionArrayList.add(dc.document.toObject(Transaction::class.java))
-                        }
                     }
                 }
             })
@@ -124,7 +123,8 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
         val item = transactionArrayList[position]
         requireActivity().run {
             val type = item.transactionType
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatName = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatNum = SimpleDateFormat("dd-MM-yyyy")
             val timeFormat = SimpleDateFormat("hh:mm")
             val date = item.transactionTime?.toDate()
             if(type == "income"){
@@ -136,7 +136,7 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDate", dateFormatName.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -148,11 +148,11 @@ class Transaction_fragment : Fragment(),TransactionListAdapter.OnItemClickListen
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDateName", dateFormatName.format(date))
+                intent.putExtra("transactionDateNum", dateFormatNum.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                Toast.makeText(this, "expenses Clicked", Toast.LENGTH_SHORT).show()
             }
         }
     }
