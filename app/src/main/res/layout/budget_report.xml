@@ -44,44 +44,20 @@
         app:layout_constraintTop_toBottomOf="@+id/thisMonthTxt">
     </TextView>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/overBudgetTxt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="24dp"
-        android:layout_marginTop="27dp"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/red_soft"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:layout_margin="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/budgetTxt">
+    </TextView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:padding="16dp">
-
-            <ImageView
-                android:id="@+id/biggestEarnImg"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                app:srcCompat="@drawable/salary_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/biggestEarnImg"
-                android:gravity="center_vertical"
-                android:text="Salary"
-                android:textColor="#0D0E0F"
-                android:textSize="18sp"
-                android:textStyle="bold">
-
-            </TextView>
-        </RelativeLayout>
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

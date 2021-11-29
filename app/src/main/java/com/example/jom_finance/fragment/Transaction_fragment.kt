@@ -1155,7 +1155,6 @@ class Transaction_fragment : Fragment(), TransactionListAdapter.OnItemClickListe
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                Toast.makeText(this, "expenses Clicked", Toast.LENGTH_SHORT).show()
             }
         }
     }

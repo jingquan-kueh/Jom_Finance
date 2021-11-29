@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     implementation 'com.github.zagum:SpeechRecognitionView:1.2.2'
     implementation 'com.karumi:dexter:6.2.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -104,4 +104,8 @@ dependencies {
 
     // Recycleview animator
     implementation "com.mlsdev.animatedrv:library:2.0.0"
+
+    //Chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    //implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

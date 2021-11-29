@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_report_income.view.*
+import java.text.SimpleDateFormat
 
 class Report_IncomeFragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
@@ -28,6 +29,7 @@ class Report_IncomeFragment : Fragment(),TransactionListAdapter.OnItemClickListe
     private lateinit var categoryHash : HashMap<String, Category>
     private lateinit var transactionListAdapter: TransactionListAdapter
     private lateinit var db : FirebaseFirestore
+    private lateinit var date : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,8 @@ class Report_IncomeFragment : Fragment(),TransactionListAdapter.OnItemClickListe
     ): View? {
         setUpdb()
         val view : View = inflater.inflate(R.layout.fragment_report_income, container, false)
+        val args = arguments
+        date = args!!.getString("Date").toString()
         recyclerView = view.financialReport_recyclerView_Income
         recyclerView.layoutManager = LinearLayoutManager(view.context)
         recyclerView.isNestedScrollingEnabled = true
@@ -67,7 +71,13 @@ class Report_IncomeFragment : Fragment(),TransactionListAdapter.OnItemClickListe
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
-                            transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                            var tempTransaciton = dc.document.toObject(Transaction::class.java)
+                            var tempTime = tempTransaciton.transactionTime
+                            val sdf = SimpleDateFormat("MMMM yyyy")
+                            val dateString = sdf.format(tempTime!!.toDate())
+                            if(dateString == date){
+                                transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                            }
                         }
                     }
                 }

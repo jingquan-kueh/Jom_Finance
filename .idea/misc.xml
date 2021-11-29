@@ -31,6 +31,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_baseline_insert_drive_file_24.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_baseline_insert_drive_file_red_24.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_google_icon.xml" value="0.2875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/ic_launcher_background.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/income_icon.xml" value="0.290625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/indicator1.xml" value="0.2875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/drawable/intro1.xml" value="0.2875" />
@@ -55,7 +56,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_accounts_list.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_add_new_account.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_add_new_expense.xml" value="0.27447916666666666" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_add_new_income.xml" value="0.4" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_add_new_income.xml" value="0.30734966592427615" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_budget_detail.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_currency.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_detail_income.xml" value="0.264" />
@@ -69,7 +70,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_popup.xml" value="0.2513586956521739" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_report.xml" value="0.264" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_report.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_reset_password.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_setting.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/activity_sign_up.xml" value="0.4" />
@@ -83,6 +84,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/budget_report.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/custom_icon.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/expenses_report.xml" value="0.48" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_budget_fragment.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_home_fragment.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_income.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_line_fragment.xml" value="0.264" />
@@ -91,6 +93,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_profile_fragment.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_report__expense.xml" value="0.2604166666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_report__income.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_report_expense.xml" value="0.23641304347826086" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_report_income.xml" value="0.14375" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_setting_currency.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/fragment_setting_fragment.xml" value="0.27447916666666666" />
@@ -110,6 +113,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/splashscreen.xml" value="0.24682971014492755" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/layout/voice_popup.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/menu/navigation.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.15989583333333332" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/xml/fileprovider.xml" value="0.13072916666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Jom_Finance/app/src/main/res/xml/preferences.xml" value="0.4" />
         <entry key="..\:/Users/jingq/Desktop/FYP/Jom Finance Application/app/src/main/res/drawable-v24/bg_budget_category.xml" value="0.38333333333333336" />

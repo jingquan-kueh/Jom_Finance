@@ -1,9 +1,6 @@
 package com.example.jom_finance.income
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -114,6 +111,7 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             val description = intent.getStringExtra("incomeDescription")
             val account = intent.getStringExtra("incomeAccount")
             val attachment = intent.getBooleanExtra("incomeAttachment", false)
+
             incomeID = intent.getStringExtra("incomeID").toString()
             AddnewBtn.text = "Done"
             amountField.setText(amount.toString())
@@ -131,7 +129,23 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
                 incomeAddAttachment_btn.text = "Remove Attachment"
                 attachment_img.visibility = View.VISIBLE
                 // Show Attachment
+                val progressDialog = ProgressDialog(this)
+                progressDialog.setMessage("Fetching image...")
+                progressDialog.setCancelable(false)
+                progressDialog.show()
+
+                val storageReference = FirebaseStorage.getInstance()
+                    .getReference("transaction_images/$userID/$incomeID")
+                val localFile = File.createTempFile("tempImage", "jpg")
+                storageReference.getFile(localFile).addOnSuccessListener {
+                    if (progressDialog.isShowing)
+                        progressDialog.dismiss()
+
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                    attachment_img.setImageBitmap(bitmap)
+                }
             }
+
 
         } else {
             //current date & time
@@ -194,7 +208,6 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         incomeTime_edit.setOnClickListener {
             TimePickerDialog(this, this, hour, minute, true).show()
         }
-
 
 
         incomeAddAttachment_btn.setOnClickListener {

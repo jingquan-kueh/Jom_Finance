@@ -205,6 +205,11 @@ class FinancialReportActivity : AppCompatActivity() {
                     budgetOverSize = overBudgetList.size
 
                     budgetTxt.text = "$budgetOverSize of $budgetSize Budget is exceeds the limit"
+                    for(i in overBudgetList){
+                        var textBudget = overBudgetTxt.text
+                        overBudgetTxt.text = "$textBudget${i.key}\n"
+                    }
+
                 }
             }
 

@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_pie_fragment.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 class Pie_fragment : Fragment() {
 
@@ -32,7 +33,8 @@ class Pie_fragment : Fragment() {
     private lateinit var categoryArrayList : ArrayList<Category>
     private lateinit var categoryHash : HashMap<String,Int>
     private var yValues = ArrayList<PieEntry>()
-
+    private lateinit var type : String
+    private lateinit var date : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,8 @@ class Pie_fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val args = arguments
-        val type = args!!.getString("Type")
+        type = args!!.getString("Type").toString()
+        date = args!!.getString("Date").toString()
 
         val view : View = inflater.inflate(R.layout.fragment_pie_fragment, container, false)
         val p = view.pieChart
@@ -70,10 +73,6 @@ class Pie_fragment : Fragment() {
         return view
     }
 
-    fun changeData(type : String){
-
-    }
-
     private fun readDB(p : PieChart,type : String) {
         fStore = FirebaseFirestore.getInstance()
         fStore.collection("transaction/$userID/Transaction_detail").whereEqualTo("Transaction_type",type)
@@ -85,7 +84,13 @@ class Pie_fragment : Fragment() {
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
-                            transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                            var tempTransaciton = dc.document.toObject(Transaction::class.java)
+                            var tempTime = tempTransaciton.transactionTime
+                            val sdf = SimpleDateFormat("MMMM yyyy")
+                            val dateString = sdf.format(tempTime!!.toDate())
+                            if(dateString == date){
+                                transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                            }
                         }
                     }
                     fStore.collection("category/$userID/category_detail")
@@ -122,14 +127,12 @@ class Pie_fragment : Fragment() {
         var set1 = PieDataSet(yValues,"Category")
         set1.sliceSpace = 3f
         set1.selectionShift = 5f
-
-        val arrayList = ColorTemplate.JOYFUL_COLORS.toCollection(ArrayList())
-
+        val arrayList = ColorTemplate.COLORFUL_COLORS.toCollection(ArrayList())
         set1.setColors(arrayList)
 
         var dataSets = PieData(set1)
-        dataSets.setValueTextSize(10f)
-        dataSets.setValueTextColor(Color.YELLOW)
+        dataSets.setValueTextSize(16f)
+        dataSets.setValueTextColor(Color.BLACK)
         p.data = dataSets
         p.notifyDataSetChanged()
         p.invalidate()
