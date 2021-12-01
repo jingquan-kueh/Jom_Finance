@@ -127,6 +127,7 @@ class VoiceActivity : AppCompatActivity() {
         }
         noBtn.setOnClickListener{
             hideComponent()
+            finish()
         }
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this)
@@ -202,11 +203,11 @@ class VoiceActivity : AppCompatActivity() {
     private fun showComponent(){
         yesBtn.visibility = View.VISIBLE
         noBtn.visibility = View.VISIBLE
-        speakBtn.visibility = View.VISIBLE
+        //speakBtn.visibility = View.VISIBLE
 
         yesBtn.isClickable = true
         noBtn.isClickable = true
-        speakBtn.isClickable = true
+        //speakBtn.isClickable = true
     }
 
     private fun startRecognition() {
@@ -256,8 +257,8 @@ class VoiceActivity : AppCompatActivity() {
 
     private fun setVisibility(voiceActive : Boolean) {
         if(!voiceActive){
-            speakBtn.visibility = View.VISIBLE
-            speakBtn.isClickable = true
+            //speakBtn.visibility = View.VISIBLE
+           // speakBtn.isClickable = true
             speechTxt.visibility = View.VISIBLE
             recognition_view.visibility = View.INVISIBLE
         }else{

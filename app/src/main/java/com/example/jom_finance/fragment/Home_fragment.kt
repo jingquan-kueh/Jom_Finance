@@ -1,7 +1,9 @@
 package com.example.jom_finance.fragment
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -19,9 +21,11 @@ import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+import com.google.firebase.storage.FirebaseStorage
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
+import java.io.File
 import java.text.SimpleDateFormat
 
 
@@ -127,6 +131,33 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         if (currentUser != null) {
             userID = currentUser.uid
         }
+       /* val progressDialog = ProgressDialog(this.context)
+        progressDialog.setMessage("Fetching image...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()*/
+        val storageReference = FirebaseStorage.getInstance()
+            .getReference("user/$userID")
+
+        val localFile = File.createTempFile("tempImage", "jpg")
+        storageReference.getFile(localFile).addOnSuccessListener {
+            /*if (progressDialog.isShowing)
+                progressDialog.dismiss()
+*/
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            profile_Icon.setImageBitmap(bitmap)
+        }.addOnFailureListener{
+            val storageReference = FirebaseStorage.getInstance()
+                .getReference("user/sample-user.png")
+            storageReference.getFile(localFile).addOnSuccessListener {
+                /*if (progressDialog.isShowing)
+                    progressDialog.dismiss()
+*/
+                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                profile_Icon.setImageBitmap(bitmap)
+            }
+        }
+
+
     }
 
     override fun onItemClick(position: Int) {

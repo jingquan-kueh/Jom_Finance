@@ -1,8 +1,10 @@
 package com.example.jom_finance.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -30,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_add_new_income.*
 import kotlinx.android.synthetic.main.bottomsheet_logout.*
 import kotlinx.android.synthetic.main.fragment_profile_fragment.*
 import kotlinx.android.synthetic.main.fragment_profile_fragment.view.*
+import java.io.File
 
 class Profile_fragment : Fragment() {
 
@@ -48,13 +51,31 @@ class Profile_fragment : Fragment() {
                     usernamePlaceHolder.text = document.getString("username")
                 }
             }
-        // TODO : Check Profile Pic from DB
-/*        fStore.collection("user").document(userID).get()
-            .addOnSuccessListener { document->
-                if (document != null) {
-                    usernamePlaceHolder.text = document.get("username")
-                }
-            }*/
+       /* val progressDialog = ProgressDialog(this.context)
+        progressDialog.setMessage("Fetching image...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()*/
+        val storageReference = FirebaseStorage.getInstance()
+            .getReference("user/$userID")
+
+        val localFile = File.createTempFile("tempImage", "jpg")
+        storageReference.getFile(localFile).addOnSuccessListener {
+           /* if (progressDialog.isShowing)
+                progressDialog.dismiss()*/
+
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            profileCircleImageView.setImageBitmap(bitmap)
+        }.addOnFailureListener{
+            val storageReference = FirebaseStorage.getInstance()
+                .getReference("user/sample-user.png")
+            storageReference.getFile(localFile).addOnSuccessListener {
+               /* if (progressDialog.isShowing)
+                    progressDialog.dismiss()*/
+
+                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                profileCircleImageView.setImageBitmap(bitmap)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -85,15 +106,16 @@ class Profile_fragment : Fragment() {
             }
         }
 
-        view.logoutBtn.setOnClickListener {
-            openAttachmentBottomSheetDialog(view)
-        }
+
         view.settingBtn.setOnClickListener {
             requireActivity().run {
                 val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
+        }
+        view.logoutBtn.setOnClickListener {
+            openAttachmentBottomSheetDialog(view)
         }
         // Inflate the layout for this fragment
         return view
@@ -104,13 +126,17 @@ class Profile_fragment : Fragment() {
         if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             val imageUri = data?.data!!
             profileCircleImageView.setImageURI(imageUri)
-
+            val progressDialog = ProgressDialog(this.context)
+            progressDialog.setMessage("Fetching image...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
             val storageReference = FirebaseStorage.getInstance()
                 .getReference("user/$userID")
             var uploadTask: UploadTask = storageReference.putFile(imageUri)
 
             uploadTask
                 .addOnSuccessListener {
+                    progressDialog.dismiss()
                     Toast.makeText(this.context,
                         "Successfully uploaded",
                         Toast.LENGTH_SHORT).show()

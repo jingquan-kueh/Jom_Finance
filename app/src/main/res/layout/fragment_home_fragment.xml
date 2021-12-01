@@ -46,7 +46,6 @@
                         android:id="@+id/profile_Icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/ic_launcher"
                         app:civ_border_color="#AD00FF"
                         app:civ_border_width="2dp" />
 
