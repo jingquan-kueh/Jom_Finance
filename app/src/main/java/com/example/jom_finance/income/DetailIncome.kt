@@ -126,6 +126,16 @@ class DetailIncome : AppCompatActivity() {
             intent.putExtra("incomeDescription", description)
             intent.putExtra("incomeAccount", account)
             intent.putExtra("incomeAttachment", attachment)
+            intent.putExtra("transactionDateNum", attachment)
+            intent.putExtra("transactionTime", attachment)
+            intent.putExtra("transactionDateNum", dateNum)
+            intent.putExtra("transactionTime", time)
+            if (attachment){
+                intent.putExtra("attachmentType", fileType)
+                intent.putExtra("attachmentPath", localFile.absolutePath)
+                if (fileType == "document")
+                    intent.putExtra("attachmentName", fileName)
+            }
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
