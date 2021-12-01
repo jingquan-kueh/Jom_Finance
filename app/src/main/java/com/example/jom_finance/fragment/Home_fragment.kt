@@ -57,7 +57,6 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
         val localFile = File.createTempFile("tempImage", "jpg")
         storageReference.getFile(localFile).addOnSuccessListener {
-
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
             view.profile_Icon.setImageBitmap(bitmap)
         }.addOnFailureListener{
@@ -119,7 +118,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                     }
                     for(dc : DocumentChange in value?.documentChanges!!){
                         if(dc.type == DocumentChange.Type.ADDED){
-                            transactionArrayList.add(dc.document.toObject(Transaction::class.java))
+                                transactionArrayList.add(dc.document.toObject(Transaction::class.java))
                         }
                     }
                 }
@@ -189,6 +188,5 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         }
-
     }
 }
