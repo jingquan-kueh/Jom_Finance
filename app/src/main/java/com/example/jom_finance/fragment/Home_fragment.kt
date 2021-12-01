@@ -1,9 +1,7 @@
 package com.example.jom_finance.fragment
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -21,11 +19,9 @@ import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
-import com.google.firebase.storage.FirebaseStorage
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
-import java.io.File
 import java.text.SimpleDateFormat
 
 
@@ -50,6 +46,7 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
     ): View? {
         setUpdb()
         readDB()
+
         val view : View = inflater.inflate(R.layout.fragment_home_fragment, container, false)
         recyclerView = view.home_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -71,18 +68,25 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         db.collection("transaction").document(userID).get().addOnCompleteListener{
             val income_amount : Double = it.result["Income"].toString().toDouble()
             val expense_amount : Double = it.result["Expense"].toString().toDouble()
-            home_income_amount.text = String.format("RM %.2f",income_amount)
-            home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+            if(home_income_amount!= null && home_expenses_amount != null){
+                home_income_amount.text = String.format("RM %.2f",income_amount)
+                home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+            }
+
         }
         db.collection("accounts").document(userID)
             .get()
             .addOnCompleteListener{ value ->
-                val accountTotal : Double = value.result["Total"].toString().toDouble()
-                val balance_amount : Double = accountTotal
-                if(balance_amount<0.0){
-                    home_balance.setTextColor(Color.RED)
+                val accountTotal= value.result["Total"].toString().toDouble()
+                if(accountTotal != null){
+                    if(accountTotal < 0.0){
+                        home_balance.setTextColor(Color.RED)
+                    }
+
+                    if(home_balance != null)
+                        home_balance.text = String.format("RM %.2f",accountTotal)
                 }
-                home_balance.text = String.format("RM %.2f",balance_amount)
+
             }.addOnFailureListener{
 
             }
@@ -123,48 +127,22 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                     recyclerView.scheduleLayoutAnimation()
                 }
             })
-
     }
+
     private fun setUpdb(){
         fAuth = FirebaseAuth.getInstance()
         val currentUser = fAuth.currentUser
         if (currentUser != null) {
             userID = currentUser.uid
         }
-       /* val progressDialog = ProgressDialog(this.context)
-        progressDialog.setMessage("Fetching image...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()*/
-        val storageReference = FirebaseStorage.getInstance()
-            .getReference("user/$userID")
-
-        val localFile = File.createTempFile("tempImage", "jpg")
-        storageReference.getFile(localFile).addOnSuccessListener {
-            /*if (progressDialog.isShowing)
-                progressDialog.dismiss()
-*/
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            profile_Icon.setImageBitmap(bitmap)
-        }.addOnFailureListener{
-            val storageReference = FirebaseStorage.getInstance()
-                .getReference("user/sample-user.png")
-            storageReference.getFile(localFile).addOnSuccessListener {
-                /*if (progressDialog.isShowing)
-                    progressDialog.dismiss()
-*/
-                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                profile_Icon.setImageBitmap(bitmap)
-            }
-        }
-
-
     }
 
     override fun onItemClick(position: Int) {
         val item = transactionArrayList[position]
         requireActivity().run {
             val type = item.transactionType
-            val dateFormat = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatName = SimpleDateFormat("dd MMMM yyyy")
+            val dateFormatNum = SimpleDateFormat("dd-MM-yyyy")
             val timeFormat = SimpleDateFormat("hh:mm")
             val date = item.transactionTime?.toDate()
             if(type == "income"){
@@ -176,7 +154,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDateName", dateFormatName.format(date))
+                intent.putExtra("transactionDateNum", dateFormatNum.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -188,7 +167,8 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
                 intent.putExtra("transactionAccount",item.transactionAccount)
                 intent.putExtra("transactionDescription",item.transactionDescription)
                 intent.putExtra("transactionAttachment",item.transactionAttachment)
-                intent.putExtra("transactionDate", dateFormat.format(date))
+                intent.putExtra("transactionDateName", dateFormatName.format(date))
+                intent.putExtra("transactionDateNum", dateFormatNum.format(date))
                 intent.putExtra("transactionTime", timeFormat.format(date))
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

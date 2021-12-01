@@ -1,6 +1,9 @@
 package com.example.jom_finance.income
 
-import android.app.*
+import android.app.Activity
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -20,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import androidx.databinding.adapters.ViewBindingAdapter
 import com.example.jom_finance.HomeActivity
 import com.example.jom_finance.R
@@ -32,12 +36,14 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storageMetadata
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.android.synthetic.main.activity_add_new_income.*
 import kotlinx.android.synthetic.main.activity_add_new_income.attachmentDocument_txt
 import kotlinx.android.synthetic.main.activity_add_new_income.attachment_img
+import kotlinx.android.synthetic.main.activity_add_new_income.progressLayout
 import kotlinx.android.synthetic.main.activity_add_new_income.repeat_constraintLayout
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 import java.io.ByteArrayOutputStream
@@ -111,7 +117,6 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             val description = intent.getStringExtra("incomeDescription")
             val account = intent.getStringExtra("incomeAccount")
             val attachment = intent.getBooleanExtra("incomeAttachment", false)
-
             incomeID = intent.getStringExtra("incomeID").toString()
             AddnewBtn.text = "Done"
             amountField.setText(amount.toString())
@@ -120,6 +125,29 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             incomeAccount_autoCompleteTextView.setText(account)
             oldIncomeAmount = amount
             oldIncomeAccount = account!!
+
+            //Date and Time
+            val date = intent?.extras?.getString("transactionDateNum").toString()
+            val dateArray = date.split("-").toTypedArray()
+            day = dateArray[0].toInt()
+            month = dateArray[1].toInt()
+            year = dateArray[2].toInt()
+
+            val time = intent?.extras?.getString("transactionTime").toString()
+            val timeArray = time.split(":").toTypedArray()
+            hour = timeArray[0].toInt()
+            minute = timeArray[1].toInt()
+
+            savedDay = String.format("%02d", day)
+            savedMonth = String.format("%02d", month)
+            savedYear = year.toString()
+            savedHour = String.format("%02d", hour)
+            savedMinute = String.format("%02d", minute)
+            incomeDate_edit.text = Editable.Factory.getInstance().newEditable("$date")
+            incomeTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
+            timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+
             if (attachment) {
                 incomeAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
                     0,
@@ -127,25 +155,28 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
                     0)
                 incomeAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
                 incomeAddAttachment_btn.text = "Remove Attachment"
-                attachment_img.visibility = View.VISIBLE
-                // Show Attachment
-                val progressDialog = ProgressDialog(this)
-                progressDialog.setMessage("Fetching image...")
-                progressDialog.setCancelable(false)
-                progressDialog.show()
 
-                val storageReference = FirebaseStorage.getInstance()
-                    .getReference("transaction_images/$userID/$incomeID")
-                val localFile = File.createTempFile("tempImage", "jpg")
-                storageReference.getFile(localFile).addOnSuccessListener {
-                    if (progressDialog.isShowing)
-                        progressDialog.dismiss()
+                val fileType = intent?.extras?.getString("attachmentType").toString()
+                val filePath = intent?.extras?.getString("attachmentPath").toString()
 
-                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                if(fileType == "document"){
+                    attachmentDocument_txt.isVisible = true
+                    val fileName = intent?.extras?.getString("attachmentName").toString()
+                    attachmentDocument_txt.text = fileName
+                    attachmentDocument_txt.setOnClickListener {
+                        val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", File(filePath))
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.data = uri
+                        intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        startActivity(intent)
+                    }
+                }
+                else{
+                    attachment_img.isVisible = true
+                    val bitmap = BitmapFactory.decodeFile(filePath)
                     attachment_img.setImageBitmap(bitmap)
                 }
             }
-
 
         } else {
             //current date & time
@@ -210,6 +241,7 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         }
 
 
+
         incomeAddAttachment_btn.setOnClickListener {
             if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
                 openAttachmentBottomSheetDialog()
@@ -248,9 +280,6 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             }
         }
 
-        attachmentDocument_txt.setOnClickListener {
-            // TODO: 6/11/2021 display pdf when clicked
-        }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -394,12 +423,21 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
                     when (attachmentType) {
                         "camera" -> {
                             val baos = ByteArrayOutputStream()
-                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
                             val data = baos.toByteArray()
-                            uploadTask = storageReference.putBytes(data)
+                            uploadTask = storageReference.putBytes(data, storageMetadata {
+                                setCustomMetadata("file_type", attachmentType)
+                            })
                         }
-                        "image" -> uploadTask = storageReference.putFile(imageUri)
-                        "document" -> uploadTask = storageReference.putFile(documentUri)
+                        "image" -> uploadTask =
+                            storageReference.putFile(imageUri, storageMetadata {
+                                setCustomMetadata("file_type", attachmentType)
+                            })
+                        "document" -> uploadTask =
+                            storageReference.putFile(documentUri, storageMetadata {
+                                setCustomMetadata("file_type", attachmentType)
+                                setCustomMetadata("file_name", getFileName(documentUri))
+                            })
                     }
 
                     uploadTask
@@ -480,16 +518,21 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
                                         when (attachmentType) {
                                             "camera" -> {
                                                 val baos = ByteArrayOutputStream()
-                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG,
-                                                    100,
-                                                    baos)
+                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
                                                 val data = baos.toByteArray()
-                                                uploadTask = storageReference.putBytes(data)
+                                                uploadTask = storageReference.putBytes(data, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                })
                                             }
                                             "image" -> uploadTask =
-                                                storageReference.putFile(imageUri)
+                                                storageReference.putFile(imageUri, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                })
                                             "document" -> uploadTask =
-                                                storageReference.putFile(documentUri)
+                                                storageReference.putFile(documentUri, storageMetadata {
+                                                    setCustomMetadata("file_type", attachmentType)
+                                                    setCustomMetadata("file_name", getFileName(documentUri))
+                                                })
                                         }
                                         uploadTask
                                             .addOnSuccessListener {

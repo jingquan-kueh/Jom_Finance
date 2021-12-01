@@ -80,6 +80,13 @@ class HomeActivity : AppCompatActivity() {
             return@setOnNavigationItemReselectedListener}
 
 
+        val fragmentToLoad = intent?.extras?.getString("fragment_to_load")
+        if(fragmentToLoad == "budget"){
+            Toast.makeText(this, "$fragmentToLoad", Toast.LENGTH_SHORT).show()
+            bottomNav.selectedItemId = R.id.budget_fragment
+        }
+
+
         fab_add.setOnClickListener{
             onAddButtonClicked()
             statusAddOn = !statusAddOn

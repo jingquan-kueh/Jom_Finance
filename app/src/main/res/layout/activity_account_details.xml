@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,9 +12,11 @@
         android:id="@+id/toolbar_AccountDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme">
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/backBtn_AccountDetail"
@@ -22,8 +24,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/back_arrow_white"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         <TextView
             android:id="@+id/heading_AccountDetail"
@@ -44,8 +46,8 @@
             android:layout_marginRight="16dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/trash"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -54,6 +56,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#4CD964"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_AccountDetail"
         tools:context=".MainActivity">
 
         <ImageView
@@ -105,9 +110,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accountDetails_bg">
 
         <TextView
             android:id="@+id/transactionsTitle_text"
@@ -117,7 +127,8 @@
             android:layout_weight="1"
             android:text="Transactions"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/viewmore_text"
@@ -129,18 +140,45 @@
             android:textAlignment="textEnd" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.mlsdev.animatedrv.AnimatedRecyclerView
+                android:id="@+id/accountDetail_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="400dp"
+                android:scrollbars="vertical"
+                app:animationDuration="600"
+                app:layoutAnimation="@anim/layout_animation_from_bottom"
+                app:layoutManagerOrientation="vertical"
+                app:layoutManagerReverse="false"
+                app:layoutManagerType="linear">
+
+            </com.mlsdev.animatedrv.AnimatedRecyclerView>
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <Button
         android:id="@+id/editAccount_btn"
         style="@style/long_button"
+        android:layout_marginBottom="20dp"
         android:text="Edit"
         app:backgroundTint="@color/iris"
-        app:cornerRadius="10dp" />
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
