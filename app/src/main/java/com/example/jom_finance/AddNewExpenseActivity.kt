@@ -138,13 +138,20 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             minute = timeArray[1].toInt()
 
             savedDay = String.format("%02d", day)
-            savedMonth = String.format("%02d", month + 1)
+            savedMonth = String.format("%02d", month)
             savedYear = year.toString()
             savedHour = String.format("%02d", hour)
             savedMinute = String.format("%02d", minute)
             expenseDate_edit.text = Editable.Factory.getInstance().newEditable("$date")
             expenseTime_edit.text = Editable.Factory.getInstance().newEditable("$savedHour:$savedMinute")
             timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+
+            createNotificationChannel()
+            expenseConfirm_btn.setOnClickListener {
+                if (expenseValidate())
+                    updateExpense()
+
+            }
 
             if (transactionAttachment) {
                 expenseAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_red_24,
@@ -154,22 +161,20 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                 expenseAddAttachment_btn.setTextColor(Color.parseColor("#FD3C4A"))
                 expenseAddAttachment_btn.text = "Remove Attachment"
 
-                val fileType = intent?.extras?.getString("attachmentType").toString()
+                attachmentType = intent?.extras?.getString("attachmentType").toString()
                 val filePath = intent?.extras?.getString("attachmentPath").toString()
 
-                if(fileType == "document"){
+                if(attachmentType == "document"){
                     attachmentDocument_txt.isVisible = true
                     val fileName = intent?.extras?.getString("attachmentName").toString()
                     attachmentDocument_txt.text = fileName
                     attachmentDocument_txt.setOnClickListener {
-                        val uri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", File(filePath))
+                        documentUri = FileProvider.getUriForFile(this, this.applicationContext.packageName+".fileprovider", File(filePath))
                         val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = uri
+                        intent.data = documentUri
                         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                         startActivity(intent)
                     }
-
-
                 }
                 else{
                     attachment_img.isVisible = true
@@ -499,6 +504,186 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         } catch (e: Exception) {
             Log.w(ContentValues.TAG, "Error adding document", e)
         }
+    }
+
+    private fun updateExpense(){
+
+        val newAmount = expenseAmount_edit.text.toString().toDouble()
+        val newCategory = expenseCategory_ddl.editText?.text.toString()
+        val newAccount = expenseAccount_ddl.editText?.text.toString()
+        transactionDescription = expenseDescription_outlinedTextField.editText?.text.toString()
+
+        timestampString = "$savedDay-$savedMonth-$savedYear $savedHour:$savedMinute"
+        val sdf = SimpleDateFormat("dd-MM-yyyy hh:mm")
+        val date: Date = sdf.parse(timestampString)
+
+        transactionTimestamp = Timestamp(date)
+
+
+        //Set Transaction Pathway
+        var documentReference = fStore.collection("transaction/$userID/Transaction_detail").document(transactionID)
+
+        //transaction details
+        val transactionDetails = Transaction(transactionID, newAmount, newAccount, transactionAttachment, newCategory, transactionDescription, TRANSACTION_TYPE, transactionTimestamp)
+
+        documentReference.set(transactionDetails).addOnSuccessListener {
+            //store attachment if necessary
+/*            if (transactionAttachment) {
+                progressLayout.visibility = View.VISIBLE
+                val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/$transactionID")
+                lateinit var uploadTask: UploadTask
+
+                when (attachmentType) {
+                    "camera" -> {
+                        val baos = ByteArrayOutputStream()
+                        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                        val data = baos.toByteArray()
+                        uploadTask = storageReference.putBytes(data, storageMetadata {
+                            setCustomMetadata("file_type", attachmentType)
+                        })
+                    }
+                    "image" -> uploadTask =
+                        storageReference.putFile(imageUri, storageMetadata {
+                            setCustomMetadata("file_type", attachmentType)
+                        })
+                    "document" -> uploadTask =
+                        storageReference.putFile(documentUri, storageMetadata {
+                            setCustomMetadata("file_type", attachmentType)
+                            setCustomMetadata("file_name", getFileName(documentUri))
+                        })
+                }
+
+                uploadTask
+                    .addOnSuccessListener {
+                        progressLayout.visibility = View.GONE
+                        Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+            }*/
+
+            if(newCategory != transactionCategory || newAmount != transactionAmount){
+
+                val monthHashMap: HashMap<Int, String> = hashMapOf(
+                    1 to "January",
+                    2 to "February",
+                    3 to "March",
+                    4 to "April",
+                    5 to "May",
+                    6 to "June",
+                    7 to "July",
+                    8 to "August",
+                    9 to "September",
+                    10 to "October",
+                    11 to "November",
+                    12 to "December"
+                )
+
+                val budgetMonth = savedMonth.toInt()
+                val budgetDate = monthHashMap[budgetMonth] + " $savedYear"
+                val budgetRef = fStore.collection("budget/$userID/budget_detail")
+
+                //minus old amount in old budget
+                budgetRef
+                    .whereEqualTo("budget_date", budgetDate)
+                    .whereEqualTo("budget_category", transactionCategory)
+                    .get()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "$budgetMonth", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, transactionCategory, Toast.LENGTH_SHORT).show()
+                        for (document in it.documents)
+                            if (document.exists()) {
+
+                                val budgetID = document.getString("budget_id")!!
+                                var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
+                                budgetSpent -= transactionAmount
+                                budgetRef.document(budgetID)
+                                    .update("budget_spent", budgetSpent)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else
+                                Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
+                    }
+
+                //add new amount in new budget
+                budgetRef
+                    .whereEqualTo("budget_date", budgetDate)
+                    .whereEqualTo("budget_category", newCategory)
+                    .get()
+                    .addOnSuccessListener {
+                        for (document in it.documents)
+                            if (document.exists()) {
+                                val budgetID = document.getString("budget_id")!!
+                                var budgetSpent = document.data?.getValue("budget_spent").toString().toDouble()
+                                budgetSpent += transactionAmount
+                                budgetRef.document(budgetID)
+                                    .update("budget_spent", budgetSpent)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                val budgetAlert = document.data?.getValue("budget_alert").toString().toBoolean()
+                                if(budgetAlert){
+                                    Toast.makeText(this, "has alert", Toast.LENGTH_SHORT).show()
+                                    val budgetAmount = document.data?.getValue("budget_amount").toString().toDouble()
+                                    val budgetAlertPercentage = document.data?.getValue("budget_alert_percentage").toString().toInt()
+                                    val budgetAlertAmount = budgetAmount * budgetAlertPercentage/100
+                                    if(budgetSpent > budgetAlertAmount){
+                                        Toast.makeText(this, "exceeded alert amount", Toast.LENGTH_SHORT).show()
+                                        sendBudgetExceededNotification(budgetAlertPercentage, transactionCategory, budgetDate)
+                                    }
+                                }
+
+                            } else
+                                Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            if(newAccount != transactionAccount || newAmount != transactionAmount){
+
+                val accountRef = fStore.collection("accounts/$userID/account_detail")
+
+                //add old expense amount in old account
+                accountRef.document(transactionAccount)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            var accountAmount = document.data?.getValue("account_amount").toString().toDouble()
+                            accountAmount += transactionAmount
+                            accountRef.document(transactionAccount)
+                                .update("account_amount", accountAmount)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Updated account", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                    }
+
+                //minus new expense amount in new account
+                accountRef.document(newAccount)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            var accountAmount = document.data?.getValue("account_amount").toString().toDouble()
+                            accountAmount -= transactionAmount
+                            accountRef.document(newAccount)
+                                .update("account_amount", accountAmount)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Updated account", Toast.LENGTH_SHORT).show()
+                                    if (newAmount != transactionAmount)
+                                        updateTotalAccountAmount()
+                                }
+                        }
+                    }
+
+            }
+        }
+
+
+
+
     }
 
     private fun updateBudget() {

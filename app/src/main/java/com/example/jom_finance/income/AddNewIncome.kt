@@ -139,7 +139,7 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             minute = timeArray[1].toInt()
 
             savedDay = String.format("%02d", day)
-            savedMonth = String.format("%02d", month + 1)
+            savedMonth = String.format("%02d", month)
             savedYear = year.toString()
             savedHour = String.format("%02d", hour)
             savedMinute = String.format("%02d", minute)
