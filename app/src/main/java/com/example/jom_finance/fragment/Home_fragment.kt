@@ -189,4 +189,5 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             }
         }
     }
+
 }
