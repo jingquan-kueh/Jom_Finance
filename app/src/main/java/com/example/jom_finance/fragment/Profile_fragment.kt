@@ -44,38 +44,6 @@ class Profile_fragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDataBase()
-        val documentReference = fStore.collection("users").document(userID)
-        documentReference.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    usernamePlaceHolder.text = document.getString("username")
-                }
-            }
-       /* val progressDialog = ProgressDialog(this.context)
-        progressDialog.setMessage("Fetching image...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()*/
-        val storageReference = FirebaseStorage.getInstance()
-            .getReference("user/$userID")
-
-        val localFile = File.createTempFile("tempImage", "jpg")
-        storageReference.getFile(localFile).addOnSuccessListener {
-           /* if (progressDialog.isShowing)
-                progressDialog.dismiss()*/
-
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            profileCircleImageView.setImageBitmap(bitmap)
-        }.addOnFailureListener{
-            val storageReference = FirebaseStorage.getInstance()
-                .getReference("user/sample-user.png")
-            storageReference.getFile(localFile).addOnSuccessListener {
-               /* if (progressDialog.isShowing)
-                    progressDialog.dismiss()*/
-
-                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-                profileCircleImageView.setImageBitmap(bitmap)
-            }
-        }
     }
 
     override fun onCreateView(
@@ -83,6 +51,32 @@ class Profile_fragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_profile_fragment, container, false)
+
+        val documentReference = fStore.collection("users").document(userID)
+        documentReference.get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    view.usernamePlaceHolder.text = document.getString("username")
+                }
+            }
+
+        val storageReference = FirebaseStorage.getInstance()
+            .getReference("user/$userID")
+
+        val localFile = File.createTempFile("tempImage", "jpg")
+        storageReference.getFile(localFile)
+            .addOnSuccessListener {
+                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                view.profileCircleImageView.setImageBitmap(bitmap)
+            }
+            .addOnFailureListener {
+                val storageReference = FirebaseStorage.getInstance()
+                    .getReference("user/sample-user.png")
+                storageReference.getFile(localFile).addOnSuccessListener {
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                    view.profileCircleImageView.setImageBitmap(bitmap)
+                }
+            }
 
         view.profileCircleImageView.setOnClickListener {
             val openGalleryIntent =
