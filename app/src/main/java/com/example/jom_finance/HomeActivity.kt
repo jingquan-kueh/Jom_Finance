@@ -84,7 +84,10 @@ class HomeActivity : AppCompatActivity() {
         if(fragmentToLoad == "budget"){
             Toast.makeText(this, "$fragmentToLoad", Toast.LENGTH_SHORT).show()
             bottomNav.selectedItemId = R.id.budget_fragment
+        }else if(fragmentToLoad == "viewMore"){
+            bottomNav.selectedItemId = R.id.transaction_fragment
         }
+
 
 
         fab_add.setOnClickListener{

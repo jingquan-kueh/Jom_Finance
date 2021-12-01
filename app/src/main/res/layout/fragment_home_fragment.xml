@@ -241,15 +241,16 @@
                 android:layout_weight="1">
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/seeAllBtn"
                     android:layout_width="78dp"
                     android:layout_height="32dp"
                     android:background="@drawable/rounded_corner"
                     android:backgroundTint="#EEE5FF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
                     android:gravity="center"
                     android:text="See All"
-                    android:textColor="#5D5FEF">
+                    android:textColor="#5D5FEF"
+                    android:textSize="14sp"
+                    android:textStyle="bold">
 
                 </androidx.appcompat.widget.AppCompatButton>
             </RelativeLayout>

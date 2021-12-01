@@ -39,8 +39,6 @@ class LoginActivity :AppCompatActivity(){
                     // Initialize sharedPreferences to edit
                     val editor: SharedPreferences.Editor = sharedPreferences.edit()
                     editor.putBoolean("isLogin",true).apply()
-
-                    Toast.makeText(this,"Welcome User !!!", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, HomeActivity::class.java)
                     startActivity(intent)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

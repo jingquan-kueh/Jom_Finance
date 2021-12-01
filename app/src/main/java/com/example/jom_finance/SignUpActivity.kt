@@ -35,8 +35,8 @@ class SignUpActivity : AppCompatActivity(){
         setContentView(R.layout.activity_sign_up)
         setupDataBase()
         btn_Sign_Google.setOnClickListener{
-            googleSetup()
-            googleSignIn()
+            //googleSetup()
+            //googleSignIn()
         }
 
         /*https://android--code.blogspot.com/2020/02/android-kotlin-ktx-clickablespan-example.html for the T&C spanable*/
@@ -165,14 +165,15 @@ class SignUpActivity : AppCompatActivity(){
 
     private fun googleSetup() {
         // Configure Google Sign In
-/*        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         // Initialize Firebase Auth
-        auth = Firebase.auth*/
+        auth = Firebase.auth
     }
 
     private fun googleSignIn() {
@@ -189,7 +190,7 @@ class SignUpActivity : AppCompatActivity(){
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
-                Log.d(SignUpActivity.TAG, "firebaseAuthWithGoogle:" + account.id)
+                Log.d("Account", "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -199,6 +200,7 @@ class SignUpActivity : AppCompatActivity(){
     }
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
+
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -219,6 +221,53 @@ class SignUpActivity : AppCompatActivity(){
     private fun updateUI(user: Any?) {
         if(user!=null){
             Toast.makeText(this,"Login Successful", Toast.LENGTH_SHORT).show()
+            val currentUser = fAuth.currentUser
+            if (currentUser != null) {
+                userID = currentUser.uid
+            }
+            var documentReference = fStore.collection("users").document(userID)
+            val userInfo = User(currentUser?.email.toString(),currentUser?.displayName)
+            documentReference.set(userInfo).addOnSuccessListener {
+                //Name,icon,Color
+                //food,transport,shopping
+                documentReference = fStore.collection("transaction").document(userID)
+                var initialData = HashMap<String,Int>()
+                initialData.put("Income",0)
+                initialData.put("Expense",0)
+                initialData.put("Transaction_counter",0)
+                documentReference.set(initialData).addOnFailureListener{
+                    Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                }.addOnSuccessListener {
+                    documentReference = fStore.collection("accounts").document(userID)
+                    var initialAccount = HashMap<String,Int>()
+                    initialAccount.put("Total",0)
+                    documentReference.set(initialAccount).addOnFailureListener{
+                        Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                    documentReference = fStore.collection("budget").document(userID)
+                    var initialbudget = HashMap<String,Int>()
+                    initialbudget.put("Budget_counter",0)
+                    documentReference.set(initialbudget).addOnFailureListener{
+                        Toast.makeText(this,it.message.toString(), Toast.LENGTH_SHORT).show()
+                    }
+
+                    var categoryNameArray = arrayOf("Food", "Transport", "Shopping")
+                    var categoryIconArray = arrayOf(452,384,258)
+                    var categoryColorArray = arrayOf(-278483,-10044566,-12627531)
+                    var defaultCategory : Category
+                    for(i in 0..2){
+                        documentReference = fStore.collection("category/$userID/category_detail").document(categoryNameArray[i])
+                        defaultCategory = Category(categoryNameArray[i],categoryIconArray[i],categoryColorArray[i])
+                        documentReference.set(defaultCategory)
+                    }
+                    /*// TODO : Direct Login
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    Toast.makeText(this,"User Account Created", Toast.LENGTH_SHORT).show()*/
+                }
+            }
+
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jom_finance.ExpenseDetailActivity
+import com.example.jom_finance.HomeActivity
 
 import com.example.jom_finance.R
 import com.example.jom_finance.databinding.TransactionListAdapter
@@ -51,7 +52,22 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
         setUpdb()
         readDB()
         val view : View = inflater.inflate(R.layout.fragment_home_fragment, container, false)
-
+        db.collection("transaction").document(userID).get().addOnCompleteListener{
+            val income_amount : Double = it.result["Income"].toString().toDouble()
+            val expense_amount : Double = it.result["Expense"].toString().toDouble()
+            view.home_income_amount.text = String.format("RM %.2f",income_amount)
+            view.home_expenses_amount.text =String.format("RM %.2f",expense_amount)
+        }
+        db.collection("accounts").document(userID)
+            .get()
+            .addOnCompleteListener{ value ->
+                val accountTotal : Double = value.result["Total"].toString().toDouble()
+                val balance_amount : Double = accountTotal
+                if(balance_amount<0.0){
+                    view.home_balance.setTextColor(Color.RED)
+                }
+                view.home_balance.text = String.format("RM %.2f",balance_amount)
+            }
         val storageReference = FirebaseStorage.getInstance()
             .getReference("user/$userID")
 
@@ -68,6 +84,14 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
             }
         }
 
+        view.seeAllBtn.setOnClickListener{
+            requireActivity().run {
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("fragment_to_load","viewMore")
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        }
 
         recyclerView = view.home_recyclerView
         recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -86,24 +110,6 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
     @SuppressLint("SetTextI18n")
     private fun readDB() {
         db = FirebaseFirestore.getInstance()
-        db.collection("transaction").document(userID).get().addOnCompleteListener{
-            val income_amount : Double = it.result["Income"].toString().toDouble()
-            val expense_amount : Double = it.result["Expense"].toString().toDouble()
-            home_income_amount.text = String.format("RM %.2f",income_amount)
-            home_expenses_amount.text =String.format("RM %.2f",expense_amount)
-        }
-        db.collection("accounts").document(userID)
-            .get()
-            .addOnCompleteListener{ value ->
-                val accountTotal : Double = value.result["Total"].toString().toDouble()
-                val balance_amount : Double = accountTotal
-                if(balance_amount<0.0){
-                    home_balance.setTextColor(Color.RED)
-                }
-                home_balance.text = String.format("RM %.2f",balance_amount)
-            }.addOnFailureListener{
-
-            }
     }
 
     private fun EventChangeListener() {

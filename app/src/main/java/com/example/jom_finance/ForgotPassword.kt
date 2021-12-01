@@ -53,8 +53,8 @@ class ForgotPassword : AppCompatActivity() {
     private fun setupDataBase(){
         fAuth = FirebaseAuth.getInstance()
         fStore = FirebaseFirestore.getInstance()
-        currentUser = fAuth.currentUser!!
-        userID = currentUser.uid
+        //currentUser = fAuth.currentUser!!
+        //userID = currentUser.uid
 
     }
 
