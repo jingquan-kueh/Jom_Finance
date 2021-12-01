@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.jom_finance.databinding.TransactionListAdapter
+import com.example.jom_finance.income.DetailIncome
 import com.example.jom_finance.models.Account
 import com.example.jom_finance.models.Category
 import com.example.jom_finance.models.Transaction
@@ -24,6 +25,7 @@ import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import com.mlsdev.animatedrv.AnimatedRecyclerView
 import kotlinx.android.synthetic.main.activity_account_details.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.view.*
+import java.text.SimpleDateFormat
 
 class AccountDetailsActivity : AppCompatActivity(), TransactionListAdapter.OnItemClickListener {
 
@@ -210,6 +212,40 @@ class AccountDetailsActivity : AppCompatActivity(), TransactionListAdapter.OnIte
     }
 
     override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+        val item = transactionArrayList[position]
+        val type = item.transactionType
+        val dateFormatName = SimpleDateFormat("dd MMMM yyyy")
+        val dateFormatNum = SimpleDateFormat("dd-MM-yyyy")
+        val timeFormat = SimpleDateFormat("hh:mm")
+        val date = item.transactionTime?.toDate()
+        if (type == "income") {
+            val intent = Intent(this, DetailIncome::class.java)
+            intent.putExtra("transactionName", item.transactionName)
+            intent.putExtra("transactionName", item.transactionName)
+            intent.putExtra("transactionAmount", item.transactionAmount)
+            intent.putExtra("transactionCategory", item.transactionCategory)
+            intent.putExtra("transactionAccount", item.transactionAccount)
+            intent.putExtra("transactionDescription", item.transactionDescription)
+            intent.putExtra("transactionAttachment", item.transactionAttachment)
+            intent.putExtra("transactionDateName", dateFormatName.format(date))
+            intent.putExtra("transactionDateNum", dateFormatNum.format(date))
+            intent.putExtra("transactionTime", timeFormat.format(date))
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        } else {
+            val intent = Intent(this, ExpenseDetailActivity::class.java)
+            intent.putExtra("transactionName", item.transactionName)
+            intent.putExtra("transactionAmount", item.transactionAmount)
+            intent.putExtra("transactionCategory", item.transactionCategory)
+            intent.putExtra("transactionAccount", item.transactionAccount)
+            intent.putExtra("transactionDescription", item.transactionDescription)
+            intent.putExtra("transactionAttachment", item.transactionAttachment)
+            intent.putExtra("transactionDateName", dateFormatName.format(date))
+            intent.putExtra("transactionDateNum", dateFormatNum.format(date))
+            intent.putExtra("transactionTime", timeFormat.format(date))
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
     }
+
 }
