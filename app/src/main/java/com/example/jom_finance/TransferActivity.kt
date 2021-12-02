@@ -31,18 +31,7 @@ private var transferAmount : Double = 0.0
 private lateinit var transferFrom : String
 private lateinit var transferTo : String
 private lateinit var transferDescription : String
-private  var transactionAttachment: Boolean = false
 
-private const val IMAGE_REQUEST_CODE = 100
-private const val CAMERA_REQUEST_CODE = 42
-private const val DOCUMENT_REQUEST_CODE = 111
-
-private lateinit var attachmentType: String
-private const val FILE_NAME = "photo.jpg" //temporary file name
-private lateinit var photoFile: File
-private lateinit var imageUri : Uri
-private lateinit var imageBitmap: Bitmap
-private lateinit var documentUri : Uri
 
 class TransferActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,25 +52,6 @@ class TransferActivity : AppCompatActivity() {
         transferFrom_autoCompleteTextView.setAdapter(accAdapter)
         transferTo_autoCompleteTextView.setAdapter(accAdapter)
 
-        //hide attachment image and doc
-        transferAttachment_img.visibility = View.GONE
-        transferAttachmentDocument_txt.visibility = View.GONE
-
-
-
-        transferAddAttachment_btn.setOnClickListener {
-            if(transferAttachment_img.visibility == View.GONE && transferAttachmentDocument_txt.visibility == View.GONE)
-                openAttachmentBottomSheetDialog()
-            else{
-                transferAttachment_img.visibility = View.GONE
-                transferAttachmentDocument_txt.visibility = View.GONE
-                transferAddAttachment_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_attachment_24, 0, 0, 0)
-                transferAddAttachment_btn.setTextColor(Color.parseColor("#91919F"))
-                transferAddAttachment_btn.text = "Add Attachment"
-                transactionAttachment = false
-
-            }
-        }
 
         transferConfirm_btn.setOnClickListener {
             transfer()
@@ -105,8 +75,6 @@ class TransferActivity : AppCompatActivity() {
         transferFrom = transferFrom_ddl.editText?.text.toString()
         transferTo = transferTo_ddl.editText?.text.toString()
         //transferDescription = transferDescription_outlinedTextField.editText?.text.toString()
-
-
 
         if(transferFrom != transferTo){
             accountRef.document(transferFrom)
@@ -148,55 +116,6 @@ class TransferActivity : AppCompatActivity() {
         }
 
 
-    }
-
-    private fun openAttachmentBottomSheetDialog(){
-        val bottomSheet = BottomSheetDialog(this)
-        bottomSheet.setContentView(R.layout.bottomsheet_attachment)
-
-        val camera = bottomSheet.findViewById<Button>(R.id.attachementCamera_btn) as Button
-        val image = bottomSheet.findViewById<Button>(R.id.attachementImage_btn) as Button
-        val document = bottomSheet.findViewById<Button>(R.id.attachementDocument_btn) as Button
-
-
-        camera.setOnClickListener {
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-            photoFile = getPhotoFile(FILE_NAME)
-
-            val fileProvider = FileProvider.getUriForFile(this,"com.example.jom_finance.fileprovider", photoFile)
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-
-
-            if(takePictureIntent.resolveActivity(this.packageManager) != null)
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
-            else
-                Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show()
-            bottomSheet.dismiss()
-        }
-
-        image.setOnClickListener {
-            //open image picker
-            val pickImageIntent = Intent(Intent.ACTION_PICK)
-            pickImageIntent.type = "image/*"
-            startActivityForResult(pickImageIntent, IMAGE_REQUEST_CODE)
-            bottomSheet.dismiss()
-        }
-
-        document.setOnClickListener {
-            //open document picker
-            val pickDocumentIntent = Intent(Intent.ACTION_GET_CONTENT)
-            pickDocumentIntent.type = "application/pdf"
-            startActivityForResult(Intent.createChooser(pickDocumentIntent, "Select a document"), DOCUMENT_REQUEST_CODE)
-            bottomSheet.dismiss()
-        }
-
-        bottomSheet.show()
-    }
-
-    private fun getPhotoFile(fileName: String): File{
-        val storageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(fileName, "jpg", storageDirectory)
     }
 
 }

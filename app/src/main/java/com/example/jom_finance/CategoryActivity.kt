@@ -103,6 +103,10 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             iconDialog.show(supportFragmentManager, CategoryActivity.ICON_DIALOG_TAG)
         }
 
+        backBtn_Category.setOnClickListener {
+            finish()
+        }
+
         //Open Color dialog
         categoryColour_btn.setOnClickListener {
             val colors = intArrayOf(

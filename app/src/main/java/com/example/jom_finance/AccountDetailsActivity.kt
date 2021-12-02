@@ -103,12 +103,19 @@ class AccountDetailsActivity : AppCompatActivity(), TransactionListAdapter.OnIte
             setFavourite()
         }
 
+        backBtn_AccountDetail.setOnClickListener {
+            val intent = Intent(this, AccountsListActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+
     }
 
     private fun EventChangeListener() {
         // TODO : Set Descending Order and Limit few recent transactions
         fStore.collection("transaction/$userID/Transaction_detail")
             .whereEqualTo("Transaction_account", accountName)
+            .orderBy("Transaction_timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){

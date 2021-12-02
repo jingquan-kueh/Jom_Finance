@@ -82,10 +82,11 @@ class HomeActivity : AppCompatActivity() {
 
         val fragmentToLoad = intent?.extras?.getString("fragment_to_load")
         if(fragmentToLoad == "budget"){
-            Toast.makeText(this, "$fragmentToLoad", Toast.LENGTH_SHORT).show()
             bottomNav.selectedItemId = R.id.budget_fragment
         }else if(fragmentToLoad == "viewMore"){
             bottomNav.selectedItemId = R.id.transaction_fragment
+        }else if (fragmentToLoad == "profile"){
+            bottomNav.selectedItemId = R.id.profile_fragment
         }
 
 

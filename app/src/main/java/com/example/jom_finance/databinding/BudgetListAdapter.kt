@@ -56,7 +56,7 @@ class BudgetListAdapter (
         }
 
 
-        holder.details.text = "RM$budgetSpentText of RM$budgetAmountText"
+        holder.details.text = "Spent RM$budgetSpentText of RM$budgetAmountText"
 
         if(budgetSpent < budgetAmount){
             holder.exceededImage.visibility = View.GONE

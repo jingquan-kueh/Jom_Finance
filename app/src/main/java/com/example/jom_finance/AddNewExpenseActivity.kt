@@ -8,6 +8,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.core.app.NotificationCompat
@@ -120,7 +122,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             transactionDescription = intent?.extras?.getString("transactionDescription").toString()
             transactionAttachment = intent?.extras?.getBoolean("transactionAttachment")!!
 
-            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(transactionAmount.toString())
+            expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(String.format("%.2f", transactionAmount))
             expenseCategory_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionCategory)
             expenseAccount_ddl.editText?.text = Editable.Factory.getInstance().newEditable(transactionAccount)
             expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(transactionDescription)
@@ -259,8 +261,9 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             Toast.makeText(this, imagePath, Toast.LENGTH_SHORT).show()
 
             val image = BitmapFactory.decodeFile(imagePath)
-            imageBitmap = image
-            attachment_img.setImageBitmap(image)
+            val bitmap = image.rotate(90f)
+            imageBitmap = bitmap
+            attachment_img.setImageBitmap(bitmap)
             transactionAttachment = true
             attachmentType = "camera"
 
@@ -269,7 +272,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
             //create InputImage object from Bitmap
-            val inputImage = InputImage.fromBitmap(image, 90)
+            val inputImage = InputImage.fromBitmap(bitmap, 0)
 
             var elementArr: ArrayList<String> = arrayListOf()
             //process the image
@@ -297,7 +300,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                             if (total > 1.0)
                                                 expenseAmount_edit.text =
                                                     Editable.Factory.getInstance()
-                                                        .newEditable(total.toString())
+                                                        .newEditable(String.format("%.2f", total))
                                         }
                                     } catch (e: Exception) {
 
@@ -479,7 +482,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                     }
 
                                     // Popout Msg
-                                    /*val resetView =
+                                    val resetView =
                                         LayoutInflater.from(this)
                                             .inflate(R.layout.activity_popup, null)
                                     val resetViewBuilder =
@@ -492,7 +495,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                         overridePendingTransition(R.anim.slide_in_right,
                                             R.anim.slide_out_left)
                                         finishAffinity()
-                                    }*/
+                                    }
 
                                 }
 
@@ -767,7 +770,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_baseline_error_red_24)
             .setContentTitle("Budget Alert!")
             .setContentText("You've exceeded $percentage% of your budget for $category, $date")
             .setContentIntent(pendingIntent)
@@ -851,6 +854,11 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         }
     }
 
+    fun Bitmap.rotate(degrees: Float): Bitmap {
+        val matrix = Matrix().apply { postRotate(degrees) }
+        return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+    }
+
     //After get attachment
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
@@ -865,11 +873,12 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-            imageBitmap = takenImage
+            val bitmap = takenImage.rotate(90f)
+            imageBitmap = bitmap
 
             // TODO: 5/11/2021 Image orientation
-            Toast.makeText(this, photoFile.absolutePath, Toast.LENGTH_SHORT).show()
-            attachment_img.setImageBitmap(takenImage)
+
+            attachment_img.setImageBitmap(bitmap)
 
             transactionAttachment = true
             attachmentType = "camera"

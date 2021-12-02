@@ -30,7 +30,10 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
         setContentView(R.layout.activity_accounts_list)
 
         backBtn_accounts.setOnClickListener {
-            finish()
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("fragment_to_load", "profile")
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
         setUpdb()
@@ -102,10 +105,10 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
         }
     }
 
-    override fun onBackPressed() {
+/*    override fun onBackPressed() {
         super.onBackPressed()
         finish()
-    }
+    }*/
 
     override fun finish() {
         super.finish()

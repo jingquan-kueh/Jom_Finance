@@ -41,6 +41,13 @@ class CategoryListActivity : AppCompatActivity(), CategoryListAdapter.OnItemClic
         recyclerView.adapter = categoryListAdapter
         EventChangeListener()
 
+        backBtn_categoryList.setOnClickListener{
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.putExtra("fragment_to_load", "profile")
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
+
     }
 
     private fun EventChangeListener() {

@@ -51,29 +51,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="50dp"
             android:text="How much?"
             android:textColor="@color/whitish_grey"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar_transfer" />
+            app:layout_constraintBottom_toTopOf="@+id/rmTransfer_text"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/rmTransfer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
             android:text="RM"
             android:textColor="@color/white"
             android:textSize="60sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/howMuchTransfer_text" />
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/transferAmount_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@null"
             android:ems="10"
             android:hint="0"
@@ -81,150 +82,119 @@
             android:textColor="@color/white"
             android:textColorHint="#FFFFFF"
             android:textSize="60sp"
-            app:layout_constraintStart_toEndOf="@+id/rmTransfer_text"
-            app:layout_constraintTop_toBottomOf="@+id/howMuchTransfer_text" />
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintStart_toEndOf="@+id/rmTransfer_text" />
 
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/scroll_rounded_corner"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rmTransfer_text">
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/transferFrom_ddl"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/transfer_img"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/transferFrom_ddl"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="15dp"
-                    app:boxCornerRadiusBottomEnd="15dp"
-                    app:boxCornerRadiusBottomStart="15dp"
-                    app:boxCornerRadiusTopEnd="15dp"
-                    app:boxCornerRadiusTopStart="15dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/transferFrom_autoCompleteTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="From"
-                        android:inputType="none" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:id="@+id/transfer_img"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/ic_baseline_swap_vert_24" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/transferTo_ddl"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    app:boxCornerRadiusBottomEnd="15dp"
-                    app:boxCornerRadiusBottomStart="15dp"
-                    app:boxCornerRadiusTopEnd="15dp"
-                    app:boxCornerRadiusTopStart="15dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/transferTo_autoCompleteTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:hint="To"
-                        android:inputType="none" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/transferDescription_outlinedTextField"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <AutoCompleteTextView
+                    android:id="@+id/transferFrom_autoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="15dp"
-                    android:hint="Description"
-                    app:boxCornerRadiusBottomEnd="15dp"
-                    app:boxCornerRadiusBottomStart="15dp"
-                    app:boxCornerRadiusTopEnd="15dp"
-                    app:boxCornerRadiusTopStart="15dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <Button
-                    android:id="@+id/transferAddAttachment_btn"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
-                    android:drawableLeft="@drawable/ic_baseline_attachment_24"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:text="Add Attachment"
-                    android:textAlignment="center"
-                    android:textColor="#91919F"
-                    app:backgroundTint="@android:color/transparent"
-                    app:cornerRadius="15dp" />
+                    android:hint="From"
+                    android:inputType="none" />
 
-                <TextView
-                    android:id="@+id/transferAttachmentDocument_txt"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/transfer_img"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/transferTo_ddl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/ic_baseline_swap_vert_24" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/transferTo_ddl"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/transferDescription_outlinedTextField"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/transferTo_autoCompleteTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/bg_budget_category"
-                    android:drawableLeft="@drawable/ic_baseline_insert_drive_file_red_24"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:text="TextView"
-                    android:textSize="16sp" />
+                    android:layout_weight="1"
+                    android:hint="To"
+                    android:inputType="none" />
 
-                <ImageView
-                    android:id="@+id/transferAttachment_img"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="15dp"
-                    app:srcCompat="@mipmap/ic_launcher" />
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/transferDescription_outlinedTextField"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="50dp"
+                android:hint="Description"
+                app:boxCornerRadiusBottomEnd="15dp"
+                app:boxCornerRadiusBottomStart="15dp"
+                app:boxCornerRadiusTopEnd="15dp"
+                app:boxCornerRadiusTopStart="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/transferConfirm_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <Button
-                    android:id="@+id/transferConfirm_btn"
-                    style="@style/long_button"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="Confirm"
-                    app:backgroundTint="@color/iris"
-                    app:cornerRadius="10dp" />
+                    android:layout_height="wrap_content" />
 
-            </LinearLayout>
-        </ScrollView>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/transferConfirm_btn"
+                style="@style/long_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="Confirm"
+                app:backgroundTint="@color/iris"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -46,25 +46,9 @@
 
         <View style="@style/profile_divider" />
 
-        <TextView
-            style="@style/Setting_Category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Expense"></TextView>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/category_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TextView
-            style="@style/Setting_Category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Income"></TextView>
-
-        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

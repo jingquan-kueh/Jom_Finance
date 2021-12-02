@@ -91,6 +91,13 @@ class BudgetDetailActivity : AppCompatActivity() {
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
+
+            backBtn_budgetDetail.setOnClickListener {
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("fragment_to_load", "budget")
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            }
         }
     }
 

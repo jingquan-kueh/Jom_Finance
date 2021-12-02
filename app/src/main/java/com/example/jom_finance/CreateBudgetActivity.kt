@@ -89,7 +89,7 @@ class CreateBudgetActivity : AppCompatActivity() {
 
             createBudgetConfirm_btn.text = "Update"
 
-            budgetAmount_edit.text = Editable.Factory.getInstance().newEditable(budgetAmount.toString())
+            budgetAmount_edit.text = Editable.Factory.getInstance().newEditable(String.format("%.2f", budgetAmount))
 
             budgetCategory_ddl.editText?.text = Editable.Factory.getInstance().newEditable(budgetCategory)
 
@@ -99,6 +99,10 @@ class CreateBudgetActivity : AppCompatActivity() {
 
             createBudgetConfirm_btn.setOnClickListener {
                 updateBudget()
+                val intent = Intent(this, HomeActivity::class.java)
+                intent.putExtra("fragment_to_load", "budget")
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
 
         }else{
@@ -119,6 +123,10 @@ class CreateBudgetActivity : AppCompatActivity() {
             }
         val adapter = ArrayAdapter(this, R.layout.item_dropdown, cat)
         budgetCategories_autoCompleteTextView.setAdapter(adapter)
+
+        backBtn_budget.setOnClickListener {
+            finish()
+        }
 
     }
 

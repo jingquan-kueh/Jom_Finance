@@ -114,8 +114,9 @@ class Home_fragment : Fragment(),TransactionListAdapter.OnItemClickListener{
 
     private fun EventChangeListener() {
         db = FirebaseFirestore.getInstance()
-        // TODO : Set Descending Order and Limit few recent transactions
         db.collection("transaction/$userID/Transaction_detail")
+            .orderBy("Transaction_timestamp", Query.Direction.DESCENDING)
+            .limit(8)
             .addSnapshotListener(object : EventListener<QuerySnapshot> {
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if(error!=null){

@@ -64,7 +64,7 @@ class ExpenseDetailActivity : AppCompatActivity() {
             time = intent.extras?.getString("transactionTime").toString()
 
             expenseTimeDetail_text.text = "$dateName | $time"
-            expenseAmountDetail_text.text = "RM $amount"
+            expenseAmountDetail_text.text = "RM " + String.format("%.2f", amount)
             expenseCategoryDetail_text.text = category
             expenseAccountDetail_text.text = account
             expenseDescriptionDetail_text.text = description

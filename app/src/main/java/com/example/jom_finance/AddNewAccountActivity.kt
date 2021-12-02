@@ -67,7 +67,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             heading_addNewAccount.text = "Update account"
             addNewAccountConfirm_btn.text = "Update"
 
-            balanceAmount_edit.text = Editable.Factory.getInstance().newEditable(accountAmount.toString())
+            balanceAmount_edit.text = Editable.Factory.getInstance().newEditable(String.format("%.2f", accountAmount))
 
             accountName_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(accountName)
 
@@ -102,7 +102,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             }
         }
-
 
         //Open Icon dialog
         accountIcon_img.setOnClickListener {
@@ -282,6 +281,10 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                 positiveButton(R.string.select)
                 negativeButton(R.string.cancel)
             }
+        }
+
+        backBtn_addNewAccount.setOnClickListener {
+            finish()
         }
 
     }
