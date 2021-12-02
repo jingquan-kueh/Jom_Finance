@@ -166,22 +166,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_sign_up" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/btn_Sign_Google"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="30dp"
-        android:layout_height="56dp"
+        android:paddingVertical="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:background="@drawable/google_sign_up"
-        android:drawableStart="@drawable/ic_google_icon"
+        app:cornerRadius="16dp"
+        android:drawableLeft="@drawable/ic_google_icon"
         android:text="Sign Up With Google"
         android:textSize="17dp"
-        android:paddingLeft="55dp"
-        android:drawablePadding="-50dp"
+        android:textAlignment="center"
         android:textColor="@color/black"
+        android:backgroundTint="#F1F1FA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+    </Button>
 
     <TextView
         android:id="@+id/txtToLogin"
