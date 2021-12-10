@@ -653,17 +653,14 @@ class Transaction_fragment : Fragment(), TransactionListAdapter.OnItemClickListe
         var query: Query = path
         var listCat = arrayListOf<String>()
         listCat.clear()
-        Log.d("selectionFilter", "IN")
 
         for (i in categoryCheckedHash) {
             if (i.value) {
                 listCat.add(i.key)
-                Log.d("listCat", listCat.last())
             }
         }
 
         if (isIncome) {
-            Log.d("selectionFilter", "IN income")
             if (!(isHighest || isLowest || isNewest || isOldest)) {
                 transactionArrayList.clear()
                 query.whereIn("Transaction_category", listCat)

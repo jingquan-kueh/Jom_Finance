@@ -240,7 +240,9 @@ class AddNewIncome : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             TimePickerDialog(this, this, hour, minute, true).show()
         }
 
-
+        backBtn.setOnClickListener{
+            finish()
+        }
 
         incomeAddAttachment_btn.setOnClickListener {
             if (attachment_img.visibility == View.GONE && attachmentDocument_txt.visibility == View.GONE) {
