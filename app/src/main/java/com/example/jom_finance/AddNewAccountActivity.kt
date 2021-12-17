@@ -16,6 +16,7 @@ import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
 import kotlinx.android.synthetic.main.activity_add_new_account.*
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Color.BLACK
 import android.text.Editable
 import android.util.Log
@@ -36,7 +37,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
     private lateinit var accountName: String
     private var accountAmount: Double = 0.0
     private var accountIcon: Int = 278
-    private var accountColor: Int = BLACK
+    private var accountColor: Int = -10657809
 
     private lateinit var accountArrayList : java.util.ArrayList<Account>
 
@@ -77,14 +78,17 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             setColor(accountColor)
 
             addNewAccountConfirm_btn.setOnClickListener {
-                updateAccount()
-                val intent = Intent(this, AccountDetailsActivity::class.java)
-                intent.putExtra("account_name", accountName)
-                intent.putExtra("account_amount", accountAmount)
-                intent.putExtra("account_icon", accountIcon)
-                intent.putExtra("account_color", accountColor)
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                if(accountValidate()){
+                    updateAccount()
+                    val intent = Intent(this, AccountDetailsActivity::class.java)
+                    intent.putExtra("account_name", accountName)
+                    intent.putExtra("account_amount", accountAmount)
+                    intent.putExtra("account_icon", accountIcon)
+                    intent.putExtra("account_color", accountColor)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                }
+
             }
 
         }else{
@@ -96,10 +100,13 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             accountColour_btn.setBackgroundColor(accountColour_btn.context.resources.getColor(R.color.iris))
 
             addNewAccountConfirm_btn.setOnClickListener {
-                addAccount()
-                val intent = Intent(this, AccountsListActivity::class.java)
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                if(accountValidate()){
+                    addAccount()
+                    val intent = Intent(this, AccountsListActivity::class.java)
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                }
+
             }
         }
 
@@ -109,6 +116,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         }
 
         //Open Color dialog
+
         accountColour_btn.setOnClickListener {
             val colors = intArrayOf(
                 ResourcesCompat.getColor(resources, R.color.red_500, null),
@@ -125,7 +133,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
                 ResourcesCompat.getColor(resources, R.color.grey_500, null),
                 ResourcesCompat.getColor(resources, R.color.blueGrey_500, null)
             )
-
             val subColors = arrayOf( // size = 3
                 intArrayOf(
                     ResourcesCompat.getColor(resources, R.color.red_100, null),
@@ -274,7 +281,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
             MaterialDialog(this).show {
                 title(R.string.colors)
-                colorChooser(colors, subColors = subColors) { dialog, color ->
+                colorChooser(colors, subColors) { dialog, color ->
                     setColor(color)
                     accountColor = color
                 }
@@ -287,6 +294,20 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
             finish()
         }
 
+    }
+
+    private fun accountValidate(): Boolean{
+        if(balanceAmount_edit.text.equals(0) || balanceAmount_edit.text.isNullOrBlank()){
+            balanceAmount_edit.requestFocus()
+            return false
+        }
+
+        if(accountName_outlinedTextField.editText?.text.isNullOrEmpty()){
+            accountName_outlinedTextField.editText?.requestFocus()
+            return false
+        }
+
+        return true
     }
 
     private fun addAccount(){
@@ -308,7 +329,7 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
                         //Insert to database
                         documentReference.set(accountDetail).addOnCompleteListener {
-                            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Account added successfully", Toast.LENGTH_SHORT).show()
                             updateTotalAccountAmount()
                         }
                     }
@@ -316,7 +337,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         } catch (e: Exception) {
             Log.w(TAG, "Error adding document", e)
         }
-
     }
 
     private fun updateAccount(){
@@ -343,7 +363,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
 
             //add new account
             addAccount()
-
         }
     }
 
@@ -394,7 +413,6 @@ class AddNewAccountActivity : AppCompatActivity(), IconDialog.Callback {
         val drawable = iconPack.getIconDrawable(id, IconDrawableLoader(this))
 
         accountIcon_img.setImageDrawable(drawable)
-        Toast.makeText(this, "Icons selected: ${icons.map { it.id }}", Toast.LENGTH_SHORT).show()
 
         accountIcon = id
     }

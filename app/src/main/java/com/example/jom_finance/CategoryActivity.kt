@@ -40,7 +40,7 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
     private var categoryID by Delegates.notNull<Int>()
     private lateinit var categoryName: String
     private var categoryIcon: Int = 278
-    private var categoryColor: Int = BLACK
+    private var categoryColor: Int = -10657809
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +76,8 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             setColor(categoryColor)
 
             categoryConfirm_btn.setOnClickListener {
-                updateCategory()
+                if(categoryValidate())
+                    updateCategory()
             }
 
             deleteCategory_btn.setOnClickListener {
@@ -94,7 +95,8 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
             deleteCategory_btn.visibility = View.GONE
 
             categoryConfirm_btn.setOnClickListener {
-                addCategory()
+                if(categoryValidate())
+                    addCategory()
             }
         }
 
@@ -124,7 +126,6 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
                 ResourcesCompat.getColor(resources, R.color.grey_500, null),
                 ResourcesCompat.getColor(resources, R.color.blueGrey_500, null)
             )
-
             val subColors = arrayOf( // size = 3
                 intArrayOf(
                     ResourcesCompat.getColor(resources, R.color.red_100, null),
@@ -283,6 +284,16 @@ class CategoryActivity : AppCompatActivity(), IconDialog.Callback{
         }
 
 
+    }
+
+    private fun categoryValidate(): Boolean{
+
+        if (categoryName_edit.text.equals(0) || categoryName_edit.text.isNullOrBlank()){
+            categoryName_edit.requestFocus()
+            return false
+        }
+
+        return true
     }
 
     private fun addCategory(){

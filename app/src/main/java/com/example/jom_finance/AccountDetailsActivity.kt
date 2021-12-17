@@ -171,7 +171,7 @@ class AccountDetailsActivity : AppCompatActivity(), TransactionListAdapter.OnIte
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Could not delete account : $it", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "$it", Toast.LENGTH_SHORT).show()
                 }
         }
 

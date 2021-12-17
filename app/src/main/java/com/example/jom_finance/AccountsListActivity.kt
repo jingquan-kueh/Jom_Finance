@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.jom_finance.databinding.AccountListAdapter
 import com.example.jom_finance.models.Account
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
+
 import kotlinx.android.synthetic.main.activity_accounts_list.*
 import kotlinx.android.synthetic.main.fragment_home_fragment.*
 
@@ -36,7 +38,7 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
-        setUpdb()
+        setupDatabase()
 
 
         db.collection("accounts").document(userID)
@@ -96,13 +98,12 @@ class AccountsListActivity : AppCompatActivity(), AccountListAdapter.OnItemClick
             })
     }
 
-    private fun setUpdb(){
+    private fun setupDatabase(){
         fAuth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         val currentUser = fAuth.currentUser
-        if (currentUser != null) {
+        if (currentUser != null)
             userID = currentUser.uid
-        }
     }
 
 /*    override fun onBackPressed() {

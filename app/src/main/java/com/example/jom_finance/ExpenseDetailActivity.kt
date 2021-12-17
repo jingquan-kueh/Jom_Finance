@@ -1,5 +1,6 @@
 package com.example.jom_finance
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.OpenableColumns
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -161,7 +163,19 @@ class ExpenseDetailActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     updateAccount()
                     updateBudget()
-                    finish()
+                    val resetView =
+                        LayoutInflater.from(this).inflate(R.layout.popup_remove_success, null)
+                    val resetViewBuilder =
+                        AlertDialog.Builder(this, R.style.CustomAlertDialog)
+                            .setView(resetView)
+                    val displayDialog = resetViewBuilder.show()
+                    displayDialog.setOnDismissListener {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left)
+                        finishAffinity()
+                    }
                 }
         }
 

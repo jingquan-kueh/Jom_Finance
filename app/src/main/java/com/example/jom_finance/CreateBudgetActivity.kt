@@ -98,17 +98,17 @@ class CreateBudgetActivity : AppCompatActivity() {
             seekBar.progress = budgetAlertPercentage
 
             createBudgetConfirm_btn.setOnClickListener {
-                updateBudget()
-                val intent = Intent(this, HomeActivity::class.java)
-                intent.putExtra("fragment_to_load", "budget")
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                if(budgetValidate())
+                    updateBudget()
             }
 
         }else{
             createBudgetConfirm_btn.setOnClickListener {
-                addBudget()
-                finish()
+                if(budgetValidate()){
+                    addBudget()
+                    finish()
+                }
+
             }
         }
 
@@ -130,10 +130,21 @@ class CreateBudgetActivity : AppCompatActivity() {
 
     }
 
+    private fun budgetValidate():Boolean{
+        if(budgetAmount_edit.text.equals(0) || budgetAmount_edit.text.isNullOrBlank()){
+            budgetAmount_edit.requestFocus()
+            return false
+        }
 
+        if(budgetCategories_autoCompleteTextView.text.isNullOrEmpty() || budgetCategories_autoCompleteTextView.text.isNullOrBlank()){
+            budgetCategories_autoCompleteTextView.requestFocus()
+            return false
+        }
+
+        return true
+    }
 
     private fun addBudget(){
-
         var lastBudget by Delegates.notNull<Int>()
         budgetCategory = budgetCategory_ddl.editText?.text.toString()
         budgetAmount = budgetAmount_edit.text.toString().toDouble()
@@ -148,7 +159,6 @@ class CreateBudgetActivity : AppCompatActivity() {
                 if(it.documents.isNotEmpty())
                     Toast.makeText(this, "This budget already exists!", Toast.LENGTH_SHORT).show()
                 else{
-                    //budget does not exist
                     //get amount spent for this category and month
                     budgetSpent = 0.0
                     fStore.collection("transaction/$userID/Transaction_detail")
@@ -220,6 +230,10 @@ class CreateBudgetActivity : AppCompatActivity() {
 
                                     documentReference.set(budgetDetail).addOnCompleteListener {
                                         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        intent.putExtra("fragment_to_load", "budget")
+                                        startActivity(intent)
+                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                                     }
 
                                 }
@@ -270,6 +284,10 @@ class CreateBudgetActivity : AppCompatActivity() {
 
                                         documentReference.set(budgetDetail).addOnCompleteListener {
                                             Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
+                                            val intent = Intent(this, HomeActivity::class.java)
+                                            intent.putExtra("fragment_to_load", "budget")
+                                            startActivity(intent)
+                                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
 
                                         }
                                     }

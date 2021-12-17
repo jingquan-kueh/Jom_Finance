@@ -52,11 +52,34 @@ class TransferActivity : AppCompatActivity() {
         transferFrom_autoCompleteTextView.setAdapter(accAdapter)
         transferTo_autoCompleteTextView.setAdapter(accAdapter)
 
-
-        transferConfirm_btn.setOnClickListener {
-            transfer()
+        backBtn_transfer.setOnClickListener {
+            finish()
         }
 
+        transferConfirm_btn.setOnClickListener {
+            if(transferValidate())
+                transfer()
+        }
+
+    }
+
+    private fun transferValidate(): Boolean{
+        if(transferAmount_edit.text.equals(0) || transferAmount_edit.text.isNullOrBlank()){
+            transferAmount_edit.requestFocus()
+            return false
+        }
+
+        if(transferFrom_autoCompleteTextView.text.isNullOrEmpty() || transferFrom_autoCompleteTextView.text.isNullOrBlank()){
+            transferFrom_autoCompleteTextView.requestFocus()
+            return false
+        }
+
+        if(transferTo_autoCompleteTextView.text.isNullOrEmpty() || transferTo_autoCompleteTextView.text.isNullOrBlank()){
+            transferTo_autoCompleteTextView.requestFocus()
+            return false
+        }
+
+        return true
     }
 
     private fun setupDataBase() {

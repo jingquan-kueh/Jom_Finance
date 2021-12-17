@@ -258,38 +258,29 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             expenseAddAttachment_btn.text = "Remove Attachment"
             attachment_img.visibility = View.VISIBLE
 
-            Toast.makeText(this, imagePath, Toast.LENGTH_SHORT).show()
-
             val image = BitmapFactory.decodeFile(imagePath)
             val bitmap = image.rotate(90f)
+
             imageBitmap = bitmap
             attachment_img.setImageBitmap(bitmap)
             transactionAttachment = true
             attachmentType = "camera"
 
-            //EXTRACT IMPORTANT TEXT
             //create instance of text recognizer
             val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
             //create InputImage object from Bitmap
             val inputImage = InputImage.fromBitmap(bitmap, 0)
 
-            var elementArr: ArrayList<String> = arrayListOf()
             //process the image
-            //store all elements in an array
-            val result = recognizer.process(inputImage)
+            recognizer.process(inputImage)
                 .addOnSuccessListener { visionText ->
-
                     //loop through all elements and find "total"
                     var foundTotal = false
-                    var temp: String = ""
                     for (block in visionText.textBlocks) {
-                        //val blockText = block.text
                         for (line in block.lines) {
-                            //val lineText = line.text
                             for (element in line.elements) {
                                 val elementText = element.text
-                                //elementArr.add(element.text)
                                 if (elementText.equals("total", true))
                                     foundTotal = true
 
@@ -297,29 +288,28 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                     try {
                                         if (elementText.contains(".")) {
                                             val total = elementText.toDouble()
-                                            if (total > 1.0)
-                                                expenseAmount_edit.text =
-                                                    Editable.Factory.getInstance()
-                                                        .newEditable(String.format("%.2f", total))
+                                            if (total > 0.0)
+                                                expenseAmount_edit.text = Editable.Factory.getInstance().newEditable(String.format("%.2f", total))
                                         }
                                     } catch (e: Exception) {
 
                                     }
                                 }
-                                temp += "$elementText | "
                             }
                         }
                     }
 
-                    val b = visionText.textBlocks
-                    val l = b[0].lines
-                    expenseDescription_outlinedTextField.editText?.text =
-                        Editable.Factory.getInstance().newEditable(l[0].text)
+                    //Description
+                    val blocks = visionText.textBlocks
+                    val linesOfFirstBlock = blocks[0].lines
+                    val firstLineOfBlock = linesOfFirstBlock[0].text
+                    expenseDescription_outlinedTextField.editText?.text = Editable.Factory.getInstance().newEditable(firstLineOfBlock)
 
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
                 }
+
         }
 
         expenseDate_edit.setOnClickListener {
@@ -432,47 +422,50 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                     transactionTimestamp)
 
                                 documentReference.set(transactionDetails).addOnSuccessListener {
-                                    //store attachment if necessary
-                                    if (transactionAttachment) {
 
-                                        progressLayout.visibility = View.VISIBLE
-                                        val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/transaction$newExpense")
-                                        lateinit var uploadTask: UploadTask
+    //store attachment if necessary
+    if (transactionAttachment) {
 
-                                        when (attachmentType) {
-                                            "camera" -> {
-                                                val baos = ByteArrayOutputStream()
-                                                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                                                val data = baos.toByteArray()
-                                                uploadTask = storageReference.putBytes(data, storageMetadata {
-                                                    setCustomMetadata("file_type", attachmentType)
-                                                })
-                                            }
-                                            "image" -> uploadTask =
-                                                storageReference.putFile(imageUri, storageMetadata {
-                                                    setCustomMetadata("file_type", attachmentType)
-                                                })
-                                            "document" -> uploadTask =
-                                                storageReference.putFile(documentUri, storageMetadata {
-                                                    setCustomMetadata("file_type", attachmentType)
-                                                    setCustomMetadata("file_name", getFileName(documentUri))
-                                                })
-                                        }
+         progressLayout.visibility = View.VISIBLE
+         val storageReference =
+             FirebaseStorage.getInstance().getReference("transaction_images/$userID/transaction$newExpense")
+         lateinit var uploadTask: UploadTask
 
-                                        uploadTask
-                                            .addOnSuccessListener {
-                                                progressLayout.visibility = View.GONE
-                                                updateAccount()
-                                                updateExpenseValue()
-                                                //Update Transaction counter
-                                                fStore.collection("transaction").document(userID)
-                                                    .update("Transaction_counter", lastExpense.inc())
-                                                Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
-                                            }
-                                            .addOnFailureListener {
-                                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
-                                                    .show()
-                                            }
+          when (attachmentType) {
+              "camera" -> {
+                  val baos = ByteArrayOutputStream()
+                  imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
+                  val data = baos.toByteArray()
+                  uploadTask = storageReference.putBytes(data, storageMetadata {
+                      setCustomMetadata("file_type", attachmentType)
+                  })
+              }
+              "image" ->
+                  uploadTask = storageReference.putFile(imageUri, storageMetadata {
+                      setCustomMetadata("file_type", attachmentType)
+                  })
+              "document" ->
+                  uploadTask = storageReference.putFile(documentUri, storageMetadata {
+                      setCustomMetadata("file_type", attachmentType)
+                      setCustomMetadata("file_name", getFileName(documentUri))
+                  })
+          }
+
+        uploadTask
+            .addOnSuccessListener {
+                progressLayout.visibility = View.GONE
+                updateAccount()
+                updateExpenseValue()
+                //Update Transaction counter
+                fStore.collection("transaction").document(userID)
+                    .update("Transaction_counter", lastExpense.inc())
+                Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
                                     }else{
                                         updateAccount()
                                         updateExpenseValue()
@@ -521,7 +514,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
         transactionTimestamp = Timestamp(date)
 
-
         //Set Transaction Pathway
         var documentReference = fStore.collection("transaction/$userID/Transaction_detail").document(transactionID)
 
@@ -529,43 +521,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         val transactionDetails = Transaction(transactionID, newAmount, newAccount, transactionAttachment, newCategory, transactionDescription, TRANSACTION_TYPE, transactionTimestamp)
 
         documentReference.set(transactionDetails).addOnSuccessListener {
-            //store attachment if necessary
-/*            if (transactionAttachment) {
-                progressLayout.visibility = View.VISIBLE
-                val storageReference = FirebaseStorage.getInstance().getReference("transaction_images/$userID/$transactionID")
-                lateinit var uploadTask: UploadTask
 
-                when (attachmentType) {
-                    "camera" -> {
-                        val baos = ByteArrayOutputStream()
-                        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
-                        val data = baos.toByteArray()
-                        uploadTask = storageReference.putBytes(data, storageMetadata {
-                            setCustomMetadata("file_type", attachmentType)
-                        })
-                    }
-                    "image" -> uploadTask =
-                        storageReference.putFile(imageUri, storageMetadata {
-                            setCustomMetadata("file_type", attachmentType)
-                        })
-                    "document" -> uploadTask =
-                        storageReference.putFile(documentUri, storageMetadata {
-                            setCustomMetadata("file_type", attachmentType)
-                            setCustomMetadata("file_name", getFileName(documentUri))
-                        })
-                }
-
-                uploadTask
-                    .addOnSuccessListener {
-                        progressLayout.visibility = View.GONE
-                        Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-            }*/
-
+            //check if category has changed
             if(newCategory != transactionCategory || newAmount != transactionAmount){
 
                 val monthHashMap: HashMap<Int, String> = hashMapOf(
@@ -593,8 +550,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                     .whereEqualTo("budget_category", transactionCategory)
                     .get()
                     .addOnSuccessListener {
-                        Toast.makeText(this, "$budgetMonth", Toast.LENGTH_SHORT).show()
-                        Toast.makeText(this, transactionCategory, Toast.LENGTH_SHORT).show()
                         for (document in it.documents)
                             if (document.exists()) {
 
@@ -604,7 +559,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                                 budgetRef.document(budgetID)
                                     .update("budget_spent", budgetSpent)
                                     .addOnSuccessListener {
-                                        Toast.makeText(this, "Updated budget", Toast.LENGTH_SHORT).show()
                                     }
                             } else
                                 Toast.makeText(this, "There is no budget for this category", Toast.LENGTH_SHORT).show()
@@ -629,7 +583,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
                                 val budgetAlert = document.data?.getValue("budget_alert").toString().toBoolean()
                                 if(budgetAlert){
-                                    Toast.makeText(this, "has alert", Toast.LENGTH_SHORT).show()
                                     val budgetAmount = document.data?.getValue("budget_amount").toString().toDouble()
                                     val budgetAlertPercentage = document.data?.getValue("budget_alert_percentage").toString().toInt()
                                     val budgetAlertAmount = budgetAmount * budgetAlertPercentage/100
@@ -658,7 +611,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                             accountRef.document(transactionAccount)
                                 .update("account_amount", accountAmount)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Updated account", Toast.LENGTH_SHORT).show()
                                 }
                         }
                     }
@@ -681,10 +633,18 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
                     }
 
             }
+            // Popout Msg
+            val resetView = LayoutInflater.from(this).inflate(R.layout.popup_update_success, null)
+            val resetViewBuilder = AlertDialog.Builder(this, R.style.CustomAlertDialog).setView(resetView)
+            val displayDialog = resetViewBuilder.show()
+            displayDialog.setOnDismissListener {
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                finishAffinity()
+            }
+
         }
-
-
-
 
     }
 
@@ -726,7 +686,6 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
                         val budgetAlert = document.data?.getValue("budget_alert").toString().toBoolean()
                         if(budgetAlert){
-                            Toast.makeText(this, "has alert", Toast.LENGTH_SHORT).show()
                             val budgetAmount = document.data?.getValue("budget_amount").toString().toDouble()
                             val budgetAlertPercentage = document.data?.getValue("budget_alert_percentage").toString().toInt()
                             val budgetAlertAmount = budgetAmount * budgetAlertPercentage/100
@@ -747,8 +706,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
 
     private fun createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val name = "Budget Exceeded!"
-            val descriptionText = "You have exceeded the budget for Transport, November 2021."
+            val name = "channel"
+            val descriptionText = "description"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -770,7 +729,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_baseline_error_red_24)
+            .setSmallIcon(R.mipmap.jomfinance_foreground)
             .setContentTitle("Budget Alert!")
             .setContentText("You've exceeded $percentage% of your budget for $category, $date")
             .setContentIntent(pendingIntent)
@@ -873,10 +832,8 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             attachment_img.visibility = View.VISIBLE
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-            val bitmap = takenImage.rotate(90f)
+            val bitmap = takenImage.rotate(0f)
             imageBitmap = bitmap
-
-            // TODO: 5/11/2021 Image orientation
 
             attachment_img.setImageBitmap(bitmap)
 
