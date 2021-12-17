@@ -259,7 +259,7 @@ class AddNewExpenseActivity : AppCompatActivity(), DatePickerDialog.OnDateSetLis
             attachment_img.visibility = View.VISIBLE
 
             val image = BitmapFactory.decodeFile(imagePath)
-            val bitmap = image.rotate(90f)
+            val bitmap = image.rotate(0f)
 
             imageBitmap = bitmap
             attachment_img.setImageBitmap(bitmap)
