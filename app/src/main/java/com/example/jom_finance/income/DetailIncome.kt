@@ -116,6 +116,9 @@ class DetailIncome : AppCompatActivity() {
                 }
             }
         }
+        backBtn.setOnClickListener{
+            finish()
+        }
 
         editIncome_btn.setOnClickListener {
             val intent = Intent(this, AddNewIncome::class.java)
